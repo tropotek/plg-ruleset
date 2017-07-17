@@ -3,10 +3,7 @@ namespace Rs;
 
 use Tk\Event\Dispatcher;
 
-
 /**
- * Class Plugin
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
@@ -91,7 +88,6 @@ class Plugin extends \Tk\Plugin\Iface
      * Deactivate the plugin removing any DB data and settings
      * Will only be called when deactivating the plugin in the
      * plugin control panel
-     *
      */
     function doDeactivate()
     {
@@ -104,7 +100,7 @@ class Plugin extends \Tk\Plugin\Iface
         $db->query($sql);
 
         // Delete all tables.
-        $tables = array('skill', 'skill_bundle', 'skill_bundle_has_placement', 'skill_group', 'skill_score', 'skill_set');
+        $tables = array('rules');
         foreach ($tables as $name) {
             $db->dropTable($name);
         }
