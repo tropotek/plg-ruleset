@@ -44,7 +44,7 @@ class SetupHandler implements Subscriber
 //            $profile = $course->getProfile();
 //            if ($profile && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_COURSE_PROFILE, $profile->getId())) {
 //                $config->getLog()->debug($plugin->getName() . ': Sample init course profile plugin stuff: ' . $profile->name);
-//                $dispatcher->addSubscriber(new \Skill\Listener\ExampleHandler(\Rs\Plugin::ZONE_COURSE_PROFILE, $profile->getId()));
+//                $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(\Rs\Plugin::ZONE_COURSE_PROFILE, $profile->getId()));
 //            }
         }
 
