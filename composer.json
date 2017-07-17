@@ -1,0 +1,35 @@
+{
+  "name": "ttek-plg/ems-ruleset",
+  "type": "ttek-plugin",
+  "description": "This plugin allows for rules to be attached to placement types and gives auto approve ability when students submit placements.",
+  "keywords": [
+    "tropotek",
+    "plugin",
+    "ruleset",
+    "EMS III"
+  ],
+  "homepage": "http://www.tropotek.com/",
+  "time": "2017-06-01",
+  "access": "admin, course",
+  "license": "MIT",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Michael Mifsud",
+      "homepage": "http://www.tropotek.com/"
+    }
+  ],
+  "autoload": {
+    "psr-0": {
+      "Rs\\": ""
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  },
+  "require": {
+    "ttek/tk-installers": "~2.0"
+  }
+}
