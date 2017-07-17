@@ -16,7 +16,7 @@ $params = array('role' => array('admin', 'client'));
 $routes->add('Rules Institution Settings', new \Tk\Routing\Route('/ruleset/institutionSettings.html', 'Rs\Controller\InstitutionSettings::doDefault', $params));
 
 $params = array('role' => array('client', 'staff'));
-$routes->add('Rules Course Profile Settings', new \Tk\Routing\Route('/ruleset/courseProfileSettings.html', 'Rs\Controller\CourseProfileSettings::doDefault', $params));
+$routes->add('Rules Profile Settings', new \Tk\Routing\Route('/ruleset/courseProfileSettings.html', 'Rs\Controller\CourseProfileSettings::doDefault', $params));
 
 $params = array('role' => array('client', 'staff'));
 $routes->add('Rules Course Settings', new \Tk\Routing\Route('/ruleset/courseSettings.html', 'Rs\Controller\CourseSettings::doDefault', $params));
