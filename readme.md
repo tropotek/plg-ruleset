@@ -20,7 +20,7 @@ Available on Packagist ([ttek-plg/ems-ruleset](http://packagist.org/packages/tte
 and as such installable via [Composer](http://getcomposer.org/).
 
 ```bash
-# composer require ttek-plg/ruleset
+# composer require ttek-plg/ems-ruleset
 ```
 
 Or add the following to your composer.json file:
