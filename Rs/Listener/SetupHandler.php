@@ -4,8 +4,6 @@ namespace Rs\Listener;
 use Tk\Event\Subscriber;
 
 /**
- * Class StartupHandler
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -16,36 +14,27 @@ class SetupHandler implements Subscriber
 
     public function onRequest(\Tk\Event\GetResponseEvent $event)
     {
-        /* NOTE:
-         *  If you require the Institution object for an event
-         *  be sure to subscribe events here.
-         *  As any events fired before this event do not have access to
-         *  the institution object, unless you manually save the id in the
-         *  session on first page load?
-         *
-         */
-        $config = \Tk\Config::getInstance();
-        /** @var \Tk\Event\Dispatcher $dispatcher */
-        $dispatcher = $config->getEventDispatcher();
-        /** @var \App\Db\Institution $institution */
-        $institution = $config->getInstitution();
+
+        $config = \App\Factory::getConfig();
+        $dispatcher = \App\Factory::getEventDispatcher();
         $plugin = \Rs\Plugin::getInstance();
 
-//        if($institution && $plugin->isZonePluginEnabled(Plugin::ZONE_INSTITUTION, $institution->getId())) {
+//        $institution = \App\Factory::getInstitution();
+//        if($institution && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_INSTITUTION, $institution->getId())) {
 //            $config->getLog()->debug($plugin->getName() . ': Sample init client plugin stuff: ' . $institution->name);
-//            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(Plugin::ZONE_INSTITUTION, $institution->getId()));
+//            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(\Rs\Plugin::ZONE_INSTITUTION, $institution->getId()));
 //        }
-        /** @var \App\Db\Course $course */
-        $course = \App\Factory::getCourse();
-        if ($course && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_COURSE, $course->getId())) {
-            $config->getLog()->debug($plugin->getName() . ': Sample init course plugin stuff: ' . $course->name);
-            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(\Rs\Plugin::ZONE_COURSE, $course->getId()));
 
-//            $profile = $course->getProfile();
-//            if ($profile && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_COURSE_PROFILE, $profile->getId())) {
-//                $config->getLog()->debug($plugin->getName() . ': Sample init course profile plugin stuff: ' . $profile->name);
-//                $dispatcher->addSubscriber(new \Skill\Listener\ExampleHandler(\Rs\Plugin::ZONE_COURSE_PROFILE, $profile->getId()));
-//            }
+//        $course = \App\Factory::getCourse();
+//        if ($course && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_COURSE, $course->getId())) {
+//            $config->getLog()->debug($plugin->getName() . ': Sample init course plugin stuff: ' . $course->name);
+//            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(\Rs\Plugin::ZONE_COURSE, $course->getId()));
+//        }
+
+        $profile = \App\Factory::getProfile();
+        if ($profile && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_COURSE_PROFILE, $profile->getId())) {
+            \Tk\Log::debug($plugin->getName() . ': Sample init course profile plugin stuff: ' . $profile->name);
+            $dispatcher->addSubscriber(new \Rs\Listener\CategoryClassHandler());
         }
 
     }

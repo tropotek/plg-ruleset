@@ -18,7 +18,7 @@ class Plugin extends \Tk\Plugin\Iface
     /**
      * A helper method to get the Plugin instance globally
      *
-     * @return \Tk\Plugin\Iface
+     * @return \Tk\Plugin\Iface|Plugin
      */
     static function getInstance()
     {
@@ -50,8 +50,8 @@ class Plugin extends \Tk\Plugin\Iface
 
         // Register the plugin for the different client areas if they are to be enabled/disabled/configured by those roles.
         //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_INSTITUTION);
-        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_COURSE_PROFILE);
-        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_COURSE);
+        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_COURSE_PROFILE);
+        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_COURSE);
 
         /** @var Dispatcher $dispatcher */
         $dispatcher = \Tk\Config::getInstance()->getEventDispatcher();
@@ -127,7 +127,7 @@ class Plugin extends \Tk\Plugin\Iface
             case self::ZONE_INSTITUTION:
                 return \Tk\Uri::create('/ruleset/institutionSettings.html');
             case self::ZONE_COURSE_PROFILE:
-                return \Tk\Uri::create('/ruleset/courseProfileSettings.html');
+                return \Tk\Uri::create('/ruleset/profileSettings.html');
             case self::ZONE_COURSE:
                 return \Tk\Uri::create('/ruleset/courseSettings.html');
         }
