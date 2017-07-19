@@ -14,36 +14,23 @@ class PlacementEditHandler implements Subscriber
 {
 
 
-    /**
-     * Check the user has access to this controller
-     *
-     * @param \Tk\Event\ControllerEvent $event
-     */
-    public function onController(\Tk\Event\ControllerEvent $event)
-    {
-        $plugin = \Rs\Plugin::getInstance();
-
-        $controller = $event->getController();
-        if ($controller instanceof \App\Controller\Placement\Edit) {
-            vd('doDefault()');
-            $controller->getForm()->addField(new \Tk\Form\Field\Html('this is some shite'));
-        }
-
-    }
 
     /**
      * Check the user has access to this controller
      *
-     * @param \Tk\Event\ControllerResultEvent $event
+     * @param \Tk\Event\Event $event
      */
-    public function onView(\Tk\Event\ControllerResultEvent $event)
+    public function onControllerInit(\Tk\Event\Event $event)
     {
         $plugin = \Rs\Plugin::getInstance();
-
-        $controller = $event->getController();
+        $controller = $event->get('controller');
         if ($controller instanceof \App\Controller\Placement\Edit) {
-            vd('onView()');
-            $controller->getForm()->addField(new \Tk\Form\Field\Html('this is some shite'));
+            $controller->getForm()->addField(new \Tk\Form\Field\Html('testing', 'This a field test from ruleset plugin'));
+
+            // TODO: Add the placement rules list
+
+            // TODO: save the rules on submit
+
         }
 
     }
@@ -57,10 +44,9 @@ class PlacementEditHandler implements Subscriber
     public function onControllerShow(\Tk\Event\Event $event)
     {
         $plugin = \Rs\Plugin::getInstance();
-
         $controller = $event->get('controller');
         if ($controller instanceof \App\Controller\Placement\Edit) {
-            vd('show()');
+            vd('onControllerShow()');
         }
 
     }
@@ -89,9 +75,8 @@ class PlacementEditHandler implements Subscriber
     public static function getSubscribedEvents()
     {
         return array(
-            \Tk\Kernel\KernelEvents::CONTROLLER => array('onController', 0),
-            \Tk\Kernel\KernelEvents::VIEW => array('onView', 0),
-            \App\AppEvents::SHOW => array('onControllerShow', 0)
+            \Tk\PageEvents::CONTROLLER_INIT => array('onControllerInit', 0),
+            \Tk\PageEvents::CONTROLLER_SHOW => array('onControllerShow', 0)
         );
     }
     
