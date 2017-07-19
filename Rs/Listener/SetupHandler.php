@@ -35,6 +35,7 @@ class SetupHandler implements Subscriber
         if ($profile && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_COURSE_PROFILE, $profile->getId())) {
             \Tk\Log::debug($plugin->getName() . ': Sample init course profile plugin stuff: ' . $profile->name);
             $dispatcher->addSubscriber(new \Rs\Listener\CategoryClassHandler());
+            $dispatcher->addSubscriber(new \Rs\Listener\PlacementEditHandler());
         }
 
     }

@@ -78,13 +78,13 @@ class Calculator extends \Tk\Object
     public static function create($course, $user)
     {
         $calc = new self($course, $user);
-
-
-
         $calc->init();
         return $calc;
     }
 
+    /**
+     * init()
+     */
     private function init()
     {
         $totals = array();
@@ -92,11 +92,9 @@ class Calculator extends \Tk\Object
 
         /* @var $placement \App\Db\Placement */
         foreach ($this->getPlacementList() as $placement) {
-
-            $placeRules = $this->getPlacementRuleList();
-
+            $placeRules = $this->getPlacementRuleList($placement);
             $units = 0;
-            if ($placement->getPlacementType()->gradable) {
+            if ($placement->getPlacementType() && $placement->getPlacementType()->gradable) {
                 $units = $placement->units;
             }
 
@@ -116,6 +114,7 @@ class Calculator extends \Tk\Object
                     }
                 }
             }
+
             if (!isset($totals['total'])) {
                 $totals['total'] = 0;
                 $totals['completed'] = 0;
@@ -129,40 +128,40 @@ class Calculator extends \Tk\Object
             }
             $termTot += $units;
         }
+        $this->totals = $totals;
 
-        if (count($this->totals)) {
+        if (count($totals)) {
             /* @var $rule \Rs\Db\Rule */
             foreach ($this->getProfileRuleList() as $rule) {
                 $this->ruleInfo[$rule->getLabel()] = array();
-                $this->ruleInfo[$rule->getLabel()]['requiredTotal'] = $rule->getMaxTarget() ? $rule->getMaxTarget() : $rule->getMinTarget();
+                $this->ruleInfo[$rule->getLabel()]['ruleTotal'] = $rule->getMaxTarget() ? $rule->getMaxTarget() : $rule->getMinTarget();
+                $this->ruleInfo[$rule->getLabel()]['total'] = $totals[$rule->getLabel()]['total'];
+                $this->ruleInfo[$rule->getLabel()]['pending'] = $totals[$rule->getLabel()]['pending'];
+                $this->ruleInfo[$rule->getLabel()]['completed'] = $totals[$rule->getLabel()]['completed'];
+                $this->ruleInfo[$rule->getLabel()]['validCompleted'] = $rule->isTotalValid($totals[$rule->getLabel()]['completed']);
+                $this->ruleInfo[$rule->getLabel()]['validCompletedMsg'] = $rule->getValidMessage($totals[$rule->getLabel()]['completed']);
+                $this->ruleInfo[$rule->getLabel()]['validTotal'] = $rule->isTotalValid($totals[$rule->getLabel()]['total']);
+                $this->ruleInfo[$rule->getLabel()]['validMsg'] = $rule->getValidMessage($totals[$rule->getLabel()]['total']);
                 $this->ruleInfo[$rule->getLabel()]['assessmentRule'] = $rule;
-                $this->ruleInfo[$rule->getLabel()]['studentTotal'] = $this->totals[$rule->getLabel()]['total'];
-                $this->ruleInfo[$rule->getLabel()]['studentPending'] = $this->totals[$rule->getLabel()]['pending'];
-                $this->ruleInfo[$rule->getLabel()]['studentCompleted'] = $this->totals[$rule->getLabel()]['completed'];
-
-                $this->ruleInfo[$rule->getLabel()]['validCompleted'] = $rule->isTotalValid($this->totals[$rule->getLabel()]['completed']);
-                $this->ruleInfo[$rule->getLabel()]['validCompletedMsg'] = $rule->getValidMessage($this->totals[$rule->getLabel()]['completed']);
-
-                $this->ruleInfo[$rule->getLabel()]['validTotal'] = $rule->isTotalValid($this->totals[$rule->getLabel()]['total']);
-                $this->ruleInfo[$rule->getLabel()]['validMsg'] = $rule->getValidMessage($this->totals[$rule->getLabel()]['total']);
             }
         }
 
         $this->ruleInfo['total'] = array();
+        $this->ruleInfo['total']['ruleTotal'] = $this->course->getProfile()->maxUnitsTotal ? $this->course->getProfile()->maxUnitsTotal : $this->course->getProfile()->minUnitsTotal;
+        $this->ruleInfo['total']['total'] = $totals['total'];
+        $this->ruleInfo['total']['pending'] = $totals['pending'];
+        $this->ruleInfo['total']['completed'] = $totals['completed'];
+        $this->ruleInfo['total']['validCompleted'] = Rule::validateUnits($totals['completed'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
+        $this->ruleInfo['total']['validCompletedMsg'] = Rule::getValidateMessage($totals['completed'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
+        $this->ruleInfo['total']['validTotal'] = Rule::validateUnits($totals['total'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
+        $this->ruleInfo['total']['validMsg'] = Rule::getValidateMessage($totals['total'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
         $this->ruleInfo['total']['assessmentRule'] = null;
-        $this->ruleInfo['total']['requiredTotal'] = $this->course->getProfile()->maxUnitsTotal ? $this->course->getProfile()->maxUnitsTotal : $this->course->getProfile()->minUnitsTotal;
-        $this->ruleInfo['total']['studentTotal'] = $this->totals['total'];
-        $this->ruleInfo['total']['studentPending'] = $this->totals['pending'];
-        $this->ruleInfo['total']['studentCompleted'] = $this->totals['completed'];
-        $this->ruleInfo['total']['validCompleted'] = Rule::validateUnits($this->totals['completed'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
-        $this->ruleInfo['total']['validCompletedMsg'] = Rule::getValidateMessage($this->totals['completed'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
 
-        $this->ruleInfo['total']['validTotal'] = Rule::validateUnits($this->totals['total'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
-        $this->ruleInfo['total']['validMsg'] = Rule::getValidateMessage($this->totals['total'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
+        vd($this->ruleInfo);
     }
-    
+
+
     /**
-     *
      * @param Rule $rule
      * @param \Tk\Db\Map\ArrayObject $ruleList
      * @return int
@@ -244,8 +243,6 @@ class Calculator extends \Tk\Object
     {
         return $this->ruleInfo;
     }
-
-
 
     /**
      * @param \App\Db\Placement $placement

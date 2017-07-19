@@ -99,6 +99,11 @@ class RuleMap extends \App\Db\Mapper
             $where .= sprintf('a.label = %s AND ', $this->quote($filter['label']));
         }
 
+        if (!empty($filter['placementId'])) {
+            $from .= sprintf(' ,%s d', $this->quoteTable('rule_has_placement'));
+            $where .= sprintf('a.id = d.rule_id AND d.placement_id = %s AND ', (int)$filter['placementId']);
+        }
+
         
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = array($filter['exclude']);
@@ -120,5 +125,45 @@ class RuleMap extends \App\Db\Mapper
     }
 
 
+    // TODO: ------------------------------------------------------
+
+    /**
+     * @param int $ruleId
+     * @param int $placementId
+     * @return boolean
+     */
+    public function hasPlacement($ruleId, $placementId)
+    {
+        $sql = sprintf('SELECT * FROM %s WHERE rule_id = %d AND placement_id = %d',
+            $this->quoteTable('rule_has_placement'), (int)$ruleId, (int)$placementId);
+        return ($this->getDb()->query($sql)->rowCount() > 0);
+    }
+
+    /**
+     * @param int $ruleId
+     * @param int $placementId (optional) If null all placements are to be removed
+     */
+    public function removePlacement($ruleId, $placementId = null)
+    {
+        $sup = '';
+        if ($placementId) {
+            $sup = sprintf(' AND placement_id = %d ', (int)$placementId);
+        }
+        $query = sprintf('DELETE FROM %s WHERE rule_id = %d %s',
+            $this->quoteTable('rule_has_placement'), (int)$ruleId, $sup);
+        $this->getDb()->exec($query);
+    }
+
+    /**
+     * @param int $ruleId
+     * @param int $placementId
+     */
+    public function addPlacement($ruleId, $placementId)
+    {
+        if ($this->hasPlacement($ruleId, $placementId)) return;
+        $query = sprintf('INSERT INTO %s (rule_id, placement_id) VALUES (%d, %d) ',
+            $this->quoteTable('rule_has_placement'), (int)$ruleId, (int)$placementId);
+        $this->getDb()->exec($query);
+    }
 
 }
