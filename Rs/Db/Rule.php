@@ -76,7 +76,21 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         $this->created = \Tk\Date::create();
     }
 
-
+    /**
+     * eval() and return the result of the script
+     *
+     * @param \App\Db\Course $course
+     * @param \App\Db\Company $company
+     * @return boolean
+     */
+    public function evaluate($course, $company)
+    {
+        // TODO: place any global objects required for eval() here.
+        if ($this->script) {
+            return eval($this->script);
+        }
+        return false;
+    }
 
 
     /**

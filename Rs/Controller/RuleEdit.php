@@ -68,9 +68,10 @@ class RuleEdit extends \App\Controller\AdminEditIface
 
         $this->form->addField(new Field\Input('name'));
         $this->form->addField(new Field\Input('label'));
+        $this->form->addField(new \App\Form\Field\MinMax('min', 'max'));
+//        $this->form->addField(new Field\Input('min'));
+//        $this->form->addField(new Field\Input('max'));
         $this->form->addField(new Field\Input('description'));
-        $this->form->addField(new Field\Input('min'));
-        $this->form->addField(new Field\Input('max'));
         $this->form->addField(new Field\Textarea('script'))->addCss('tkCode');
 
         $this->form->addField(new Event\Button('update', array($this, 'doSubmit')));
