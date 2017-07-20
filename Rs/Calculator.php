@@ -351,12 +351,11 @@ class Calculator extends \Tk\Object
      */
     public static function findPlacementList($courseId, $userId)
     {
-            return \App\Db\PlacementMap::create()->findFiltered(array(
-                'userId' => $userId,
-                'courseId' => $courseId,
-                'status' => array(\App\Db\Placement::STATUS_APPROVED, \App\Db\Placement::STATUS_ASSESSING, \App\Db\Placement::STATUS_EVALUATING, \App\Db\Placement::STATUS_COMPLETED)
-            ));
-
+        return \App\Db\PlacementMap::create()->findFiltered(array(
+            'userId' => $userId,
+            'courseId' => $courseId,
+            'status' => array(\App\Db\Placement::STATUS_APPROVED, \App\Db\Placement::STATUS_ASSESSING, \App\Db\Placement::STATUS_EVALUATING, \App\Db\Placement::STATUS_COMPLETED)
+        ));
     }
 
 }
