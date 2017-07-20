@@ -17,12 +17,9 @@ class StudentAssessmentHandler implements Subscriber
      */
     public function onInit(\Tk\Event\Event $event)
     {
-        //vd('onInit');
         /** @var \App\Ui\StudentAssessment $studentAssessment */
         $studentAssessment = $event->get('studentAssessment');
         $calc = \Rs\Calculator::createFromPlacementList($studentAssessment->getPlacementList());
-
-// vd($calc->getRuleTotals());
 
         $profileRuleList = $calc->getRuleList();
         /** @var \App\Db\Placement $placement */
@@ -37,52 +34,35 @@ class StudentAssessmentHandler implements Subscriber
                 $studentAssessment->addUnitColumn($rule->getLabel(), $placement->getId(), $units);
             }
         }
-
-
-        // TODO: ?????????????????????????????  TODO  ????????????????????????????
-        // TODO:
-        // TODO: This totals rows rendering is not right,
-        // TODO:   if another plugin adds a column then we are stuffed.
-        // TODO:   We need to make it more controlled by the Student Assessment object
-        // TODO:
-        // TODO: Maybe it should just render nothing in the cell as columns are added
-        // TODO:  use the column name as the id rather than no numbered array
-        // TODO:  for missing cols it renders '' strings ??????
-        // TODO:
-        // TODO:
-        // TODO: ?????????????????????????????  TODO  ????????????????????????????
-
+        
+        $label = $calc->getCourse()->getProfile()->unitLabel;
         $totals = $calc->getRuleTotals();
-        $pending = array();
-        $completed = array();
-        $min = array();
-        $max = array();
 
-// vd($totals);
-
+        //vd($totals);
         /** @var \Rs\Db\Rule $rule */
         foreach ($profileRuleList as $i => $rule) {
             if ($i == 0) {  // Unit totals
-                $pending[] = $totals['total']['pending'];
-                $completed[] = $totals['total']['completed'];
-                $min[] = $calc->getCourse()->getProfile()->minUnitsTotal;
-                $max[] = $calc->getCourse()->getProfile()->maxUnitsTotal;
+                $studentAssessment->addTotal('Pending', $label, $totals['total']['pending']);
+                $studentAssessment->addTotal('Completed', $label, $totals['total']['completed'], $this->getValidCss($totals['total']['validCompleted']), $totals['total']['validCompletedMsg']);
+                $studentAssessment->addTotal('Min Targets', $label,  $calc->getCourse()->getProfile()->minUnitsTotal);
+                $studentAssessment->addTotal('Max Targets', $label, $calc->getCourse()->getProfile()->maxUnitsTotal);
             }
             $t = $totals[$rule->getLabel()];
-            $pending[] = $t['pending'];
-            $completed[] = $t['completed'];
-            $min[] = $rule->min;
-            $max[] = $rule->max;
-
+            $studentAssessment->addTotal('Pending', $rule->getLabel(), $t['pending']);
+            $studentAssessment->addTotal('Completed', $rule->getLabel(), $t['completed'], $this->getValidCss($t['validCompleted']), $t['validCompletedMsg']);
+            $studentAssessment->addTotal('Min Targets', $rule->getLabel(),  $rule->min);
+            $studentAssessment->addTotal('Max Targets', $rule->getLabel(), $rule->max);
         }
-        $studentAssessment->addTotal('Pending', $pending);
-        $studentAssessment->addTotal('Completed', $completed);
-        $studentAssessment->addTotal('Min Targets', $min);
-        $studentAssessment->addTotal('Max Targets', $max);
-
 
     }
 
+    private function getValidCss($validValue)
+    {
+        if ($validValue < 0) return 'less';
+        if ($validValue > 0) return 'grater';
+        return 'equal';
+    }
+    
     /**
      * @param \Tk\Event\Event $event
      */
@@ -105,9 +85,10 @@ class StudentAssessmentHandler implements Subscriber
     public static function getSubscribedEvents()
     {
         return array(
-            \App\UiEvents::STUDENT_ASSESSMENT_INIT      => array('onInit', 0),
-            \App\UiEvents::STUDENT_ASSESSMENT_SHOW_ROW  => array('onShowRow', 0),
-            \App\UiEvents::STUDENT_ASSESSMENT_SHOW      => array('onShow', 0)
+            \App\UiEvents::STUDENT_ASSESSMENT_INIT      => array('onInit', 0)
+//            ,
+//            \App\UiEvents::STUDENT_ASSESSMENT_SHOW_ROW  => array('onShowRow', 0),
+//            \App\UiEvents::STUDENT_ASSESSMENT_SHOW      => array('onShow', 0)
         );
     }
 
