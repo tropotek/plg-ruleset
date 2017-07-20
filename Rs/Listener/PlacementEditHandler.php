@@ -41,8 +41,8 @@ class PlacementEditHandler implements Subscriber
         $form = $event->getForm();
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
-            $profileRules = \Rs\Calculator::getProfileRuleList($this->placement->getCourse()->profileId);
-            $placementRules = \Rs\Calculator::getPlacementRuleList($this->placement)->toArray('id');
+            $profileRules = \Rs\Calculator::findProfileRuleList($this->placement->getCourse()->profileId);
+            $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
             $field = $form->addField(new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules)))->
                 setLabel('Assessment Rules');
