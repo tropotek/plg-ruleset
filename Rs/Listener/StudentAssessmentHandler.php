@@ -17,13 +17,12 @@ class StudentAssessmentHandler implements Subscriber
      */
     public function onInit(\Tk\Event\Event $event)
     {
-        vd('onInit');
+        //vd('onInit');
         /** @var \App\Ui\StudentAssessment $studentAssessment */
         $studentAssessment = $event->get('studentAssessment');
         $calc = \Rs\Calculator::createFromPlacementList($studentAssessment->getPlacementList());
 
-
-        vd($calc->getRuleTotals());
+// vd($calc->getRuleTotals());
 
         $profileRuleList = $calc->getRuleList();
         /** @var \App\Db\Placement $placement */
@@ -37,16 +36,49 @@ class StudentAssessmentHandler implements Subscriber
                 }
                 $studentAssessment->addUnitColumn($rule->getLabel(), $placement->getId(), $units);
             }
-
         }
 
-//        $totals = $calc->getRuleTotals();
-//        /** @var \Rs\Db\Rule $rule */
-//        foreach ($profileRuleList as $rule) {
-//            $t = $totals[$rule->getLabel()];
-//            $studentAssessment->addTotal('Pending', $t['pending']);
-//            $studentAssessment->addTotal('Completed', $t['completed']);
-//        }
+
+        // TODO: ?????????????????????????????  TODO  ????????????????????????????
+        // TODO:
+        // TODO: This totals rows rendering is not right,
+        // TODO:   if another plugin adds a column then we are stuffed.
+        // TODO:   We need to make it more controlled by the Student Assessment object
+        // TODO:
+        // TODO: Maybe it should just render nothing in the cell as columns are added
+        // TODO:  use the column name as the id rather than no numbered array
+        // TODO:  for missing cols it renders '' strings ??????
+        // TODO:
+        // TODO:
+        // TODO: ?????????????????????????????  TODO  ????????????????????????????
+
+        $totals = $calc->getRuleTotals();
+        $pending = array();
+        $completed = array();
+        $min = array();
+        $max = array();
+
+// vd($totals);
+
+        /** @var \Rs\Db\Rule $rule */
+        foreach ($profileRuleList as $i => $rule) {
+            if ($i == 0) {  // Unit totals
+                $pending[] = $totals['total']['pending'];
+                $completed[] = $totals['total']['completed'];
+                $min[] = $calc->getCourse()->getProfile()->minUnitsTotal;
+                $max[] = $calc->getCourse()->getProfile()->maxUnitsTotal;
+            }
+            $t = $totals[$rule->getLabel()];
+            $pending[] = $t['pending'];
+            $completed[] = $t['completed'];
+            $min[] = $rule->min;
+            $max[] = $rule->max;
+
+        }
+        $studentAssessment->addTotal('Pending', $pending);
+        $studentAssessment->addTotal('Completed', $completed);
+        $studentAssessment->addTotal('Min Targets', $min);
+        $studentAssessment->addTotal('Max Targets', $max);
 
 
     }
