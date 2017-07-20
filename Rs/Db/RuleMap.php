@@ -143,14 +143,21 @@ class RuleMap extends \App\Db\Mapper
      * @param int $ruleId
      * @param int $placementId (optional) If null all placements are to be removed
      */
-    public function removePlacement($ruleId, $placementId = null)
+    public function removePlacement($ruleId = null, $placementId = null)
     {
-        $sup = '';
-        if ($placementId) {
-            $sup = sprintf(' AND placement_id = %d ', (int)$placementId);
+        if (!$ruleId && !$placementId) return;
+        $where = '';
+        if ($ruleId) {
+            $where = sprintf('rule_id = %d AND ', (int)$ruleId);
         }
-        $query = sprintf('DELETE FROM %s WHERE rule_id = %d %s',
-            $this->quoteTable('rule_has_placement'), (int)$ruleId, $sup);
+        if ($placementId) {
+            $where = sprintf('placement_id = %d AND ', (int)$placementId);
+        }
+        if ($where) {
+            $where = substr($where, 0, -4);
+        }
+        $query = sprintf('DELETE FROM %s WHERE %s',
+            $this->quoteTable('rule_has_placement'), $where);
         $this->getDb()->exec($query);
     }
 

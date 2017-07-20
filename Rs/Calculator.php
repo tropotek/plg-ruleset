@@ -64,8 +64,8 @@ class Calculator extends \Tk\Object
     {
         $this->course = $course;
         $this->user = $user;
-        $this->getPlacementList();
-        $this->getProfileRuleList();
+        $this->placementList = $this->getPlacementList($course->getId(), $user->getId());
+        $this->ruleList = self::getProfileRuleList($course->getProfile()->getId());
     }
 
     /**
@@ -84,6 +84,7 @@ class Calculator extends \Tk\Object
 
     /**
      * init()
+     * @todo: This all may need to be refactored
      */
     private function init()
     {
@@ -91,15 +92,15 @@ class Calculator extends \Tk\Object
         $termTot = 0;
 
         /* @var $placement \App\Db\Placement */
-        foreach ($this->getPlacementList() as $placement) {
-            $placeRules = $this->getPlacementRuleList($placement);
+        foreach ($this->placementList as $placement) {
+            $placeRules = self::getPlacementRuleList($placement);
             $units = 0;
             if ($placement->getPlacementType() && $placement->getPlacementType()->gradable) {
                 $units = $placement->units;
             }
 
             /** @var Rule $rule */
-            foreach ($this->getProfileRuleList() as $rule) {
+            foreach ($this->ruleList as $rule) {
                 if (!isset($totals[$rule->getLabel()])) {
                     $totals[$rule->getLabel()]['total'] = 0;
                     $totals[$rule->getLabel()]['completed'] = 0;
@@ -132,7 +133,7 @@ class Calculator extends \Tk\Object
 
         if (count($totals)) {
             /* @var $rule \Rs\Db\Rule */
-            foreach ($this->getProfileRuleList() as $rule) {
+            foreach ($this->ruleList as $rule) {
                 $this->ruleInfo[$rule->getLabel()] = array();
                 $this->ruleInfo[$rule->getLabel()]['ruleTotal'] = $rule->getMaxTarget() ? $rule->getMaxTarget() : $rule->getMinTarget();
                 $this->ruleInfo[$rule->getLabel()]['total'] = $totals[$rule->getLabel()]['total'];
@@ -185,7 +186,7 @@ class Calculator extends \Tk\Object
     {
         if (!$this->minTargets) {
             /** @var Rule $rule */
-            foreach ($this->getProfileRuleList() as $rule) {
+            foreach ($this->ruleList as $rule) {
                 $this->minTargets[$rule->getLabel()] = $rule->min;
             }
             if ($total)
@@ -204,7 +205,7 @@ class Calculator extends \Tk\Object
     {
         if (!$this->maxTargets) {
             /** @var Rule $rule */
-            foreach ($this->getProfileRuleList() as $rule) {
+            foreach ($this->ruleList as $rule) {
                 $this->maxTargets[$rule->getLabel()] = $rule->max;
             }
             if ($total)
@@ -248,14 +249,14 @@ class Calculator extends \Tk\Object
      * @param \App\Db\Placement $placement
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      */
-    public function getPlacementRuleList($placement)
+    public static function getPlacementRuleList($placement)
     {
         $list = null;
         if ($placement->getId()) {
             $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getId()));
         } else {
             // Get default rules based on the company and course object
-            $list = $this->getCompanyRuleList($placement->getCourse(), $placement->getCompany());
+            $list = self::getCompanyRuleList($placement->getCompany()->getId(), $placement->getCourse()->getId());
         }
         return $list;
     }
@@ -265,7 +266,7 @@ class Calculator extends \Tk\Object
      * @param \App\Db\Company $company
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      */
-    public function getCompanyRuleList($course, $company)
+    public static function getCompanyRuleList($company, $course)
     {
         $list = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $course->profileId));
         $valid = array();
@@ -278,29 +279,27 @@ class Calculator extends \Tk\Object
     }
 
     /**
+     * @param $profileId
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      */
-    public function getProfileRuleList()
+    public static function getProfileRuleList($profileId)
     {
-        if (!$this->ruleList) {
-            $this->ruleList = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $this->course->profileId));
-        }
-        return $this->ruleList;
+        return \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $profileId));
     }
 
     /**
+     * @param int $courseId
+     * @param int $userId
      * @return \App\Db\Placement[]|\Tk\Db\Map\ArrayObject
      */
-    public function getPlacementList()
+    public static function getPlacementList($courseId, $userId)
     {
-        if (!$this->placementList) {
-            $this->placementList = \App\Db\PlacementMap::create()->findFiltered(array(
-                'userId' => $this->user->getId(),
-                'courseId' => $this->course->getid(),
+            return \App\Db\PlacementMap::create()->findFiltered(array(
+                'userId' => $userId,
+                'courseId' => $courseId,
                 'status' => array(\App\Db\Placement::STATUS_APPROVED, \App\Db\Placement::STATUS_ASSESSING, \App\Db\Placement::STATUS_EVALUATING, \App\Db\Placement::STATUS_COMPLETED)
             ));
-        }
-        return $this->placementList;
+
     }
 
 }

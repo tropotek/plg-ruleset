@@ -4,8 +4,6 @@ namespace Rs\Listener;
 use Tk\Event\Subscriber;
 
 /**
- * Class StartupHandler
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -13,70 +11,70 @@ use Tk\Event\Subscriber;
 class PlacementEditHandler implements Subscriber
 {
 
+    /**
+     * @var null|\App\Controller\Placement\Edit
+     */
+    protected $controller = null;
+
+    /**
+     * @var null|\App\Db\Placement
+     */
+    protected $placement = null;
 
 
     /**
-     * Check the user has access to this controller
-     *
-     * @param \Tk\Event\Event $event
+     * @param \Tk\Event\ControllerEvent $event
      */
-    public function onControllerInit(\Tk\Event\Event $event)
+    public function onControllerInit(\Tk\Event\ControllerEvent $event)
     {
-        $plugin = \Rs\Plugin::getInstance();
-        $controller = $event->get('controller');
+        $controller = $event->getController();
         if ($controller instanceof \App\Controller\Placement\Edit) {
-            $controller->getForm()->addField(new \Tk\Form\Field\Html('testing', 'This a field test from ruleset plugin'));
-
-            // TODO: Add the placement rules list
-
-            // TODO: save the rules on submit
-
+            $this->controller = $controller;
         }
-
     }
 
-
     /**
-     * Check the user has access to this controller
-     *
-     * @param \Tk\Event\Event $event
+     * @param \Tk\Event\FormEvent $event
      */
-    public function onControllerShow(\Tk\Event\Event $event)
+    public function onFormInit(\Tk\Event\FormEvent $event)
     {
-        $plugin = \Rs\Plugin::getInstance();
-        $controller = $event->get('controller');
-        if ($controller instanceof \App\Controller\Placement\Edit) {
-            vd('onControllerShow()');
-        }
+        $form = $event->getForm();
+        if ($this->controller) {
+            $this->placement = $this->controller->getPlacement();
+            $profileRules = \Rs\Calculator::getProfileRuleList($this->placement->getCourse()->profileId);
+            $placementRules = \Rs\Calculator::getPlacementRuleList($this->placement)->toArray('id');
 
+            $field = $form->addField(new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules)))->
+                setLabel('Assessment Rules');
+            $field->setValue($placementRules);
+
+            $form->addEventCallback('update', array($this, 'doSubmit'));
+            $form->addEventCallback('save', array($this, 'doSubmit'));
+        }
     }
 
+    /**
+     * @param \Tk\Form $form
+     * @param \Tk\Form\Event\Iface $event
+     */
+    public function doSubmit($form, $event)
+    {
+        if($this->placement->getId() && !$form->hasErrors()) {
+            \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());
+            foreach ($form->getFieldValue('rules') as $ruleId) {
+                \Rs\Db\RuleMap::create()->addPlacement($ruleId, $this->placement->getVolatileId());
+            }
+        }
+    }
 
     /**
-     * Returns an array of event names this subscriber wants to listen to.
-     *
-     * The array keys are event names and the value can be:
-     *
-     *  * The method name to call (priority defaults to 0)
-     *  * An array composed of the method name to call and the priority
-     *  * An array of arrays composed of the method names to call and respective
-     *    priorities, or 0 if unset
-     *
-     * For instance:
-     *
-     *  * array('eventName' => 'methodName')
-     *  * array('eventName' => array('methodName', $priority))
-     *  * array('eventName' => array(array('methodName1', $priority), array('methodName2'))
-     *
-     * @return array The event names to listen to
-     *
-     * @api
+     * @return array
      */
     public static function getSubscribedEvents()
     {
         return array(
-            \Tk\PageEvents::CONTROLLER_INIT => array('onControllerInit', 0),
-            \Tk\PageEvents::CONTROLLER_SHOW => array('onControllerShow', 0)
+            \Tk\Kernel\KernelEvents::CONTROLLER => array('onControllerInit', 0),
+            \Tk\Form\FormEvents::FORM_INIT => array('onFormInit', 0)
         );
     }
     

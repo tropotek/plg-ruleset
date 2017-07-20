@@ -74,8 +74,6 @@ class Plugin extends \Tk\Plugin\Iface
         $migrate = new \Tk\Util\SqlMigrate($db);
         $migrate->setTempPath($config->getTempPath());
         $migrate->migrate(dirname(__FILE__) . '/sql');
-        
-        // TODO: Implement doActivate() method.
 
         // Init Settings
 //        $data = \Tk\Db\Data::create($this->getName());
@@ -85,13 +83,37 @@ class Plugin extends \Tk\Plugin\Iface
     }
 
     /**
+     * Example upgrade code
+     * This will be called when you update the plugin version in the composer.json file
+     *
+     * Upgrade the plugin
+     * Called when the file version is larger than the version in the DB table
+     *
+     * @param string $oldVersion
+     * @param string $newVersion
+     */
+    function doUpgrade($oldVersion, $newVersion) {
+        // Init Plugin Settings
+        $config = \Tk\Config::getInstance();
+        $db = \App\Factory::getDb();
+
+        $migrate = new \Tk\Util\SqlMigrate($db);
+        $migrate->setTempPath($config->getTempPath());
+        $migrate->migrate(dirname(__FILE__) . '/sql');
+
+//        if (version_compare($oldVersion, '1.0.1', '<')) { ; }
+//        if (version_compare($oldVersion, '1.0.2', '<')) { ; }
+
+    }
+
+    /**
      * Deactivate the plugin removing any DB data and settings
      * Will only be called when deactivating the plugin in the
      * plugin control panel
      */
     function doDeactivate()
     {
-        // TODO: Implement doDeactivate() method.
+        // TODO: Maybe we do not delete anything to ensure data is not lost??????
         $db = \App\Factory::getDb();
 
         // Clear the data table of all plugin data
@@ -124,12 +146,12 @@ class Plugin extends \Tk\Plugin\Iface
     public function getZoneSettingsUrl($zoneName)
     {
         switch ($zoneName) {
-            case self::ZONE_INSTITUTION:
-                return \Tk\Uri::create('/ruleset/institutionSettings.html');
+//            case self::ZONE_INSTITUTION:
+//                return \Tk\Uri::create('/ruleset/institutionSettings.html');
             case self::ZONE_COURSE_PROFILE:
                 return \Tk\Uri::create('/ruleset/profileSettings.html');
-            case self::ZONE_COURSE:
-                return \Tk\Uri::create('/ruleset/courseSettings.html');
+//            case self::ZONE_COURSE:
+//                return \Tk\Uri::create('/ruleset/courseSettings.html');
         }
         return null;
     }
