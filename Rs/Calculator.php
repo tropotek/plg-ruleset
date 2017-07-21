@@ -30,9 +30,8 @@ class Calculator extends \Tk\Object
      * @var \Tk\Db\Map\ArrayObject
      */
     protected $ruleList = null;
-
-
-
+    
+    
 
     /**
      * @var array
@@ -52,7 +51,7 @@ class Calculator extends \Tk\Object
     /**
      * @var array
      */
-    protected $ruleInfo = array();
+    protected $ruleTotals = array();
 
 
     /**
@@ -153,29 +152,29 @@ class Calculator extends \Tk\Object
         if (count($totals)) {
             /* @var $rule \Rs\Db\Rule */
             foreach ($this->ruleList as $rule) {
-                $this->ruleInfo[$rule->getLabel()] = array();
-                $this->ruleInfo[$rule->getLabel()]['ruleTotal'] = $rule->getMaxTarget() ? $rule->getMaxTarget() : $rule->getMinTarget();
-                $this->ruleInfo[$rule->getLabel()]['total'] = $totals[$rule->getLabel()]['total'];
-                $this->ruleInfo[$rule->getLabel()]['pending'] = $totals[$rule->getLabel()]['pending'];
-                $this->ruleInfo[$rule->getLabel()]['completed'] = $totals[$rule->getLabel()]['completed'];
-                $this->ruleInfo[$rule->getLabel()]['validCompleted'] = $rule->isTotalValid($totals[$rule->getLabel()]['completed']);
-                $this->ruleInfo[$rule->getLabel()]['validCompletedMsg'] = $rule->getValidMessage($totals[$rule->getLabel()]['completed']);
-                $this->ruleInfo[$rule->getLabel()]['validTotal'] = $rule->isTotalValid($totals[$rule->getLabel()]['total']);
-                $this->ruleInfo[$rule->getLabel()]['validMsg'] = $rule->getValidMessage($totals[$rule->getLabel()]['total']);
-                $this->ruleInfo[$rule->getLabel()]['assessmentRule'] = $rule;
+                $this->ruleTotals[$rule->getLabel()] = array();
+                $this->ruleTotals[$rule->getLabel()]['ruleTotal'] = $rule->getMaxTarget() ? $rule->getMaxTarget() : $rule->getMinTarget();
+                $this->ruleTotals[$rule->getLabel()]['total'] = $totals[$rule->getLabel()]['total'];
+                $this->ruleTotals[$rule->getLabel()]['pending'] = $totals[$rule->getLabel()]['pending'];
+                $this->ruleTotals[$rule->getLabel()]['completed'] = $totals[$rule->getLabel()]['completed'];
+                $this->ruleTotals[$rule->getLabel()]['validCompleted'] = $rule->isTotalValid($totals[$rule->getLabel()]['completed']);
+                $this->ruleTotals[$rule->getLabel()]['validCompletedMsg'] = $rule->getValidMessage($totals[$rule->getLabel()]['completed']);
+                $this->ruleTotals[$rule->getLabel()]['validTotal'] = $rule->isTotalValid($totals[$rule->getLabel()]['total']);
+                $this->ruleTotals[$rule->getLabel()]['validMsg'] = $rule->getValidMessage($totals[$rule->getLabel()]['total']);
+                $this->ruleTotals[$rule->getLabel()]['assessmentRule'] = $rule;
             }
         }
 
-        $this->ruleInfo['total'] = array();
-        $this->ruleInfo['total']['ruleTotal'] = $this->course->getProfile()->maxUnitsTotal ? $this->course->getProfile()->maxUnitsTotal : $this->course->getProfile()->minUnitsTotal;
-        $this->ruleInfo['total']['total'] = $totals['total'];
-        $this->ruleInfo['total']['pending'] = $totals['pending'];
-        $this->ruleInfo['total']['completed'] = $totals['completed'];
-        $this->ruleInfo['total']['validCompleted'] = Rule::validateUnits($totals['completed'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
-        $this->ruleInfo['total']['validCompletedMsg'] = Rule::getValidateMessage($totals['completed'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
-        $this->ruleInfo['total']['validTotal'] = Rule::validateUnits($totals['total'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
-        $this->ruleInfo['total']['validMsg'] = Rule::getValidateMessage($totals['total'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
-        $this->ruleInfo['total']['assessmentRule'] = null;
+        $this->ruleTotals['total'] = array();
+        $this->ruleTotals['total']['ruleTotal'] = $this->course->getProfile()->maxUnitsTotal ? $this->course->getProfile()->maxUnitsTotal : $this->course->getProfile()->minUnitsTotal;
+        $this->ruleTotals['total']['total'] = $totals['total'];
+        $this->ruleTotals['total']['pending'] = $totals['pending'];
+        $this->ruleTotals['total']['completed'] = $totals['completed'];
+        $this->ruleTotals['total']['validCompleted'] = Rule::validateUnits($totals['completed'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
+        $this->ruleTotals['total']['validCompletedMsg'] = Rule::getValidateMessage($totals['completed'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
+        $this->ruleTotals['total']['validTotal'] = Rule::validateUnits($totals['total'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
+        $this->ruleTotals['total']['validMsg'] = Rule::getValidateMessage($totals['total'], $this->course->getProfile()->minUnitsTotal, $this->course->getProfile()->maxUnitsTotal);
+        $this->ruleTotals['total']['assessmentRule'] = null;
 
         //vd($this->ruleInfo);
     }
@@ -183,6 +182,7 @@ class Calculator extends \Tk\Object
 
     /**
      * Return an array with the term min target values
+     * TODO: Is this used to validate placements?
      *
      * @param bool $total
      * @return array
@@ -202,7 +202,8 @@ class Calculator extends \Tk\Object
 
     /**
      * Return an array with the term max target values
-     *
+     * TODO: Is this used to validate placements?
+     * 
      * @param bool $total
      * @return array
      */
@@ -247,7 +248,7 @@ class Calculator extends \Tk\Object
      */
     public function getRuleTotals()
     {
-        return $this->ruleInfo;
+        return $this->ruleTotals;
     }
 
     /**
@@ -282,11 +283,7 @@ class Calculator extends \Tk\Object
         return $this->ruleList;
     }
 
-
-
-
-
-
+    
 
     /**
      * @param Rule $rule

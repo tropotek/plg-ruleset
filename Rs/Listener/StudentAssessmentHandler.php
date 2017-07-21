@@ -38,7 +38,6 @@ class StudentAssessmentHandler implements Subscriber
         $label = $calc->getCourse()->getProfile()->unitLabel;
         $totals = $calc->getRuleTotals();
 
-        //vd($totals);
         /** @var \Rs\Db\Rule $rule */
         foreach ($profileRuleList as $i => $rule) {
             if ($i == 0) {  // Unit totals
