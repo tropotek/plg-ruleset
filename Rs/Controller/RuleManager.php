@@ -46,15 +46,15 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
         $this->table->addCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(clone $editUrl);
-        $this->table->addCell(new \Tk\Table\Cell\Text('label'));
         $this->table->addCell(new \Tk\Table\Cell\Text('description'));
+        $this->table->addCell(new \Tk\Table\Cell\Text('label'));
         $this->table->addCell(new \Tk\Table\Cell\Text('min'));
         $this->table->addCell(new \Tk\Table\Cell\Text('max'));
         $this->table->addCell(new \Tk\Table\Cell\Date('created'));
         $this->table->addCell(new \Tk\Table\Cell\OrderBy('orderBy'));
 
         // Filters
-        $this->table->addFilter(new Field\Input('keywords'))->setLabel('')->setAttr('placeholder', 'Keywords');
+        $this->table->addFilter(new Field\Input('keywords'))->setAttr('placeholder', 'Keywords');
 
         // Actions
         $this->table->addAction(\Tk\Table\Action\ColumnSelect::create()->setDisabled(array('id', 'name'))->addUnselected('created')->addUnselected('description'));
