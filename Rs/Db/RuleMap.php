@@ -28,8 +28,8 @@ class RuleMap extends \App\Db\Mapper
             $this->dbMap->addPropertyMap(new Db\Text('name'));
             $this->dbMap->addPropertyMap(new Db\Text('label'));
             $this->dbMap->addPropertyMap(new Db\Text('description'));
-            $this->dbMap->addPropertyMap(new Db\Float('min'));
-            $this->dbMap->addPropertyMap(new Db\Float('max'));
+            $this->dbMap->addPropertyMap(new Db\Decimal('min'));
+            $this->dbMap->addPropertyMap(new Db\Decimal('max'));
             $this->dbMap->addPropertyMap(new Db\Text('script'));
             $this->dbMap->addPropertyMap(new Db\Integer('orderBy', 'order_by'));
             $this->dbMap->addPropertyMap(new Db\Date('created'));
@@ -49,8 +49,8 @@ class RuleMap extends \App\Db\Mapper
             $this->formMap->addPropertyMap(new Form\Text('name'));
             $this->formMap->addPropertyMap(new Form\Text('label'));
             $this->formMap->addPropertyMap(new Form\Text('description'));
-            $this->formMap->addPropertyMap(new Form\Float('min'));
-            $this->formMap->addPropertyMap(new Form\Float('max'));
+            $this->formMap->addPropertyMap(new Form\Decimal('min'));
+            $this->formMap->addPropertyMap(new Form\Decimal('max'));
             $this->formMap->addPropertyMap(new Form\Text('script'));
         }
         return $this->formMap;
