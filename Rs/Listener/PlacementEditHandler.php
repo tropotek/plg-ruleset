@@ -28,7 +28,7 @@ class PlacementEditHandler implements Subscriber
     public function onControllerInit(\Tk\Event\ControllerEvent $event)
     {
         $controller = $event->getController();
-        if ($controller instanceof \App\Controller\Placement\Edit) {
+        if ($controller instanceof \App\Controller\Placement\Edit || $controller instanceof \App\Controller\Student\Placement\Create) {
             $this->controller = $controller;
         }
     }
@@ -41,15 +41,25 @@ class PlacementEditHandler implements Subscriber
         $form = $event->getForm();
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
+
             $profileRules = \Rs\Calculator::findProfileRuleList($this->placement->getCourse()->profileId);
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
-            $field = $form->addField(new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules)))->
-                setLabel('Assessment Rules');
+            $field = new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules));
+            $field->setLabel('Assessment Rules');
             $field->setValue($placementRules);
 
-            $form->addEventCallback('update', array($this, 'doSubmit'));
-            $form->addEventCallback('save', array($this, 'doSubmit'));
+            if (!$this->controller instanceof \App\Controller\Student\Placement\Create) {
+                $field->setTabGroup('Details');
+                $form->addField($field);
+            }
+
+            if ($form->getField('update'))
+                $form->addEventCallback('update', array($this, 'doSubmit'));
+            if ($form->getField('save'))
+                $form->addEventCallback('save', array($this, 'doSubmit'));
+            if ($form->getField('submitForApproval'))
+                $form->addEventCallback('submitForApproval', array($this, 'doSubmit'));
         }
     }
 
@@ -59,9 +69,16 @@ class PlacementEditHandler implements Subscriber
      */
     public function doSubmit($form, $event)
     {
+        $selectedRules = $form->getFieldValue('rules');
+        if (!is_array($selectedRules)) $selectedRules = array();
+        if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
+            //$selectedRules = \Rs\Calculator::findPlacementRuleList($this->placement, true)->toArray('id');
+            $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getCourse())->toArray('id');
+        }
+
         if($this->placement->getId() && !$form->hasErrors()) {
             \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());
-            foreach ($form->getFieldValue('rules') as $ruleId) {
+            foreach ($selectedRules as $ruleId) {
                 \Rs\Db\RuleMap::create()->addPlacement($ruleId, $this->placement->getVolatileId());
             }
         }

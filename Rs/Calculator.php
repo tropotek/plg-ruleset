@@ -30,8 +30,6 @@ class Calculator extends \Tk\Object
      * @var \Tk\Db\Map\ArrayObject
      */
     protected $ruleList = null;
-    
-    
 
     /**
      * @var array
@@ -92,9 +90,7 @@ class Calculator extends \Tk\Object
         /** @var \App\Db\Placement $placement */
         $placement = $placementList->rewind()->current();
         if ($placement) {
-            $course = $placement->getCourse();
-            $user = $placement->getUser();
-            $calc = new self($course, $user);
+            $calc = new self($placement->getCourse(), $placement->getUser());
             $calc->init();
         }
         return $calc;
@@ -307,10 +303,9 @@ class Calculator extends \Tk\Object
     {
         $list = null;
         if ($placement->getId()) {
-            $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getId()), \Tk\Db\Tool::create('order_by'));
-        } else {
-            // Get default rules based on the company and course object
-            $list = self::findCompanyRuleList($placement->getCompany()->getId(), $placement->getCourse()->getId());
+            $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getVolatileId()), \Tk\Db\Tool::create('order_by'));
+        } else {    // Get default rules based on the company and course object
+            $list = self::findCompanyRuleList($placement->getCompany(), $placement->getCourse());
         }
         return $list;
     }
