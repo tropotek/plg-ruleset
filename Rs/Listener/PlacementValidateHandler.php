@@ -18,7 +18,6 @@ class PlacementValidateHandler implements Subscriber
      */
     public function onAppValidate(\App\Event\PlacementValidEvent $event)
     {
-        vd('Rs::onValidate');
         $placement = $event->getPlacement();
 
         // Check placement rules and totals.
