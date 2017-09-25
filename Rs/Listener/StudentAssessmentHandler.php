@@ -20,7 +20,7 @@ class StudentAssessmentHandler implements Subscriber
         /** @var \App\Ui\StudentAssessment $studentAssessment */
         $studentAssessment = $event->get('studentAssessment');
         $calc = \Rs\Calculator::createFromPlacementList($studentAssessment->getPlacementList());
-
+        if (!$calc) return;
         $profileRuleList = $calc->getRuleList();
         /** @var \App\Db\Placement $placement */
         foreach ($studentAssessment->getPlacementList() as $placement) {
