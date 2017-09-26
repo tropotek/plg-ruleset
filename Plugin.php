@@ -15,6 +15,7 @@ class Plugin extends \Tk\Plugin\Iface
     const ZONE_COURSE_PROFILE = 'profile';
     const ZONE_COURSE = 'course';
 
+
     /**
      * A helper method to get the Plugin instance globally
      *

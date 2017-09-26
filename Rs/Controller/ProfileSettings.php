@@ -45,8 +45,6 @@ class ProfileSettings extends \App\Controller\AdminIface
      */
     public function doDefault(Request $request)
     {
-
-
         $plugin = \Rs\Plugin::getInstance();
         $this->profile = \App\Db\ProfileMap::create()->find($request->get('zoneId'));
 
@@ -108,6 +106,8 @@ class ProfileSettings extends \App\Controller\AdminIface
         
         // Render the form
         $template->insertTemplate($this->form->getId(), $this->form->getParam('renderer')->show()->getTemplate());
+
+
 
         return $template;
     }
