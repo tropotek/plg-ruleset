@@ -8,13 +8,8 @@ use Tk\Event\Dispatcher;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class Plugin extends \Tk\Plugin\Iface
+class Plugin extends \App\Plugin\Iface
 {
-
-    const ZONE_INSTITUTION = 'institution';
-    const ZONE_COURSE_PROFILE = 'profile';
-    const ZONE_COURSE = 'course';
-
 
     /**
      * A helper method to get the Plugin instance globally
@@ -27,23 +22,10 @@ class Plugin extends \Tk\Plugin\Iface
     }
 
     /**
-     * @return \App\PluginApi
-     */
-    public static function getPluginApi()
-    {
-        return \Tk\Config::getInstance()->getPluginApi();
-    }
-
-
-    // ---- \Tk\Plugin\Iface Interface Methods ----
-    
-    
-    /**
      * Init the plugin
      *
      * This is called when the session first registers the plugin to the queue
-     * So it is the first called method after the constructor.....
-     *
+     * So it is the first called method after the constructor...
      */
     function doInit()
     {
@@ -64,7 +46,6 @@ class Plugin extends \Tk\Plugin\Iface
      * installing any DB and settings required to run
      * Will only be called when activating the plugin in the
      * plugin control panel
-     *
      */
     function doActivate()
     {
@@ -147,23 +128,10 @@ class Plugin extends \Tk\Plugin\Iface
     public function getZoneSettingsUrl($zoneName)
     {
         switch ($zoneName) {
-//            case self::ZONE_INSTITUTION:
-//                return \Tk\Uri::create('/ruleset/institutionSettings.html');
             case self::ZONE_COURSE_PROFILE:
                 return \Tk\Uri::create('/ruleset/profileSettings.html');
-//            case self::ZONE_COURSE:
-//                return \Tk\Uri::create('/ruleset/courseSettings.html');
         }
         return null;
-    }
-
-    /**
-     * @return \Tk\Uri
-     */
-    public function getSettingsUrl()
-    {
-        return null;
-        //return \Tk\Uri::create('/ruleset/adminSettings.html');
     }
 
 }
