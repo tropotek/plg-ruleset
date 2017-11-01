@@ -24,15 +24,13 @@ class CategoryClassHandler implements Subscriber
         $plugin = \Rs\Plugin::getInstance();
         /** @var \App\Db\Company $company */
         $company = $event->get('company');
-        /** @var \App\Db\Profile $profile */
-        $profile = $event->get('profile');
-
+        $profile = $company->getProfile();
         $catList = \App\Db\CompanyCategoryMap::create()->findFiltered(array(
-            'profileId' => $profile->getId(),
+            'profileId' => $company->profileId,
             'companyId' => $company->getId()
         ));
 
-        $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.course.profile', $profile->getId());
+        $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.course.profile', $company->profileId);
         $script = $profilePluginData->get('plugin.company.get.class');
         if ($profilePluginData->get('plugin.active') && $script != null) {
             $calcClass = eval($script);
