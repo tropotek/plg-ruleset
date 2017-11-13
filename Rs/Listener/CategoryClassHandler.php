@@ -2,6 +2,7 @@
 namespace Rs\Listener;
 
 use Tk\Event\Subscriber;
+use Rs\Plugin;
 
 /**
  * Class StartupHandler
@@ -21,7 +22,7 @@ class CategoryClassHandler implements Subscriber
      */
     public function onGetCategoryClass(\Tk\Event\Event $event)
     {
-        $plugin = \Rs\Plugin::getInstance();
+        $plugin = Plugin::getInstance();
         /** @var \App\Db\Company $company */
         $company = $event->get('company');
         $profile = $company->getProfile();

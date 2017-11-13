@@ -5,6 +5,7 @@ use Tk\Request;
 use Tk\Form;
 use Tk\Form\Event;
 use Tk\Form\Field;
+use Rs\Plugin;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -45,7 +46,7 @@ class ProfileSettings extends \App\Controller\AdminIface
      */
     public function doDefault(Request $request)
     {
-        $plugin = \Rs\Plugin::getInstance();
+        $plugin = Plugin::getInstance();
         $this->profile = \App\Db\ProfileMap::create()->find($request->get('zoneId'));
 
         $this->getActionPanel()->addButton(\Tk\Ui\Button::create('Rules', \App\Uri::createHomeUrl('/ruleManager.html')->

@@ -2,6 +2,7 @@
 namespace Rs\Listener;
 
 use Tk\Event\Subscriber;
+use Rs\Plugin;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -15,22 +16,22 @@ class SetupHandler implements Subscriber
     public function onRequest(\Tk\Event\GetResponseEvent $event)
     {
         $dispatcher = \App\Factory::getEventDispatcher();
-        $plugin = \Rs\Plugin::getInstance();
+        $plugin = Plugin::getInstance();
 
 //        $institution = \App\Factory::getInstitution();
-//        if($institution && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_INSTITUTION, $institution->getId())) {
+//        if($institution && $plugin->isZonePluginEnabled(Plugin::ZONE_INSTITUTION, $institution->getId())) {
 //            \Tk\Log::debug($plugin->getName() . ': Sample init client plugin stuff: ' . $institution->name);
-//            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(\Rs\Plugin::ZONE_INSTITUTION, $institution->getId()));
+//            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(Plugin::ZONE_INSTITUTION, $institution->getId()));
 //        }
 
 //        $course = \App\Factory::getCourse();
-//        if ($course && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_COURSE, $course->getId())) {
+//        if ($course && $plugin->isZonePluginEnabled(Plugin::ZONE_COURSE, $course->getId())) {
 //            \Tk\Log::debug($plugin->getName() . ': Sample init course plugin stuff: ' . $course->name);
-//            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(\Rs\Plugin::ZONE_COURSE, $course->getId()));
+//            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(Plugin::ZONE_COURSE, $course->getId()));
 //        }
 
         $profile = \App\Factory::getProfile();
-        if ($profile && $plugin->isZonePluginEnabled(\Rs\Plugin::ZONE_COURSE_PROFILE, $profile->getId())) {
+        if ($profile && $plugin->isZonePluginEnabled(Plugin::ZONE_COURSE_PROFILE, $profile->getId())) {
             //\Tk\Log::debug($plugin->getName() . ': Sample init course profile plugin stuff: ' . $profile->name);
             $dispatcher->addSubscriber(new \Rs\Listener\CategoryClassHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementEditHandler());
