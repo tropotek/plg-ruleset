@@ -55,7 +55,7 @@ class ProfileSettings extends \App\Controller\AdminIface
         $this->data = \Tk\Db\Data::create($plugin->getName() . '.course.profile', $this->profile->getId());
 
         $this->form = \App\Factory::createForm('formEdit');
-        $this->form->setParam('renderer', \App\Factory::createFormRenderer($this->form));
+        $this->form->setRenderer(\App\Factory::createFormRenderer($this->form));
 
         $this->form->addField(new Field\Textarea('plugin.company.get.class'))->setLabel('Company Category Class')->
             setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method')->
@@ -106,7 +106,7 @@ class ProfileSettings extends \App\Controller\AdminIface
         $template = parent::show();
         
         // Render the form
-        $template->insertTemplate($this->form->getId(), $this->form->getParam('renderer')->show()->getTemplate());
+        $template->insertTemplate($this->form->getId(), $this->form->getRenderer()->show()->getTemplate());
 
 
 
