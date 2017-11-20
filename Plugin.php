@@ -127,10 +127,10 @@ class Plugin extends \App\Plugin\Iface
      */
     public function getZoneSettingsUrl($zoneName)
     {
-        switch ($zoneName) {
-            case self::ZONE_COURSE_PROFILE:
-                return \Tk\Uri::create('/ruleset/profileSettings.html');
-        }
+//        switch ($zoneName) {
+//            case self::ZONE_COURSE_PROFILE:
+//                return \Tk\Uri::create('/ruleset/profileSettings.html');
+//        }
         return null;
     }
 

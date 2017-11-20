@@ -48,6 +48,8 @@ class ProfileSettings extends \App\Controller\AdminIface
     {
         $plugin = Plugin::getInstance();
         $this->profile = \App\Db\ProfileMap::create()->find($request->get('zoneId'));
+        if (!$this->profile)
+            $this->profile = \App\Db\ProfileMap::create()->find($request->get('profileId'));
 
         $this->getActionPanel()->addButton(\Tk\Ui\Button::create('Rules', \App\Uri::createHomeUrl('/ruleManager.html')->
             set('profileId', $this->profile->getId()), 'fa fa-list-alt'));
