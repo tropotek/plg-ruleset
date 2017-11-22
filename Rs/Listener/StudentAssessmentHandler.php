@@ -41,16 +41,22 @@ class StudentAssessmentHandler implements Subscriber
         /** @var \Rs\Db\Rule $rule */
         foreach ($profileRuleList as $i => $rule) {
             if ($i == 0) {  // Unit totals
-                $studentAssessment->addTotal('Pending', $label, $totals['total']['pending']);
+                if (!$studentAssessment->isMinMode())
+                    $studentAssessment->addTotal('Pending', $label, $totals['total']['pending']);
                 $studentAssessment->addTotal('Completed', $label, $totals['total']['completed'], $this->getValidCss($totals['total']['validCompleted']), $totals['total']['validCompletedMsg']);
-                $studentAssessment->addTotal('Min Targets', $label,  $calc->getCourse()->getProfile()->minUnitsTotal);
-                $studentAssessment->addTotal('Max Targets', $label, $calc->getCourse()->getProfile()->maxUnitsTotal);
+                //if (!$studentAssessment->isMinMode()) {
+                    $studentAssessment->addTotal('Min Targets', $label, $calc->getCourse()->getProfile()->minUnitsTotal);
+                    $studentAssessment->addTotal('Max Targets', $label, $calc->getCourse()->getProfile()->maxUnitsTotal);
+                //}
             }
             $t = $totals[$rule->getLabel()];
-            $studentAssessment->addTotal('Pending', $rule->getLabel(), $t['pending']);
+            if (!$studentAssessment->isMinMode())
+                $studentAssessment->addTotal('Pending', $rule->getLabel(), $t['pending']);
             $studentAssessment->addTotal('Completed', $rule->getLabel(), $t['completed'], $this->getValidCss($t['validCompleted']), $t['validCompletedMsg']);
-            $studentAssessment->addTotal('Min Targets', $rule->getLabel(),  $rule->min);
-            $studentAssessment->addTotal('Max Targets', $rule->getLabel(), $rule->max);
+            //if (!$studentAssessment->isMinMode()) {
+                $studentAssessment->addTotal('Min Targets', $rule->getLabel(), $rule->min);
+                $studentAssessment->addTotal('Max Targets', $rule->getLabel(), $rule->max);
+            //}
         }
 
     }
