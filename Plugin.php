@@ -40,12 +40,15 @@ class Plugin extends \App\Plugin\Iface
         $dispatcher = \Tk\Config::getInstance()->getEventDispatcher();
         $dispatcher->addSubscriber(new \Rs\Listener\SetupHandler());
     }
-    
+
     /**
      * Activate the plugin, essentially
      * installing any DB and settings required to run
      * Will only be called when activating the plugin in the
      * plugin control panel
+     *
+     * @throws \Tk\Exception
+     * @throws \Exception
      */
     function doActivate()
     {
@@ -54,6 +57,7 @@ class Plugin extends \App\Plugin\Iface
         $db = \App\Factory::getDb();
 
         $migrate = new \Tk\Util\SqlMigrate($db);
+        /** @var \Tk\Util\SqlMigrate $migrate */
         $migrate->setTempPath($config->getTempPath());
         $migrate->migrate(dirname(__FILE__) . '/sql');
 
@@ -73,6 +77,9 @@ class Plugin extends \App\Plugin\Iface
      *
      * @param string $oldVersion
      * @param string $newVersion
+     * @throws \Exception
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      */
     function doUpgrade($oldVersion, $newVersion) {
         // Init Plugin Settings
@@ -92,6 +99,7 @@ class Plugin extends \App\Plugin\Iface
      * Deactivate the plugin removing any DB data and settings
      * Will only be called when deactivating the plugin in the
      * plugin control panel
+     * @throws \Tk\Db\Exception
      */
     function doDeactivate()
     {

@@ -86,7 +86,6 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     public function evaluate($course, $company)
     {
         // TODO: place any global objects required for eval() here.
-
         if ($this->script) {
             return eval($this->script);
         }

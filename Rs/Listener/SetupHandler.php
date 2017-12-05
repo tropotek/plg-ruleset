@@ -38,6 +38,7 @@ class SetupHandler implements Subscriber
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementEditHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementValidateHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\StudentAssessmentHandler());
+            $dispatcher->addSubscriber(new \Rs\Listener\AssessmentUnitsHandler());
         }
 
     }

@@ -16,7 +16,6 @@ class RuleMap extends \App\Db\Mapper
 {
 
     /**
-     *
      * @return \Tk\DataMap\DataMap
      */
     public function getDbMap()
@@ -125,7 +124,7 @@ class RuleMap extends \App\Db\Mapper
     }
 
 
-    // TODO: ------------------------------------------------------
+    // ------------------------------------------------------
 
     /**
      * @param int $ruleId
@@ -134,9 +133,9 @@ class RuleMap extends \App\Db\Mapper
      */
     public function hasPlacement($ruleId, $placementId)
     {
-        $sql = sprintf('SELECT * FROM %s WHERE rule_id = %d AND placement_id = %d',
-            $this->quoteTable('rule_has_placement'), (int)$ruleId, (int)$placementId);
-        return ($this->getDb()->query($sql)->rowCount() > 0);
+        $stm = $this->getDb()->prepare('SELECT * FROM rule_has_placement WHERE rule_id = ? AND placement_id = ?');
+        $stm->execute($ruleId, $placementId);
+        return ($stm->rowCount() > 0);
     }
 
     /**
@@ -156,9 +155,8 @@ class RuleMap extends \App\Db\Mapper
         if ($where) {
             $where = substr($where, 0, -4);
         }
-        $query = sprintf('DELETE FROM %s WHERE %s',
-            $this->quoteTable('rule_has_placement'), $where);
-        $this->getDb()->exec($query);
+        $stm = $this->getDb()->prepare('DELETE FROM rule_has_placement WHERE ' . $where);
+        $stm->execute();
     }
 
     /**
@@ -168,9 +166,8 @@ class RuleMap extends \App\Db\Mapper
     public function addPlacement($ruleId, $placementId)
     {
         if ($this->hasPlacement($ruleId, $placementId)) return;
-        $query = sprintf('INSERT INTO %s (rule_id, placement_id) VALUES (%d, %d) ',
-            $this->quoteTable('rule_has_placement'), (int)$ruleId, (int)$placementId);
-        $this->getDb()->exec($query);
+        $stm = $this->getDb()->prepare('INSERT INTO rule_has_placement (rule_id, placement_id) VALUES (?, ?) ');
+        $stm->execute($ruleId, $placementId);
     }
 
 }

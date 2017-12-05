@@ -43,20 +43,20 @@ class StudentAssessmentHandler implements Subscriber
             if ($i == 0) {  // Unit totals
                 if (!$studentAssessment->isMinMode())
                     $studentAssessment->addTotal('Pending', $label, $totals['total']['pending']);
-                $studentAssessment->addTotal('Completed', $label, $totals['total']['completed'], $this->getValidCss($totals['total']['validCompleted']), $totals['total']['validCompletedMsg']);
-                //if (!$studentAssessment->isMinMode()) {
+                $studentAssessment->addTotal('Completed', $label, $totals['total']['completed']);
+                if (!$studentAssessment->isMinMode()) {
                     $studentAssessment->addTotal('Min Targets', $label, $calc->getCourse()->getProfile()->minUnitsTotal);
                     $studentAssessment->addTotal('Max Targets', $label, $calc->getCourse()->getProfile()->maxUnitsTotal);
-                //}
+                }
             }
             $t = $totals[$rule->getLabel()];
             if (!$studentAssessment->isMinMode())
                 $studentAssessment->addTotal('Pending', $rule->getLabel(), $t['pending']);
-            $studentAssessment->addTotal('Completed', $rule->getLabel(), $t['completed'], $this->getValidCss($t['validCompleted']), $t['validCompletedMsg']);
-            //if (!$studentAssessment->isMinMode()) {
+            $studentAssessment->addTotal('Completed', $rule->getLabel(), $t['completed']);
+            if (!$studentAssessment->isMinMode()) {
                 $studentAssessment->addTotal('Min Targets', $rule->getLabel(), $rule->min);
                 $studentAssessment->addTotal('Max Targets', $rule->getLabel(), $rule->max);
-            //}
+            }
         }
 
     }

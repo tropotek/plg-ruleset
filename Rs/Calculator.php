@@ -279,8 +279,6 @@ class Calculator extends \Tk\Object
         return $this->ruleList;
     }
 
-    
-
     /**
      * @param Rule $rule
      * @param \Tk\Db\Map\ArrayObject $ruleList

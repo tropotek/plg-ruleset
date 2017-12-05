@@ -5,8 +5,6 @@ use Tk\Event\Subscriber;
 use Rs\Plugin;
 
 /**
- * Class StartupHandler
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -23,6 +21,7 @@ class CategoryClassHandler implements Subscriber
     public function onGetCategoryClass(\Tk\Event\Event $event)
     {
         $plugin = Plugin::getInstance();
+        // NOTE: These vars are for the eval() function for finding the class value
         /** @var \App\Db\Company $company */
         $company = $event->get('company');
         $profile = $company->getProfile();
