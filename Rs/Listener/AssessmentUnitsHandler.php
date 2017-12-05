@@ -19,7 +19,7 @@ class AssessmentUnitsHandler implements Subscriber
     {
         /** @var \App\Ui\StudentAssessment $studentAssessment */
         $studentAssessment = $event->get('studentAssessment');
-        $unitCols = $studentAssessment->getUnitCols();
+        //$unitCols = $studentAssessment->getUnitCols();
 
         $calc = \Rs\Calculator::createFromPlacementList($studentAssessment->getPlacementList());
         if (!$calc) return;
