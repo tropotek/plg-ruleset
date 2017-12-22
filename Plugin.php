@@ -54,7 +54,7 @@ class Plugin extends \App\Plugin\Iface
     {
         // Init Plugin Settings
         $config = \Tk\Config::getInstance();
-        $db = \App\Factory::getDb();
+        $db = $this->getConfig()->getDb();
 
         $migrate = new \Tk\Util\SqlMigrate($db);
         /** @var \Tk\Util\SqlMigrate $migrate */
@@ -83,11 +83,10 @@ class Plugin extends \App\Plugin\Iface
      */
     function doUpgrade($oldVersion, $newVersion) {
         // Init Plugin Settings
-        $config = \Tk\Config::getInstance();
-        $db = \App\Factory::getDb();
+        $db = $this->getConfig()->getDb();
 
         $migrate = new \Tk\Util\SqlMigrate($db);
-        $migrate->setTempPath($config->getTempPath());
+        $migrate->setTempPath($this->getConfig()->getTempPath());
         $migrate->migrate(dirname(__FILE__) . '/sql');
 
 //        if (version_compare($oldVersion, '1.0.1', '<')) { ; }
@@ -104,7 +103,7 @@ class Plugin extends \App\Plugin\Iface
     function doDeactivate()
     {
         // TODO: Maybe we do not delete anything to ensure data is not lost??????
-        $db = \App\Factory::getDb();
+        $db = $this->getConfig()->getDb();
 
         // Clear the data table of all plugin data
         $sql = sprintf('DELETE FROM %s WHERE %s LIKE %s', $db->quoteParameter(\Tk\Db\Data::$DB_TABLE), $db->quoteParameter('fkey'),

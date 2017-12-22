@@ -56,8 +56,8 @@ class ProfileSettings extends \App\Controller\AdminIface
 
         $this->data = \Tk\Db\Data::create($plugin->getName() . '.course.profile', $this->profile->getId());
 
-        $this->form = \App\Factory::createForm('formEdit');
-        $this->form->setRenderer(\App\Factory::createFormRenderer($this->form));
+        $this->form = \App\Config::getInstance()->createForm('formEdit');
+        $this->form->setRenderer(\App\Config::getInstance()->createFormRenderer($this->form));
 
         $this->form->addField(new Field\Textarea('plugin.company.get.class'))->setLabel('Company Category Class')->
             setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method')->
@@ -68,7 +68,7 @@ class ProfileSettings extends \App\Controller\AdminIface
         
         $this->form->addField(new Event\Button('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Button('save', array($this, 'doSubmit')));
-        $this->form->addField(new Event\LinkButton('cancel', \App\Factory::getCrumbs()->getBackUrl()));
+        $this->form->addField(new Event\LinkButton('cancel', \Uni\Ui\Crumbs::getInstance()->getBackUrl()));
 
         $this->form->load($this->data->toArray());
         $this->form->execute();

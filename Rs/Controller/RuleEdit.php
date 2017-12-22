@@ -41,7 +41,7 @@ class RuleEdit extends \App\Controller\AdminEditIface
      */
     public function doDefault(Request $request)
     {
-        $this->profile = \App\Factory::getProfile();
+        $this->profile = \App\Config::getInstance()->getProfile();
 
         if (!$this->rule) {
             $this->rule = new \Rs\Db\Rule();
@@ -63,8 +63,8 @@ class RuleEdit extends \App\Controller\AdminEditIface
      */
     protected function buildForm() 
     {
-        $this->form = \App\Factory::createForm('ruleEdit');
-        $this->form->setRenderer(\App\Factory::createFormRenderer($this->form));
+        $this->form = \App\Config::getInstance()->createForm('ruleEdit');
+        $this->form->setRenderer(\App\Config::getInstance()->createFormRenderer($this->form));
 
         $this->form->addField(new Field\Input('name'));
         $this->form->addField(new Field\Input('label'));
@@ -76,7 +76,7 @@ class RuleEdit extends \App\Controller\AdminEditIface
 
         $this->form->addField(new Event\Button('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Button('save', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Link('cancel', \App\Factory::getCrumbs()->getBackUrl()));
+        $this->form->addField(new Event\Link('cancel', \Uni\Ui\Crumbs::getInstance()->getBackUrl()));
     }
 
     /**
@@ -97,7 +97,7 @@ class RuleEdit extends \App\Controller\AdminEditIface
 
         \Tk\Alert::addSuccess('Record saved!');
         if ($form->getTriggeredEvent()->getName() == 'update') {
-            \App\Factory::getCrumbs()->getBackUrl()->redirect();
+            \Uni\Ui\Crumbs::getInstance()->getBackUrl()->redirect();
         }
         \Tk\Uri::create()->set('ruleId', $this->rule->getId())->redirect();
     }
