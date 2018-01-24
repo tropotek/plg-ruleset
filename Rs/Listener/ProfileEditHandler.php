@@ -18,34 +18,18 @@ class ProfileEditHandler implements Subscriber
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {
-        /** @var \App\Controller\Student\CourseDashboard $controller */
+        /** @var \App\Controller\Profile\Edit $controller */
         $controller = $event->get('controller');
-        if ($controller instanceof \App\Controller\Student\CourseDashboard) {
-            if ($controller->getCourse()) {
-                $table = $controller->getPlacementList()->getTable();
+        if ($controller instanceof \App\Controller\Profile\Edit) {
 
-                $css = <<<CSS
-.student-placement-table .mCredit {
-    clear: left;
-    float: left;
-  }
-CSS;
-                $table->getRenderer()->getTemplate()->appendCss($css);
-
-                $table->addCellBefore($table->findCell('actions'), new \Tk\Table\Cell\Text('credit'))->setOnCellHtml(function ($cell, $obj, $html) {
-                    /** @var \Tk\Table\Cell\Iface $cell */
-                    /** @var \App\Db\Placement $obj */
-                    $list = \Rs\Calculator::findPlacementRuleList($obj);
-                    $html = '';
-                    foreach ($list as $rule) {
-                        $html .= sprintf('<span class="rule"><i class="fa fa-check text-success"></i> <span>%s</span></span> | ', $rule->getLabel());
-                    }
-                    if ($html) {
-                        $html = '<div class="assessment">' . rtrim($html, ' | ') . '</div>';
-                    }
-                    return $html;
-                });
+            if ($controller->getUser()->isStaff() && $controller->getProfile()) {
+                /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
+                $actionPanel = $controller->getActionPanel();
+                $actionPanel->addButton(\Tk\Ui\Button::create('Placement Rules',
+                    \App\Uri::createHomeUrl('/ruleSettings.html')
+                        ->set('profileId', $controller->getProfile()->getId()), 'fa fa-check'));
             }
+
         }
     }
 

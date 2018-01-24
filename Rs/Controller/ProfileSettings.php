@@ -43,6 +43,7 @@ class ProfileSettings extends \App\Controller\AdminIface
      * doDefault
      *
      * @param Request $request
+     * @throws \Tk\Exception
      */
     public function doDefault(Request $request)
     {

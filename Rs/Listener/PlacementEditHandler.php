@@ -35,6 +35,7 @@ class PlacementEditHandler implements Subscriber
 
     /**
      * @param \Tk\Event\FormEvent $event
+     * @throws \Tk\Form\Exception
      */
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
