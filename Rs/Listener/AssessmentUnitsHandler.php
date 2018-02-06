@@ -32,7 +32,8 @@ class AssessmentUnitsHandler implements Subscriber
             $t = $totals[$rule->getLabel()];
             $studentAssessment->addTotal('Total', $rule->getLabel(), $t['total'], $this->getValidCss($t['validTotal']), $t['validMsg']);
         }
-        $studentAssessment->addTotal('Total', $label, $totals['total']['total'], $this->getValidCss($totals['total']['validTotal']), $totals['total']['validMsg']);
+        $studentAssessment->addTotal('Total', $label, $totals['total']['total'],
+            $this->getValidCss($totals['total']['validTotal']), $totals['total']['validMsg']);
 
         $event->stopPropagation();
     }

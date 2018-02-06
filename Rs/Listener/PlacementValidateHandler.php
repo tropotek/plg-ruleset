@@ -15,10 +15,18 @@ class PlacementValidateHandler implements Subscriber
     /**
      *
      * @param \App\Event\PlacementValidEvent $event
+     * @throws \Tk\Exception
      */
     public function onAppValidate(\App\Event\PlacementValidEvent $event)
     {
         $placement = $event->getPlacement();
+        if (!$placement) throw new \Tk\Exception('Invalid placement, please contact the site administrator.');
+
+        $profileData = \Tk\Db\Data::create(\Rs\Plugin::getInstance()->getName() . '.course.profile', $placement->getCourse()->profileId);
+
+        if (!$placement->getPlacementType()->autoApproveHistoric && $placement->historic) {
+            return;
+        }
 
         // Check placement rules and totals.
         $list = \App\Db\PlacementMap::create()->findFiltered(array(
@@ -30,7 +38,6 @@ class PlacementValidateHandler implements Subscriber
         //   The calculator may need to be refactored also
         $calc = \Rs\Calculator::createFromPlacementList($list);
         $ruleInfo = $calc->getRuleTotals();
-        //vd($ruleInfo);
 
         // Check rules for the placement
         $placeRules = \Rs\Calculator::findPlacementRuleList($placement);
@@ -42,7 +49,7 @@ class PlacementValidateHandler implements Subscriber
         foreach ($placeRules as $rule) {
             $rulesIdList[] = $rule->id;
         }
-        //vd($ruleInfo, $placeRules, $rulesIdList);
+
         foreach ($ruleInfo as $label => $info) {
             if ($label == 'Total' || empty($info['assessmentRule'])) continue;
             if (!in_array($info['assessmentRule']->id, $rulesIdList)) continue;  // Restrict checking to only the placement rules.

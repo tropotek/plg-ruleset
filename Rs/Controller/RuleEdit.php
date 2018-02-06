@@ -33,11 +33,13 @@ class RuleEdit extends \App\Controller\AdminEditIface
     public function __construct()
     {
         parent::__construct();
-        $this->setPageTitle('Placement Rule Edit');
+        $this->setPageTitle('Rule Edit');
     }
 
     /**
      * @param Request $request
+     * @throws \Tk\Exception
+     * @throws \Tk\Form\Exception
      */
     public function doDefault(Request $request)
     {
@@ -60,6 +62,7 @@ class RuleEdit extends \App\Controller\AdminEditIface
 
     /**
      *
+     * @throws \Tk\Form\Exception
      */
     protected function buildForm() 
     {
@@ -127,7 +130,7 @@ class RuleEdit extends \App\Controller\AdminEditIface
     
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h4 class="panel-title"><i class="fa fa-folder-open-o"></i> <span var="panel-title">Company Category Edit</span></h4>
+      <h4 class="panel-title"><i class="fa fa-check"></i> <span var="panel-title">Rule Edit</span></h4>
     </div>
     <div class="panel-body">
       <div var="form"></div>

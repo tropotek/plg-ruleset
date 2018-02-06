@@ -36,13 +36,14 @@ class ProfileSettings extends \App\Controller\AdminIface
     public function __construct()
     {
         parent::__construct();
-        $this->setPageTitle('Placement Rules Settings');
+        $this->setPageTitle('Rule Settings');
     }
 
     /**
      * doDefault
      *
      * @param Request $request
+     * @throws Form\Exception
      * @throws \Tk\Exception
      */
     public function doDefault(Request $request)
@@ -53,7 +54,7 @@ class ProfileSettings extends \App\Controller\AdminIface
             $this->profile = \App\Db\ProfileMap::create()->find($request->get('profileId'));
 
         $this->getActionPanel()->addButton(\Tk\Ui\Button::create('Rules', \App\Uri::createHomeUrl('/ruleManager.html')->
-            set('profileId', $this->profile->getId()), 'fa fa-list-alt'));
+            set('profileId', $this->profile->getId()), 'fa fa-check'));
 
         $this->data = \Tk\Db\Data::create($plugin->getName() . '.course.profile', $this->profile->getId());
 
@@ -63,8 +64,9 @@ class ProfileSettings extends \App\Controller\AdminIface
         $this->form->addField(new Field\Textarea('plugin.company.get.class'))->setLabel('Company Category Class')->
             setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method')->
             addCss('tkCode')->setRequired(true);
+
         $this->form->addField(new Field\Checkbox('plugin.active'))->
-            setNotes('Deactivate the rules and auto approval system for this course profile.')->
+            setNotes('Enable/disable the rules and auto approval system for this course profile.')->
             setLabel('Active')->setRequired(true);
         
         $this->form->addField(new Event\Button('update', array($this, 'doSubmit')));

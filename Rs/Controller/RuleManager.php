@@ -24,12 +24,12 @@ class RuleManager extends \App\Controller\AdminManagerIface
     public function __construct()
     {
         parent::__construct();
-        $this->setPageTitle('Placement Rule Manager');
+        $this->setPageTitle('Rule Manager');
     }
 
     /**
      * @param Request $request
-     * @throws \Tk\Exception
+     * @throws \Tk\Form\Exception
      */
     public function doDefault(Request $request)
     {
@@ -39,7 +39,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
         $editUrl = \App\Uri::createHomeUrl('/ruleEdit.html')->set('profileId', $this->profile->getId());
 
-        $this->getActionPanel()->addButton(\Tk\Ui\Button::create('New Rule', $editUrl, 'fa fa-list-alt fa-add-action'));
+        $this->getActionPanel()->addButton(\Tk\Ui\Button::create('New Rule', $editUrl, 'fa fa-check fa-add-action'));
 
         $this->table = \App\Config::getInstance()->createTable(\Tk\Object::basename($this).'ruleList');
         $this->table->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
@@ -57,14 +57,17 @@ class RuleManager extends \App\Controller\AdminManagerIface
         $this->table->addFilter(new Field\Input('keywords'))->setAttr('placeholder', 'Keywords');
 
         // Actions
-        $this->table->addAction(\Tk\Table\Action\ColumnSelect::create()->setDisabled(array('id', 'name'))->addUnselected('created')->addUnselected('description'));
+        $this->table->addAction(\Tk\Table\Action\ColumnSelect::create()->setDisabled(array('id', 'name'))
+            ->addUnselected('created')->addUnselected('description'));
         $this->table->addAction(\Tk\Table\Action\Csv::create());
         $this->table->addAction(\Tk\Table\Action\Delete::create());
 
         $this->table->setList($this->getList());
     }
 
-
+    /**
+     * @return \Rs\Db\Rule[]|\Tk\Db\Map\ArrayObject
+     */
     protected function getList()
     {
         $filter = $this->table->getFilterValues();
@@ -96,7 +99,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h4 class="panel-title"><i class="fa fa-folder-open-o"></i> Company Categories</h4>
+      <h4 class="panel-title"><i class="fa fa-check"></i> Rule Manager</h4>
     </div>
     <div class="panel-body">
       <div var="table"></div>
