@@ -39,6 +39,7 @@ class PlacementEditHandler implements Subscriber
      */
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
+        /** @var \Tk\Form $form */
         $form = $event->getForm();
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
@@ -47,13 +48,25 @@ class PlacementEditHandler implements Subscriber
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
             $field = new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules));
-            $field->setLabel('Assessment Rules');
             $field->setValue($placementRules);
 
-            if (!$this->controller instanceof \App\Controller\Student\Placement\Create) {
+            if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
+                $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getCourse());
+                $html = '';
+                foreach ($companyRules as $rule) {
+                    $html .= sprintf('<li>%s</li>', $rule->name) . "\n";
+                }
+                $html = rtrim($html , "\n");
+                if ($html) $html = sprintf('<ul class="assessment-credit">%s</ul>', $html);
+
+                $field = new \Tk\Form\Field\Html('rules', $html);
+                $form->addFieldAfter('units', $field);
+
+            } else {
                 $field->setTabGroup('Details');
                 $form->addField($field);
             }
+            $field->setLabel('Assessment Credit');
 
             if ($form->getField('update'))
                 $form->addEventCallback('update', array($this, 'doSubmit'));
@@ -61,6 +74,19 @@ class PlacementEditHandler implements Subscriber
                 $form->addEventCallback('save', array($this, 'doSubmit'));
             if ($form->getField('submitForApproval'))
                 $form->addEventCallback('submitForApproval', array($this, 'doSubmit'));
+
+            // TODO: style the list to look nice....?
+            $css = <<<CSS
+ul.assessment-credit {
+  padding-left: 15px;
+}
+ul.assessment-credit li {
+  font-weight: 600;
+}
+CSS;
+
+            $this->controller->getTemplate()->appendCss($css);
+
         }
     }
 
@@ -73,7 +99,6 @@ class PlacementEditHandler implements Subscriber
         $selectedRules = $form->getFieldValue('rules');
         if (!is_array($selectedRules)) $selectedRules = array();
         if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
-            //$selectedRules = \Rs\Calculator::findPlacementRuleList($this->placement, true)->toArray('id');
             $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getCourse())->toArray('id');
         }
 
