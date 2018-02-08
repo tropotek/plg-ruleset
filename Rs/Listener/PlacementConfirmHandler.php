@@ -39,13 +39,11 @@ class PlacementConfirmHandler implements Subscriber
      */
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
-        vd();
         /** @var \Tk\Form $form */
         $form = $event->getForm();
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
 
-vd($form->getField('submitForApproval'));
             if ($form->getField('submitForApproval'))
                 $form->addEventCallback('submitForApproval', array($this, 'doSubmit'));
 
@@ -59,9 +57,6 @@ vd($form->getField('submitForApproval'));
     public function doSubmit($form, $event)
     {
         $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getCourse())->toArray('id');
-
-vd($selectedRules);
-
         if($this->placement->getId() && !$form->hasErrors()) {
             \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());
             foreach ($selectedRules as $ruleId) {
