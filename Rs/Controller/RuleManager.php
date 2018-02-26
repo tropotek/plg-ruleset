@@ -39,7 +39,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
         $editUrl = \App\Uri::createHomeUrl('/ruleEdit.html')->set('profileId', $this->profile->getId());
 
-        $this->getActionPanel()->addButton(\Tk\Ui\Button::create('New Rule', $editUrl, 'fa fa-check fa-add-action'));
+        $this->getActionPanel()->add(\Tk\Ui\Button::create('New Rule', $editUrl, 'fa fa-check fa-add-action'));
 
         $this->table = \App\Config::getInstance()->createTable(\Tk\Object::basename($this).'ruleList');
         $this->table->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
