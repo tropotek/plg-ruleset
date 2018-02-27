@@ -108,9 +108,9 @@ class Calculator extends \Tk\Object
         /* @var $placement \App\Db\Placement */
         foreach ($this->placementList as $placement) {
             $placeRules = self::findPlacementRuleList($placement);
-            $units = 0;
-            if ($placement->getPlacementType() && $placement->getPlacementType()->gradable) {
-                $units = $placement->units;
+            $units = $placement->units;
+            if (!$placement->getPlacementType()->gradable) {
+                $units = 0;
             }
 
             /** @var Rule $rule */
@@ -143,6 +143,7 @@ class Calculator extends \Tk\Object
             }
             $termTot += $units;
         }
+
         $this->totals = $totals;
 
         if (count($totals)) {
