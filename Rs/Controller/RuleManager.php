@@ -72,7 +72,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
     {
         $filter = $this->table->getFilterValues();
         $filter['profileId'] = $this->profile->getId();
-        return \Rs\Db\RuleMap::create()->findFiltered($filter, $this->table->makeDbTool('a.order_by'));
+        return \Rs\Db\RuleMap::create()->findFiltered($filter, $this->table->getTool('a.order_by'));
     }
 
     /**
