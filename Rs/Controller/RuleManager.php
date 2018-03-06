@@ -29,6 +29,8 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
     /**
      * @param Request $request
+     * @throws \Exception
+     * @throws \Tk\Db\Exception
      * @throws \Tk\Form\Exception
      */
     public function doDefault(Request $request)
@@ -67,6 +69,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
     /**
      * @return \Rs\Db\Rule[]|\Tk\Db\Map\ArrayObject
+     * @throws \Exception
      */
     protected function getList()
     {
