@@ -9,6 +9,7 @@ if ($composer) {
 
 /** @var \Tk\Routing\RouteCollection $routes */
 $routes = $config['site.routes'];
+if (!$routes) return;
 
 $params = array('role' => 'admin');
 //$routes->add('Rules Admin Settings', new \Tk\Routing\Route('/ruleset/adminSettings.html', 'Rs\Controller\SystemSettings::doDefault', $params));
