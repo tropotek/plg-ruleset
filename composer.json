@@ -1,5 +1,5 @@
 {
-    "name": "ttek-plg/ems-ruleset",
+    "name": "ttek-plg/plg-ruleset",
     "type": "ttek-plugin",
     "description": "This plugin allows for rules to be attached to placement types and gives auto approve ability when students submit placements.",
     "keywords":  [
@@ -26,10 +26,12 @@
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     },
     "require":  {
+        "ttek/tk-framework": "~2.0",
+        "ttek/tk-uni": "~2.0",
         "ttek/tk-installers": "~2.0"
     }
 }

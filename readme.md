@@ -1,6 +1,6 @@
 # EMS III Placement RuleSet
 
-__Project:__ [ttek-plg/ems-ruleset](http://packagist.org/packages/ttek-plg/ems-ruleset)  
+__Project:__ [ttek-plg/plg-ruleset](http://packagist.org/packages/ttek-plg/plg-ruleset)  
 __Published:__ 01 July 2017
 __Web:__ <http://www.tropotek.com/>  
 __Authors:__ Michael Mifsud <http://www.tropotek.com/>  
@@ -16,23 +16,23 @@ auto approve ability when students submit placements.
 
 ## Installation
 
-Available on Packagist ([ttek-plg/ems-ruleset](http://packagist.org/packages/ttek-plg/ems-ruleset))
+Available on Packagist ([ttek-plg/plg-ruleset](http://packagist.org/packages/ttek-plg/plg-ruleset))
 and as such installable via [Composer](http://getcomposer.org/).
 
 ```bash
-# composer require ttek-plg/ems-ruleset
+# composer require ttek-plg/plg-ruleset
 ```
 
 Or add the following to your composer.json file:
 
 ```json
 {
-  "ttek-plg/ems-ruleset": "~1.0"
+  "ttek-plg/plg-ruleset": "~1.0"
 }
 ```
 
 If you do not use Composer, you can grab the code from GitHub, and use any
-PSR-0 compatible autoloader (e.g. the [ems-ruleset](https://github.com/tropotek/ems-ruleset))
+PSR-0 compatible autoloader (e.g. the [ems-ruleset](https://github.com/tropotek/plg-ruleset))
 to load the classes.
 
 ## Introduction
