@@ -32,7 +32,7 @@ Or add the following to your composer.json file:
 ```
 
 If you do not use Composer, you can grab the code from GitHub, and use any
-PSR-0 compatible autoloader (e.g. the [ems-ruleset](https://github.com/tropotek/plg-ruleset))
+PSR-0 compatible autoloader (e.g. the [plg-ruleset](https://github.com/tropotek/plg-ruleset))
 to load the classes.
 
 ## Introduction
