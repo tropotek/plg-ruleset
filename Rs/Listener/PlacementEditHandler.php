@@ -44,14 +44,14 @@ class PlacementEditHandler implements Subscriber
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
 
-            $profileRules = \Rs\Calculator::findProfileRuleList($this->placement->getCourse()->profileId);
+            $profileRules = \Rs\Calculator::findProfileRuleList($this->placement->getSubject()->profileId);
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
             $field = new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules));
             $field->setValue($placementRules);
 
             if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
-                $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getCourse());
+                $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject());
                 $html = '';
                 foreach ($companyRules as $rule) {
                     $html .= sprintf('<li>%s</li>', $rule->name) . "\n";
@@ -99,7 +99,7 @@ CSS;
         $selectedRules = $form->getFieldValue('rules');
         if (!is_array($selectedRules)) $selectedRules = array();
         if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
-            $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getCourse())->toArray('id');
+            $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject())->toArray('id');
         }
 
         if($this->placement->getId() && !$form->hasErrors()) {

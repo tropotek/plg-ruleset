@@ -57,7 +57,7 @@ class ProfileSettings extends \App\Controller\AdminIface
         $this->getActionPanel()->add(\Tk\Ui\Button::create('Rules', \App\Uri::createHomeUrl('/ruleManager.html')->
             set('profileId', $this->profile->getId()), 'fa fa-check'));
 
-        $this->data = \Tk\Db\Data::create($plugin->getName() . '.course.profile', $this->profile->getId());
+        $this->data = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $this->profile->getId());
 
         $this->form = \App\Config::getInstance()->createForm('formEdit');
         $this->form->setRenderer(\App\Config::getInstance()->createFormRenderer($this->form));
@@ -67,7 +67,7 @@ class ProfileSettings extends \App\Controller\AdminIface
             addCss('tkCode')->setRequired(true);
 
         $this->form->addField(new Field\Checkbox('plugin.active'))->
-            setNotes('Enable/disable the rules and auto approval system for this course profile.')->
+            setNotes('Enable/disable the rules and auto approval system for this profile.')->
             setLabel('Active')->setRequired(true);
         
         $this->form->addField(new Event\Button('update', array($this, 'doSubmit')));
@@ -97,7 +97,7 @@ class ProfileSettings extends \App\Controller\AdminIface
         
         \Tk\Alert::addSuccess('Settings saved.');
         if ($form->getTriggeredEvent()->getName() == 'update') {
-            \App\Uri::createHomeUrl('/course/profilePlugins.html')->set('profileId', $this->profile->getId())->redirect();
+            \App\Uri::createHomeUrl('/subject/profilePlugins.html')->set('profileId', $this->profile->getId())->redirect();
         }
         \Tk\Uri::create()->redirect();
     }

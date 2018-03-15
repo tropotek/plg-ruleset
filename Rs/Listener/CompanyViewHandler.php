@@ -37,7 +37,7 @@ class CompanyViewHandler implements Subscriber
     {
         if (!$this->controller) return;
 
-        $companyRules = \Rs\Calculator::findCompanyRuleList($this->controller->getCompany(), $this->controller->getCourse());
+        $companyRules = \Rs\Calculator::findCompanyRuleList($this->controller->getCompany(), $this->controller->getSubject());
         $template = $this->controller->getTemplate();
 
         $repeat = $template->getRepeat('infoData');

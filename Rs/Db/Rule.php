@@ -69,7 +69,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
 
 
     /**
-     * Course constructor.
+     * constructor.
      */
     public function __construct()
     {
@@ -79,11 +79,11 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     /**
      * eval() and return the result of the script
      *
-     * @param \App\Db\Course $course
+     * @param \App\Db\Subject $subject
      * @param \App\Db\Company $company
      * @return boolean
      */
-    public function evaluate($course, $company)
+    public function evaluate($subject, $company)
     {
         // TODO: place any global objects required for eval() here.
         if ($this->script) {
@@ -233,8 +233,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         $errors = array();
 
         if ((int)$this->profileId <= 0) {
-            $errors['profileId'] = 'Invalid Course Profile ID';
-        }
+            $errors['profileId'] = 'Invalid  Profile ID';        }
 
         if (!$this->name) {
             $errors['name'] = 'Please enter a valid value';

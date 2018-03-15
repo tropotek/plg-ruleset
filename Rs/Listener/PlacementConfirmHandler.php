@@ -56,7 +56,7 @@ class PlacementConfirmHandler implements Subscriber
      */
     public function doSubmit($form, $event)
     {
-        $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getCourse())->toArray('id');
+        $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject())->toArray('id');
         if($this->placement->getId() && !$form->hasErrors()) {
             \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());
             foreach ($selectedRules as $ruleId) {

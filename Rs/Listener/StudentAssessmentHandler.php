@@ -35,7 +35,7 @@ class StudentAssessmentHandler implements Subscriber
             }
         }
         
-        $label = $calc->getCourse()->getProfile()->unitLabel;
+        $label = $calc->getSubject()->getProfile()->unitLabel;
         $totals = $calc->getRuleTotals();
 
         /** @var \Rs\Db\Rule $rule */
@@ -45,8 +45,8 @@ class StudentAssessmentHandler implements Subscriber
                     $studentAssessment->addTotal('Pending', $label, $totals['total']['pending']);
                 $studentAssessment->addTotal('Completed', $label, $totals['total']['completed']);
                 if (!$studentAssessment->isMinMode()) {
-                    $studentAssessment->addTotal('Min Targets', $label, $calc->getCourse()->getProfile()->minUnitsTotal);
-                    $studentAssessment->addTotal('Max Targets', $label, $calc->getCourse()->getProfile()->maxUnitsTotal);
+                    $studentAssessment->addTotal('Min Targets', $label, $calc->getSubject()->getProfile()->minUnitsTotal);
+                    $studentAssessment->addTotal('Max Targets', $label, $calc->getSubject()->getProfile()->maxUnitsTotal);
                 }
             }
             $t = $totals[$rule->getLabel()];

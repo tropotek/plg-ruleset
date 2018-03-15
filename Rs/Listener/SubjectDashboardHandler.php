@@ -9,7 +9,7 @@ use Tk\Event\Subscriber;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class CourseDashboardHandler implements Subscriber
+class SubjectDashboardHandler implements Subscriber
 {
 
     /**
@@ -18,10 +18,10 @@ class CourseDashboardHandler implements Subscriber
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {
-        /** @var \App\Controller\Student\CourseDashboard $controller */
+        /** @var \App\Controller\Student\SubjectDashboard $controller */
         $controller = $event->get('controller');
-        if ($controller instanceof \App\Controller\Student\CourseDashboard) {
-            if ($controller->getCourse()) {
+        if ($controller instanceof \App\Controller\Student\SubjectDashboard) {
+            if ($controller->getSubject()) {
                 $table = $controller->getPlacementList()->getTable();
 
                 $css = <<<CSS

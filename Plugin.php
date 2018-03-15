@@ -33,8 +33,8 @@ class Plugin extends \App\Plugin\Iface
 
         // Register the plugin for the different client areas if they are to be enabled/disabled/configured by those roles.
         //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_INSTITUTION);
-        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_COURSE_PROFILE);
-        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_COURSE);
+        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT_PROFILE);
+        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT);
 
         /** @var Dispatcher $dispatcher */
         $dispatcher = \Tk\Config::getInstance()->getEventDispatcher();
@@ -128,14 +128,14 @@ class Plugin extends \App\Plugin\Iface
     }
 
     /**
-     * Get the course settings URL, if null then there is none
+     * Get the subject settings URL, if null then there is none
      *
      * @return string|\Tk\Uri|null
      */
     public function getZoneSettingsUrl($zoneName)
     {
 //        switch ($zoneName) {
-//            case self::ZONE_COURSE_PROFILE:
+//            case self::ZONE_SUBJECT_PROFILE:
 //                return \Tk\Uri::create('/ruleset/profileSettings.html');
 //        }
         return null;

@@ -30,7 +30,7 @@ class CategoryClassHandler implements Subscriber
             'companyId' => $company->getId()
         ));
 
-        $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.course.profile', $company->profileId);
+        $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $company->profileId);
         $script = $profilePluginData->get('plugin.company.get.class');
         if ($profilePluginData->get('plugin.active') && $script != null) {
             $calcClass = eval($script);

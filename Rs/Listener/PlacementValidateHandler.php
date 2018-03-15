@@ -22,7 +22,7 @@ class PlacementValidateHandler implements Subscriber
         $placement = $event->getPlacement();
         if (!$placement) throw new \Tk\Exception('Invalid placement, please contact the site administrator.');
 
-        $profileData = \Tk\Db\Data::create(\Rs\Plugin::getInstance()->getName() . '.course.profile', $placement->getCourse()->profileId);
+        $profileData = \Tk\Db\Data::create(\Rs\Plugin::getInstance()->getName() . '.subject.profile', $placement->getSubject()->profileId);
 
         if (!$placement->getPlacementType()->autoApproveHistoric && $placement->historic) {
             return;
@@ -30,7 +30,7 @@ class PlacementValidateHandler implements Subscriber
 
         // Check placement rules and totals.
         $list = \App\Db\PlacementMap::create()->findFiltered(array(
-            'courseId' => $placement->courseId,
+            'subjectId' => $placement->subjectId,
             'userId'  => $placement->userId,
             'status'     => self::getStatusFilter()
         ));
@@ -42,7 +42,7 @@ class PlacementValidateHandler implements Subscriber
         // Check rules for the placement
         $placeRules = \Rs\Calculator::findPlacementRuleList($placement);
         if (!$placement->getId()) {
-            $placeRules = \Rs\Calculator::findCompanyRuleList($placement->getCompany(), $placement->getCourse());
+            $placeRules = \Rs\Calculator::findCompanyRuleList($placement->getCompany(), $placement->getSubject());
         }
 
         $rulesIdList= array();
