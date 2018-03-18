@@ -70,8 +70,8 @@ class ProfileSettings extends \App\Controller\AdminIface
             setNotes('Enable/disable the rules and auto approval system for this profile.')->
             setLabel('Active')->setRequired(true);
         
-        $this->form->addField(new Event\Button('update', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Button('save', array($this, 'doSubmit')));
+        $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
+        $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
         $this->form->addField(new Event\LinkButton('cancel', \Uni\Ui\Crumbs::getInstance()->getBackUrl()));
 
         $this->form->load($this->data->toArray());
