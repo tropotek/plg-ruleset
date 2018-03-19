@@ -83,6 +83,7 @@ class ProfileSettings extends \App\Controller\AdminIface
      * doSubmit()
      *
      * @param Form $form
+     * @throws \Tk\Db\Exception
      */
     public function doSubmit($form)
     {

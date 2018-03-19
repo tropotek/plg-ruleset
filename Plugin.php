@@ -130,6 +130,7 @@ class Plugin extends \App\Plugin\Iface
     /**
      * Get the subject settings URL, if null then there is none
      *
+     * @param $zoneName
      * @return string|\Tk\Uri|null
      */
     public function getZoneSettingsUrl($zoneName)

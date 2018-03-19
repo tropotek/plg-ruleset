@@ -62,6 +62,7 @@ class RuleMap extends \App\Db\Mapper
      * @param array $filter
      * @param Tool $tool
      * @return ArrayObject|Rule[]
+     * @throws \Tk\Db\Exception
      */
     public function findFiltered($filter = array(), $tool = null)
     {

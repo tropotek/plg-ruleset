@@ -55,6 +55,7 @@ class Calculator extends \Tk\Object
     /**
      * @param \App\Db\Subject $subject
      * @param \App\Db\User $user
+     * @throws \Tk\Db\Exception
      */
     protected function __construct($subject, $user)
     {
@@ -70,6 +71,7 @@ class Calculator extends \Tk\Object
      * @param \App\Db\Subject $subject
      * @param \App\Db\User $user
      * @return Calculator
+     * @throws \Tk\Db\Exception
      */
     public static function create($subject, $user)
     {
@@ -83,6 +85,7 @@ class Calculator extends \Tk\Object
      *
      * @param \Tk\Db\Map\ArrayObject $placementList
      * @return Calculator
+     * @throws \Tk\Db\Exception
      */
     public static function createFromPlacementList($placementList)
     {
@@ -183,6 +186,7 @@ class Calculator extends \Tk\Object
      *
      * @param bool $total
      * @return array
+     * @throws \Tk\Db\Exception
      */
     public function getMinTargets($total = true)
     {
@@ -200,9 +204,10 @@ class Calculator extends \Tk\Object
     /**
      * Return an array with the term max target values
      * TODO: Is this used to validate placements?
-     * 
+     *
      * @param bool $total
      * @return array
+     * @throws \Tk\Db\Exception
      */
     public function getMaxTargets($total = true)
     {
@@ -297,6 +302,7 @@ class Calculator extends \Tk\Object
     /**
      * @param \App\Db\Placement $placement
      * @return Rule[]|\Tk\Db\Map\ArrayObject
+     * @throws \Tk\Db\Exception
      */
     public static function findPlacementRuleList($placement)
     {
@@ -310,9 +316,10 @@ class Calculator extends \Tk\Object
     }
 
     /**
-     * @param \App\Db\Subject $subject
      * @param \App\Db\Company $company
+     * @param \App\Db\Subject $subject
      * @return Rule[]|\Tk\Db\Map\ArrayObject
+     * @throws \Tk\Db\Exception
      */
     public static function findCompanyRuleList($company, $subject)
     {
@@ -329,6 +336,7 @@ class Calculator extends \Tk\Object
     /**
      * @param $profileId
      * @return Rule[]|\Tk\Db\Map\ArrayObject
+     * @throws \Tk\Db\Exception
      */
     public static function findProfileRuleList($profileId)
     {
@@ -339,6 +347,7 @@ class Calculator extends \Tk\Object
      * @param int $subjectId
      * @param int $userId
      * @return \App\Db\Placement[]|\Tk\Db\Map\ArrayObject
+     * @throws \Tk\Db\Exception
      */
     public static function findPlacementList($subjectId, $userId)
     {

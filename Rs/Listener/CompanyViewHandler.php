@@ -32,6 +32,7 @@ class CompanyViewHandler implements Subscriber
     /**
      * @param \Tk\Event\Event $event
      * @throws \Dom\Exception
+     * @throws \Tk\Exception
      */
     public function onControllerShow(\Tk\Event\Event $event)
     {

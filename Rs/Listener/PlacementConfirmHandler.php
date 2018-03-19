@@ -53,6 +53,7 @@ class PlacementConfirmHandler implements Subscriber
     /**
      * @param \Tk\Form $form
      * @param \Tk\Form\Event\Iface $event
+     * @throws \Tk\Db\Exception
      */
     public function doSubmit($form, $event)
     {

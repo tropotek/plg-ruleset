@@ -13,6 +13,7 @@ class AssessmentUnitsHandler implements Subscriber
 
     /**
      * @param \Tk\Event\Event $event
+     * @throws \Tk\Db\Exception
      */
     public function onShow(\Tk\Event\Event $event)
     {

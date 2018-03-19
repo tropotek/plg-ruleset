@@ -63,6 +63,7 @@ class RuleEdit extends \App\Controller\AdminEditIface
 
     /**
      *
+     * @throws \Tk\Exception
      * @throws \Tk\Form\Exception
      */
     protected function buildForm() 
@@ -85,6 +86,9 @@ class RuleEdit extends \App\Controller\AdminEditIface
 
     /**
      * @param \Tk\Form $form
+     * @throws \ReflectionException
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      */
     public function doSubmit($form)
     {

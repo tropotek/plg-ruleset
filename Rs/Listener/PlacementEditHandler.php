@@ -35,6 +35,7 @@ class PlacementEditHandler implements Subscriber
 
     /**
      * @param \Tk\Event\FormEvent $event
+     * @throws \Tk\Db\Exception
      * @throws \Tk\Form\Exception
      */
     public function onFormInit(\Tk\Event\FormEvent $event)
@@ -93,6 +94,7 @@ CSS;
     /**
      * @param \Tk\Form $form
      * @param \Tk\Form\Event\Iface $event
+     * @throws \Tk\Db\Exception
      */
     public function doSubmit($form, $event)
     {

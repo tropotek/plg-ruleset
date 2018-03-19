@@ -17,6 +17,7 @@ class CategoryClassHandler implements Subscriber
      * Check the user has access to this controller
      *
      * @param \Tk\Event\Event $event
+     * @throws \Tk\Db\Exception
      */
     public function onGetCategoryClass(\Tk\Event\Event $event)
     {
