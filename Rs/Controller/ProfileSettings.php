@@ -98,7 +98,7 @@ class ProfileSettings extends \App\Controller\AdminIface
         
         \Tk\Alert::addSuccess('Settings saved.');
         if ($form->getTriggeredEvent()->getName() == 'update') {
-            \App\Uri::createHomeUrl('/subject/profilePlugins.html')->set('profileId', $this->profile->getId())->redirect();
+            \App\Uri::createHomeUrl('/profileEdit.html')->set('profileId', $this->profile->getId())->redirect();
         }
         \Tk\Uri::create()->redirect();
     }
