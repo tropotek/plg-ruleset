@@ -29,7 +29,6 @@ class StaffSideMenuHandler implements Subscriber
             $sideBar = $page->getSidebar();
             if ($sideBar instanceof \App\Ui\Sidebar\StaffMenu) {
                 $sideBar->addReportUrl(\Tk\Ui\Link::create('Student Assessments', \App\Uri::createSubjectUrl('/null.html'), 'fa fa-list-alt'));
-                $sideBar->addReportUrl(\Tk\Ui\Link::create('Student Grades', \App\Uri::createSubjectUrl('/null.html'), 'fa fa-list-alt'));
             }
         }
     }

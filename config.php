@@ -26,4 +26,4 @@ $routes->add('staff-rule-edit', new \Tk\Routing\Route('/staff/ruleEdit.html', 'R
 
 
 $params['subjectCode'] = '';
-$routes->add('Animal Type Report', new \Tk\Routing\Route('/staff/{subjectCode}/Report.html', 'Rs\Controller\Report::doDefault', $params));
+$routes->add('Student Assessment Report', new \Tk\Routing\Route('/staff/{subjectCode}/ruleReport.html', 'Rs\Controller\RuleReport::doDefault', $params));
