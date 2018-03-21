@@ -100,6 +100,7 @@ CSS;
     {
         $selectedRules = $form->getFieldValue('rules');
         if (!is_array($selectedRules)) $selectedRules = array();
+
         if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
             $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject())->toArray('id');
         }

@@ -12,7 +12,11 @@ use Rs\Plugin;
 class SetupHandler implements Subscriber
 {
 
-
+    /**
+     * @param \Tk\Event\GetResponseEvent $event
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
+     */
     public function onRequest(\Tk\Event\GetResponseEvent $event)
     {
         $dispatcher = \App\Config::getInstance()->getEventDispatcher();
@@ -42,6 +46,7 @@ class SetupHandler implements Subscriber
             $dispatcher->addSubscriber(new \Rs\Listener\AssessmentUnitsHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\CompanyViewHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementConfirmHandler());
+            $dispatcher->addSubscriber(new \Rs\Listener\StaffSideMenuHandler());
         }
 
     }

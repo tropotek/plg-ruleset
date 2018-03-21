@@ -19,7 +19,7 @@ class CategoryClassHandler implements Subscriber
      * @param \Tk\Event\Event $event
      * @throws \Tk\Db\Exception
      */
-    public function onGetCategoryClass(\Tk\Event\Event $event)
+    public function onGetCompanyCategoryClass(\Tk\Event\Event $event)
     {
         $plugin = Plugin::getInstance();
         // NOTE: These vars are for the eval() function for finding the class value
@@ -40,6 +40,7 @@ class CategoryClassHandler implements Subscriber
             }
         }
     }
+
 
 
     /**
@@ -65,7 +66,7 @@ class CategoryClassHandler implements Subscriber
     public static function getSubscribedEvents()
     {
         return array(
-            \App\AppEvents::COMPANY_GET_CATEGORY_CLASS => array('onGetCategoryClass', 0)
+            \App\AppEvents::COMPANY_GET_CATEGORY_CLASS => array('onGetCompanyCategoryClass', 0)
         );
     }
     

@@ -24,3 +24,6 @@ $routes->add('Rules Profile Settings', new \Tk\Routing\Route('/staff/ruleSetting
 $routes->add('staff-rule-manager', new \Tk\Routing\Route('/staff/ruleManager.html', 'Rs\Controller\RuleManager::doDefault', $params));
 $routes->add('staff-rule-edit', new \Tk\Routing\Route('/staff/ruleEdit.html', 'Rs\Controller\RuleEdit::doDefault', $params));
 
+
+$params['subjectCode'] = '';
+$routes->add('Animal Type Report', new \Tk\Routing\Route('/staff/{subjectCode}/Report.html', 'Rs\Controller\Report::doDefault', $params));
