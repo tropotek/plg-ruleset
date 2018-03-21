@@ -102,6 +102,7 @@ class Calculator extends \Tk\Object
     /**
      * init()
      * @todo: This all may need to be refactored
+     * @throws \Tk\Db\Exception
      */
     private function init()
     {
@@ -112,7 +113,7 @@ class Calculator extends \Tk\Object
         foreach ($this->placementList as $placement) {
             $placeRules = self::findPlacementRuleList($placement);
             $units = $placement->units;
-            if (!$placement->getPlacementType()->gradable) {
+            if (!$placement->getPlacementType() || !$placement->getPlacementType()->gradable) {
                 $units = 0;
             }
 
