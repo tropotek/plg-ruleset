@@ -51,8 +51,6 @@ class SetupHandler implements Subscriber
 
     }
 
-
-
     public function onInit(\Tk\Event\KernelEvent $event)
     {
         //vd('onInit');
