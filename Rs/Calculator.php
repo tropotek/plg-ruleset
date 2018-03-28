@@ -183,7 +183,6 @@ class Calculator extends \Tk\Object
 
     /**
      * Return an array with the term min target values
-     * TODO: Is this used to validate placements?
      *
      * @param bool $total
      * @return array
@@ -204,7 +203,6 @@ class Calculator extends \Tk\Object
 
     /**
      * Return an array with the term max target values
-     * TODO: Is this used to validate placements?
      *
      * @param bool $total
      * @return array
