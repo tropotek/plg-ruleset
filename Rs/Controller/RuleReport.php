@@ -54,7 +54,6 @@ class RuleReport extends \App\Controller\AdminManagerIface
             $this->table->addCell(new \Tk\Table\Cell\Text($rule->getLabel()))->setOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
                 /** @var \Tk\Table\Cell\Text $cell  */
                 /** @var \App\Db\User $obj  */
-
                 $tblFilter = $cell->getTable()->getFilterValues();
                 if (empty(self::$calcCache[$obj->getId()])) {
                     $filter = array(
@@ -81,7 +80,6 @@ class RuleReport extends \App\Controller\AdminManagerIface
             });
 
         }
-
 
         // Filters
         $list = array('-- Status --' => '', 'Pending' => 'pending', 'Completed' => 'completed');
