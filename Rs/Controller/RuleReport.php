@@ -13,8 +13,9 @@ use Tk\Request;
 class RuleReport extends \App\Controller\AdminManagerIface
 {
 
-
-
+    /**
+     * @var array
+     */
     static public $calcCache = array();
 
     /**

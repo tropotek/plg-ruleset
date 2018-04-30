@@ -103,7 +103,6 @@ class RuleMap extends \App\Db\Mapper
             $from .= sprintf(' ,%s d', $this->quoteTable('rule_has_placement'));
             $where .= sprintf('a.id = d.rule_id AND d.placement_id = %s AND ', (int)$filter['placementId']);
         }
-
         
         if (!empty($filter['exclude'])) {
             if (!is_array($filter['exclude'])) $filter['exclude'] = array($filter['exclude']);
