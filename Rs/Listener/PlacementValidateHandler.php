@@ -32,11 +32,13 @@ class PlacementValidateHandler implements Subscriber
         $list = \App\Db\PlacementMap::create()->findFiltered(array(
             'subjectId' => $placement->subjectId,
             'userId'  => $placement->userId,
-            'status'     => self::getStatusFilter()
+            'status'     => self::getStatusFilter(),
+
         ));
 
         //   The calculator may need to be refactored also
         $calc = \Rs\Calculator::createFromPlacementList($list);
+        if (!$calc) return;
         $ruleInfo = $calc->getRuleTotals();
 
         // Check rules for the placement
