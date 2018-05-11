@@ -132,11 +132,7 @@ JS;
         $selectedRules = $form->getFieldValue('rules');
         if (!is_array($selectedRules)) $selectedRules = array();
 
-        if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
-            $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject())->toArray('id');
-        }
-
-        if($this->placement->getId() && !$form->hasErrors()) {
+        if(!$form->hasErrors()) {
             \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());
             foreach ($selectedRules as $ruleId) {
                 \Rs\Db\RuleMap::create()->addPlacement($ruleId, $this->placement->getVolatileId());
