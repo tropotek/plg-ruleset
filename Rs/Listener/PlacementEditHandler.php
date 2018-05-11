@@ -50,6 +50,7 @@ class PlacementEditHandler implements Subscriber
 
             $field = new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules));
             $field->setValue($placementRules);
+            $field->setAttr('data-defaults', json_encode($placementRules));
 
             if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
                 $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject());
@@ -87,6 +88,30 @@ ul.assessment-credit li {
 CSS;
 
             $this->controller->getTemplate()->appendCss($css);
+
+            $js = <<<JS
+jQuery(function ($) {
+  $('.tk-rules').each(function () {
+    var fieldGroup = $(this);
+    var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the assessment to the company defaults."><i class="fa fa-refresh"></i> Reset</button></p>');
+    fieldGroup.find(' > div').append(resetBtn);
+    resetBtn.on('click', function () {
+      $(this).parent().find('input[type=checkbox]').each(function () {
+        var arr = $(this).data('defaults');
+        if(jQuery.inArray(parseInt($(this).val()), arr) !== -1) {
+          $(this).prop('checked', true);
+        } else {
+          $(this).prop('checked', false);
+        }
+      });
+      return false;
+    });
+  });
+  
+});
+JS;
+            $this->controller->getTemplate()->appendJs($js);
+
 
         }
     }
