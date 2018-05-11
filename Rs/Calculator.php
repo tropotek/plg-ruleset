@@ -317,18 +317,26 @@ class Calculator extends \Tk\Object
     /**
      * @param \App\Db\Company $company
      * @param \App\Db\Subject $subject
+     * @param bool $idOnly
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      * @throws \Tk\Db\Exception
      */
-    public static function findCompanyRuleList($company, $subject)
+    public static function findCompanyRuleList($company, $subject, $idOnly = false)
     {
         $list = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $subject->profileId), \Tk\Db\Tool::create('order_by'));
         $valid = array();
         /** @var \Rs\Db\Rule $rule */
         foreach ($list as $rule) {
-            if ($rule->evaluate($subject, $company))
-                $valid[] = $rule;
+            if ($rule->evaluate($subject, $company)) {
+                if ($idOnly) {
+                    $valid[] = $rule->getId();
+                } else {
+                    $valid[] = $rule;
+                }
+            }
         }
+        if ($idOnly)
+            return $valid;
         return new \Tk\Db\Map\ArrayObject($valid);
     }
 
