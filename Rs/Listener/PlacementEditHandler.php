@@ -51,7 +51,6 @@ class PlacementEditHandler implements Subscriber
 
             $field = new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules));
             $field->setValue($placementRules);
-            vd($companyRules);
             $field->setAttr('data-defaults', json_encode($companyRules));
 
             if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
