@@ -41,7 +41,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
     {
         $this->profile = $this->getProfile();
 
-        $this->table = \App\Config::getInstance()->createTable(\Tk\Object::basename($this).'ruleReport');
+        $this->table = \App\Config::getInstance()->createTable(\Tk\ObjectUtil::basename($this).'ruleReport');
         $this->table->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
 
         $this->table->addCell(new \Tk\Table\Cell\Text('uid'))->setLabel('Student Number');

@@ -8,7 +8,7 @@ use Rs\Db\Rule;
  * Calculate rules and max/total/min
  *
  */
-class Calculator extends \Tk\Object
+class Calculator extends \Tk\ObjectUtil
 {
 
     /**
