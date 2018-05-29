@@ -25,7 +25,7 @@ class ProfileEditHandler implements Subscriber
             if ($controller->getUser()->isStaff() && $controller->getProfile()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
-                $actionPanel->addButton(\Tk\Ui\Button::create(\App\Db\Phrase::findValue('placement', $controller->getProfile()->getId()) . ' Rules',
+                $actionPanel->add(\Tk\Ui\Button::create(\App\Db\Phrase::findValue('placement', $controller->getProfile()->getId()) . ' Rules',
                     \App\Uri::createHomeUrl('/ruleSettings.html')
                         ->set('profileId', $controller->getProfile()->getId()), 'fa fa-check'));
             }
