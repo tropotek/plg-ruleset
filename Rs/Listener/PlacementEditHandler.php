@@ -95,7 +95,8 @@ CSS;
 
             $this->controller->getTemplate()->appendCss($css);
 
-            $js = <<<JS
+            if ($this->controller->getUser()->isStaff()) {
+                $js = <<<JS
 jQuery(function ($) {
   $('.tk-rules').each(function () {
     var fieldGroup = $(this);
@@ -116,8 +117,8 @@ jQuery(function ($) {
   
 });
 JS;
-            $this->controller->getTemplate()->appendJs($js);
-
+                $this->controller->getTemplate()->appendJs($js);
+            }
 
         }
     }
