@@ -72,7 +72,7 @@ class ProfileSettings extends \App\Controller\AdminIface
         
         $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->addField(new Event\LinkButton('cancel', \Uni\Ui\Crumbs::getInstance()->getBackUrl()));
+        $this->form->addField(new Event\LinkButton('cancel', $this->getConfig()->getBackUrl()));
 
         $this->form->load($this->data->toArray());
         $this->form->execute();
@@ -83,9 +83,10 @@ class ProfileSettings extends \App\Controller\AdminIface
      * doSubmit()
      *
      * @param Form $form
+     * @param \Tk\Form\Event\Iface $event
      * @throws \Tk\Db\Exception
      */
-    public function doSubmit($form)
+    public function doSubmit($form, $event)
     {
         $values = $form->getValues();
         $this->data->replace($values);
@@ -97,10 +98,12 @@ class ProfileSettings extends \App\Controller\AdminIface
         $this->data->save();
         
         \Tk\Alert::addSuccess('Settings saved.');
-        if ($form->getTriggeredEvent()->getName() == 'update') {
-            \App\Uri::createHomeUrl('/profileEdit.html')->set('profileId', $this->profile->getId())->redirect();
+
+        //\App\Uri::createHomeUrl('/profileEdit.html')->set('profileId', $this->profile->getId())->redirect();
+        $event->setRedirect($this->getConfig()->getBackUrl());
+        if ($form->getTriggeredEvent()->getName() == 'save') {
+            $event->setRedirect(\Tk\Uri::create());
         }
-        \Tk\Uri::create()->redirect();
     }
 
     /**

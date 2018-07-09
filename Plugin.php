@@ -15,6 +15,7 @@ class Plugin extends \App\Plugin\Iface
      * A helper method to get the Plugin instance globally
      *
      * @return static
+     * @throws \Tk\Exception
      */
     static function getInstance()
     {
@@ -26,6 +27,7 @@ class Plugin extends \App\Plugin\Iface
      *
      * This is called when the session first registers the plugin to the queue
      * So it is the first called method after the constructor...
+     * @throws \Tk\Exception
      */
     function doInit()
     {
@@ -37,7 +39,7 @@ class Plugin extends \App\Plugin\Iface
         //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT);
 
         /** @var Dispatcher $dispatcher */
-        $dispatcher = \Tk\Config::getInstance()->getEventDispatcher();
+        $dispatcher = $this->getConfig()->getEventDispatcher();
         $dispatcher->addSubscriber(new \Rs\Listener\SetupHandler());
     }
 

@@ -81,16 +81,17 @@ class RuleEdit extends \App\Controller\AdminEditIface
 
         $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->addField(new Event\Link('cancel', \Uni\Ui\Crumbs::getInstance()->getBackUrl()));
+        $this->form->addField(new Event\Link('cancel', $this->getConfig()->getBackUrl()));
     }
 
     /**
      * @param \Tk\Form $form
+     * @param \Tk\Form\Event\Iface $event
      * @throws \ReflectionException
      * @throws \Tk\Db\Exception
      * @throws \Tk\Exception
      */
-    public function doSubmit($form)
+    public function doSubmit($form, $event)
     {
         // Load the object with data from the form using a helper object
         \Rs\Db\RuleMap::create()->mapForm($form->getValues(), $this->rule);
@@ -104,10 +105,10 @@ class RuleEdit extends \App\Controller\AdminEditIface
         $this->rule->save();
 
         \Tk\Alert::addSuccess('Record saved!');
-        if ($form->getTriggeredEvent()->getName() == 'update') {
-            \Uni\Ui\Crumbs::getInstance()->getBackUrl()->redirect();
+        $event->setRedirect($this->getConfig()->getBackUrl());
+        if ($form->getTriggeredEvent()->getName() == 'save') {
+            $event->setRedirect(\Tk\Uri::create()->set('ruleId', $this->rule->getId()));
         }
-        \Tk\Uri::create()->set('ruleId', $this->rule->getId())->redirect();
     }
 
     /**
