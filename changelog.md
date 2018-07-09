@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.12 [2018-07-10]:
+-------------------------------
+Minor Code Updates
+
+
 Ver 2.0.10 [2018-06-27]:
 -------------------------------
 Fixed the rules not working on Create submit
