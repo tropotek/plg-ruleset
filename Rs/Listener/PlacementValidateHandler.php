@@ -15,7 +15,7 @@ class PlacementValidateHandler implements Subscriber
     /**
      *
      * @param \App\Event\PlacementValidEvent $event
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function onAppValidate(\App\Event\PlacementValidEvent $event)
     {
@@ -44,7 +44,7 @@ class PlacementValidateHandler implements Subscriber
         // Check rules for the placement
         $placeRules = \Rs\Calculator::findPlacementRuleList($placement);
         if (!$placement->getId()) {
-            $placeRules = \Rs\Calculator::findCompanyRuleList($placement->getCompany(), $placement->getSubject());
+            $placeRules = \Rs\Calculator::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
         }
 
         $rulesIdList= array();

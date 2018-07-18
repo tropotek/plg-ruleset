@@ -14,7 +14,7 @@ class StudentAssessmentHandler implements Subscriber
 
     /**
      * @param \Tk\Event\Event $event
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function onInit(\Tk\Event\Event $event)
     {

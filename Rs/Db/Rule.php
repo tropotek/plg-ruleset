@@ -81,9 +81,10 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      *
      * @param \App\Db\Subject $subject
      * @param \App\Db\Company $company
+     * @param \App\Db\Supervisor|null $supervisor
      * @return boolean
      */
-    public function evaluate($subject, $company)
+    public function evaluate($subject, $company, $supervisor = null)
     {
         // TODO: place any global objects required for eval() here.
         if ($this->script) {

@@ -102,7 +102,7 @@ class Calculator extends \Tk\ObjectUtil
     /**
      * init()
      * @todo: This all may need to be refactored
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     private function init()
     {
@@ -301,7 +301,7 @@ class Calculator extends \Tk\ObjectUtil
     /**
      * @param \App\Db\Placement $placement
      * @return Rule[]|\Tk\Db\Map\ArrayObject
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public static function findPlacementRuleList($placement)
     {
@@ -309,7 +309,7 @@ class Calculator extends \Tk\ObjectUtil
         if ($placement->getId()) {
             $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getVolatileId()), \Tk\Db\Tool::create('order_by'));
         } else {    // Get default rules based on the company and subject object
-            $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject());
+            $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
         }
         return $list;
     }
@@ -317,26 +317,20 @@ class Calculator extends \Tk\ObjectUtil
     /**
      * @param \App\Db\Company $company
      * @param \App\Db\Subject $subject
-     * @param bool $idOnly
+     * @param \App\Db\Supervisor|null $supervisor If supplied then the academic flag can be tested on this instead of the company hasAcademic()
      * @return Rule[]|\Tk\Db\Map\ArrayObject
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
-    public static function findCompanyRuleList($company, $subject, $idOnly = false)
+    public static function findCompanyRuleList($company, $subject, $supervisor = null)
     {
         $list = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $subject->profileId), \Tk\Db\Tool::create('order_by'));
         $valid = array();
         /** @var \Rs\Db\Rule $rule */
         foreach ($list as $rule) {
-            if ($rule->evaluate($subject, $company)) {
-                if ($idOnly) {
-                    $valid[] = $rule->getId();
-                } else {
-                    $valid[] = $rule;
-                }
+            if ($rule->evaluate($subject, $company, $supervisor)) {
+                $valid[] = $rule;
             }
         }
-        if ($idOnly)
-            return $valid;
         return new \Tk\Db\Map\ArrayObject($valid);
     }
 

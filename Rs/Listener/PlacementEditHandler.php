@@ -24,19 +24,48 @@ class PlacementEditHandler implements Subscriber
 
     /**
      * @param \Tk\Event\ControllerEvent $event
+     * @throws \Exception
      */
     public function onControllerInit(\Tk\Event\ControllerEvent $event)
     {
         $controller = $event->getController();
         if ($controller instanceof \App\Controller\Placement\Edit || $controller instanceof \App\Controller\Student\Placement\Create) {
             $this->controller = $controller;
+
+            if ($controller->getRequest()->has('getRules')) {
+                $this->doGetRules($controller->getRequest());
+            }
+
+
         }
     }
 
     /**
+     * @param \Tk\Request $request
+     * @throws \Exception
+     */
+    public function doGetRules(\Tk\Request $request)
+    {
+        /** @var \App\Db\Placement $placement */
+        $placement = \App\Db\CompanyMap::create()->find($request->get('placementId'));
+        /** @var \App\Db\Company $company */
+        $company = \App\Db\CompanyMap::create()->find($request->get('companyId'));
+        /** @var \App\Db\Subject $subject */
+        $subject = \App\Db\SubjectMap::create()->find($request->get('subjectId'));
+        /** @var \App\Db\Supervisor $supervisor */
+        $supervisor = \App\Db\SupervisorMap::create()->find($request->get('supervisorId'));
+
+        $data = \Rs\Calculator::findCompanyRuleList($company, $subject, $supervisor)->toArray('id');
+        if ($placement) {
+            $data = \Rs\Calculator::findPlacementRuleList($placement)->toArray('id');
+        }
+        \Tk\ResponseJson::createJson($data)->send();
+        exit;
+    }
+
+    /**
      * @param \Tk\Event\FormEvent $event
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Form\Exception
+     * @throws \Exception
      */
     public function onFormInit(\Tk\Event\FormEvent $event)
     {
@@ -45,7 +74,7 @@ class PlacementEditHandler implements Subscriber
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
 
-            $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), true);
+            $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor())->toArray('id');
             $profileRules = \Rs\Calculator::findProfileRuleList($this->placement->getSubject()->profileId);
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
@@ -56,10 +85,12 @@ class PlacementEditHandler implements Subscriber
                 $field->setValue($placementRules);
             }
 
-            $field->setAttr('data-defaults', json_encode($companyRules));
+            $field->setAttr('data-placement-id', $this->placement->getId());
+            $field->setAttr('data-company-id', $this->placement->companyId);
+            $field->setAttr('data-subject-id', $this->placement->subjectId);
+            $field->setAttr('data-supervisor-id', $this->placement->supervisorId);
 
             if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
-                $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject());
                 $html = '';
                 foreach ($companyRules as $rule) {
                     $html .= sprintf('<li>%s</li>', $rule->name) . "\n";
@@ -103,13 +134,23 @@ jQuery(function ($) {
     var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the assessment to the company defaults."><i class="fa fa-refresh"></i> Reset</button></p>');
     fieldGroup.find(' > div').append(resetBtn);
     resetBtn.on('click', function () {
-      $(this).parent().find('input[type=checkbox]').each(function () {
-        var arr = $(this).data('defaults');
-        if(jQuery.inArray(parseInt($(this).val()), arr) !== -1) {
-          $(this).prop('checked', true);
-        } else {
-          $(this).prop('checked', false);
-        }
+      var checkboxList = $(this).parent().find('input[type=checkbox]');
+      var params = checkboxList.first().data();
+      params = $.extend({getRules: 'getRules'}, {
+          placementId: params.placementId, 
+          companyId: params.companyId, 
+          subjectId: params.subjectId, 
+          supervisorId: params.supervisorId
+      });
+      $(this).parent().find('input[type=checkbox]').prop('checked', false);
+      $.post(document.location, params, function (data) {
+          checkboxList.each(function () {
+            if(jQuery.inArray(parseInt($(this).val()), data) !== -1) {
+              $(this).prop('checked', true);
+            } else {
+              $(this).prop('checked', false);
+            }
+          });
       });
       return false;
     });
@@ -126,7 +167,7 @@ JS;
     /**
      * @param \Tk\Form $form
      * @param \Tk\Form\Event\Iface $event
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function doSubmit($form, $event)
     {
