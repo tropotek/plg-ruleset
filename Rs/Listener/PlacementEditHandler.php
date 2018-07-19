@@ -88,7 +88,7 @@ class PlacementEditHandler implements Subscriber
             $field->setAttr('data-placement-id', $this->placement->getId());
             $field->setAttr('data-company-id', $this->placement->companyId);
             $field->setAttr('data-subject-id', $this->placement->subjectId);
-            $field->setAttr('data-supervisor-id', $this->placement->supervisorId);
+            $field->setAttr('data-supervisor-id', $this->placement->supervisorId.'');
 
             if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
                 $html = '';
@@ -129,12 +129,8 @@ CSS;
             if ($this->controller->getUser()->isStaff()) {
                 $js = <<<JS
 jQuery(function ($) {
-  $('.tk-rules').each(function () {
-    var fieldGroup = $(this);
-    var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the assessment to the company defaults."><i class="fa fa-refresh"></i> Reset</button></p>');
-    fieldGroup.find(' > div').append(resetBtn);
-    resetBtn.on('click', function () {
-      var checkboxList = $(this).parent().find('input[type=checkbox]');
+  
+  function setCheckboxes(checkboxList) {
       var params = checkboxList.first().data();
       params = $.extend({getRules: 'getRules'}, {
           placementId: params.placementId, 
@@ -152,9 +148,30 @@ jQuery(function ($) {
             }
           });
       });
+    
+  }
+  
+  
+  $('.tk-rules').each(function () {
+    var fieldGroup = $(this);
+    var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the assessment to the company defaults."><i class="fa fa-refresh"></i> Reset</button></p>');
+    fieldGroup.find(' > div').append(resetBtn);
+    var checkboxList = fieldGroup.find('input[type=checkbox]');
+    resetBtn.on('click', function () {
+      //var checkboxList = $(this).parent().find('input[type=checkbox]');
+      setCheckboxes(checkboxList);
       return false;
     });
+    fieldGroup.closest('form').find('.tk-supervisorid select').on('change', function () {
+      checkboxList.first().data('supervisor-id', $(this).val());
+      setCheckboxes(checkboxList);
+    });
   });
+  
+  
+  
+  
+  
   
 });
 JS;
