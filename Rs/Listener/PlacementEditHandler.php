@@ -72,13 +72,13 @@ class PlacementEditHandler implements Subscriber
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
 
-            $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor())->toArray('id');
+            $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor());
             $profileRules = \Rs\Calculator::findProfileRuleList($this->placement->getSubject()->profileId);
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
             $field = new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules));
             if (!$this->placement->getId()) {
-                $field->setValue($companyRules);
+                $field->setValue($companyRules->toArray('id'));
             } else {
                 $field->setValue($placementRules);
             }
@@ -89,16 +89,10 @@ class PlacementEditHandler implements Subscriber
             $field->setAttr('data-supervisor-id', $this->placement->supervisorId.'');
 
             if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
-                $html = '';
-                foreach ($companyRules as $rule) {
-                    $html .= sprintf('<li>%s</li>', $rule->name) . "\n";
-                }
-                $html = rtrim($html , "\n");
-                if ($html) $html = sprintf('<ul class="assessment-credit">%s</ul>', $html);
-
-                $field = new \Tk\Form\Field\Html('rules', $html);
+                $field->setReadonly();
+                $field->setDisabled(true);
                 $form->addFieldAfter('units', $field);
-
+                $field->setAttr('data-hide-unselected');
             } else {
                 $field->setTabGroup('Details');
                 $form->addField($field);
@@ -124,12 +118,13 @@ CSS;
 
             $this->controller->getTemplate()->appendCss($css);
 
-            if ($this->controller->getUser()->isStaff()) {
-                $js = <<<JS
+
+            $js = <<<JS
 jQuery(function ($) {
   
   function setCheckboxes(checkboxList) {
     var params = checkboxList.first().data();
+    var hideUnselected = params.hideUnselected;
     params = $.extend({getRules: 'getRules'}, {
       placementId: params.placementId, 
       companyId: params.companyId, 
@@ -140,9 +135,12 @@ jQuery(function ($) {
     $.post(document.location, params, function (data) {
       checkboxList.each(function () {
         if(jQuery.inArray(parseInt($(this).val()), data) !== -1) {
-          $(this).prop('checked', true);
+          $(this).prop('checked', true).closest('.checkbox').show();
         } else {
           $(this).prop('checked', false);
+          if (hideUnselected) {
+            $(this).closest('.checkbox').hide();
+          }
         }
       });
     });
@@ -151,14 +149,20 @@ jQuery(function ($) {
   
   $('.tk-rules').each(function () {
     var fieldGroup = $(this);
-    var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the assessment to the company defaults."><i class="fa fa-refresh"></i> Reset</button></p>');
-    fieldGroup.find(' > div').append(resetBtn);
     var checkboxList = fieldGroup.find('input[type=checkbox]');
-    resetBtn.on('click', function () {
-      //var checkboxList = $(this).parent().find('input[type=checkbox]');
-      setCheckboxes(checkboxList);
-      return false;
-    });
+    
+    if (config.role !== 'student') {
+        var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the assessment to the company defaults."><i class="fa fa-refresh"></i> Reset</button></p>');
+        fieldGroup.find(' > div').append(resetBtn);
+        resetBtn.on('click', function () {
+          //var checkboxList = $(this).parent().find('input[type=checkbox]');
+          setCheckboxes(checkboxList);
+          return false;
+        });
+    }
+    
+    setCheckboxes(checkboxList);
+    
     fieldGroup.closest('form').find('.tk-supervisorid select').on('change', function () {
       checkboxList.first().data('supervisor-id', $(this).val());
       setCheckboxes(checkboxList);
@@ -168,8 +172,8 @@ jQuery(function ($) {
   
 });
 JS;
-                $this->controller->getTemplate()->appendJs($js);
-            }
+            $this->controller->getTemplate()->appendJs($js);
+
 
         }
     }
