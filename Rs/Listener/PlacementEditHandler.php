@@ -35,8 +35,6 @@ class PlacementEditHandler implements Subscriber
             if ($controller->getRequest()->has('getRules')) {
                 $this->doGetRules($controller->getRequest());
             }
-
-
         }
     }
 
@@ -131,24 +129,23 @@ CSS;
 jQuery(function ($) {
   
   function setCheckboxes(checkboxList) {
-      var params = checkboxList.first().data();
-      params = $.extend({getRules: 'getRules'}, {
-          placementId: params.placementId, 
-          companyId: params.companyId, 
-          subjectId: params.subjectId, 
-          supervisorId: params.supervisorId
+    var params = checkboxList.first().data();
+    params = $.extend({getRules: 'getRules'}, {
+      placementId: params.placementId, 
+      companyId: params.companyId, 
+      subjectId: params.subjectId, 
+      supervisorId: params.supervisorId
+    });
+    $(this).parent().find('input[type=checkbox]').prop('checked', false);
+    $.post(document.location, params, function (data) {
+      checkboxList.each(function () {
+        if(jQuery.inArray(parseInt($(this).val()), data) !== -1) {
+          $(this).prop('checked', true);
+        } else {
+          $(this).prop('checked', false);
+        }
       });
-      $(this).parent().find('input[type=checkbox]').prop('checked', false);
-      $.post(document.location, params, function (data) {
-          checkboxList.each(function () {
-            if(jQuery.inArray(parseInt($(this).val()), data) !== -1) {
-              $(this).prop('checked', true);
-            } else {
-              $(this).prop('checked', false);
-            }
-          });
-      });
-    
+    });
   }
   
   
@@ -167,10 +164,6 @@ jQuery(function ($) {
       setCheckboxes(checkboxList);
     });
   });
-  
-  
-  
-  
   
   
 });
