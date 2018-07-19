@@ -43,7 +43,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
         $this->getActionPanel()->add(\Tk\Ui\Button::create('New Rule', $editUrl, 'fa fa-check fa-add-action'));
 
-        $this->table = \App\Config::getInstance()->createTable(\Tk\ObjectUtil::basename($this).'ruleList');
+        $this->table = \App\Config::getInstance()->createTable(\App\Config::getInstance()->getUrlName());
         $this->table->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
 
         $this->table->addCell(new \Tk\Table\Cell\Checkbox('id'));
