@@ -66,9 +66,9 @@ class ProfileSettings extends \App\Controller\AdminIface
             setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method')->
             addCss('tkCode')->setRequired(true);
 
-        $this->form->addField(new Field\Checkbox('plugin.active'))->
-            setNotes('Enable/disable the rules and auto approval system for this profile.')->
-            setLabel('Active')->setRequired(true);
+        $this->form->addField(new Field\Checkbox('plugin.active'))
+            ->setCheckboxLabel('Enable/disable the rules and auto approval system for this profile.')
+            ->setLabel('Active')->setRequired(true);
         
         $this->form->addField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
