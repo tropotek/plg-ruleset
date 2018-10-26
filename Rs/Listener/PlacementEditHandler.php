@@ -76,6 +76,7 @@ class PlacementEditHandler implements Subscriber
             $profileRules = \Rs\Calculator::findProfileRuleList($this->placement->getSubject()->profileId);
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
+            //vd($this->placement->getId(), $placementRules, $profileRules->toArray('id'), $companyRules->toArray('id'));
             $field = new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules));
             if (!$this->placement->getId()) {
                 $field->setValue($companyRules->toArray('id'));
@@ -160,13 +161,14 @@ jQuery(function ($) {
           return false;
         });
     }
-    
-    setCheckboxes(checkboxList);
-    
-    fieldGroup.closest('form').find('.tk-supervisorid select').on('change', function () {
-      checkboxList.first().data('supervisor-id', $(this).val());
+
+    if (fieldGroup.find('.checkbox-group').data('placementId') == '0') {
       setCheckboxes(checkboxList);
-    });
+      fieldGroup.closest('form').find('.tk-supervisorid select').on('change', function () {
+        checkboxList.first().data('supervisor-id', $(this).val());
+        setCheckboxes(checkboxList);
+      });
+    }
   });
   
   
@@ -187,7 +189,7 @@ JS;
     {
         $selectedRules = $form->getFieldValue('rules');
         if (!is_array($selectedRules)) $selectedRules = array();
-
+vd($selectedRules);
         if(!$form->hasErrors()) {
             \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());
             foreach ($selectedRules as $ruleId) {
