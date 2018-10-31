@@ -162,7 +162,7 @@ jQuery(function ($) {
         });
     }
 
-    if (fieldGroup.find('.checkbox-group').data('placementId') == '0') {
+    if (fieldGroup.find('.checkbox-group').data('placementId') === '0') {
       setCheckboxes(checkboxList);
       fieldGroup.closest('form').find('.tk-supervisorid select').on('change', function () {
         checkboxList.first().data('supervisor-id', $(this).val());
@@ -189,7 +189,7 @@ JS;
     {
         $selectedRules = $form->getFieldValue('rules');
         if (!is_array($selectedRules)) $selectedRules = array();
-vd($selectedRules);
+
         if(!$form->hasErrors()) {
             \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());
             foreach ($selectedRules as $ruleId) {
