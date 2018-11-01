@@ -102,7 +102,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
     {
         $filter = $this->table->getFilterValues();
         $filter['subjectId'] = $this->getSubject()->getId();
-        $filter['role'] = array(\App\Db\UserGroup::ROLE_STUDENT);
+        $filter['type'] = \Uni\Db\Role::TYPE_STUDENT;
 
         return \App\Db\UserMap::create()->findFiltered($filter, $this->table->getTool('a.name'));
     }
