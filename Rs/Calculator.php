@@ -55,7 +55,7 @@ class Calculator extends \Tk\ObjectUtil
     /**
      * @param \App\Db\Subject $subject
      * @param \App\Db\User $user
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     protected function __construct($subject, $user)
     {
@@ -71,7 +71,7 @@ class Calculator extends \Tk\ObjectUtil
      * @param \App\Db\Subject $subject
      * @param \App\Db\User $user
      * @return Calculator
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public static function create($subject, $user)
     {
@@ -85,7 +85,7 @@ class Calculator extends \Tk\ObjectUtil
      *
      * @param \Tk\Db\Map\ArrayObject $placementList
      * @return Calculator
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public static function createFromPlacementList($placementList)
     {
@@ -206,7 +206,6 @@ class Calculator extends \Tk\ObjectUtil
      *
      * @param bool $total
      * @return array
-     * @throws \Tk\Db\Exception
      */
     public function getMaxTargets($total = true)
     {
@@ -348,7 +347,7 @@ class Calculator extends \Tk\ObjectUtil
      * @param int $subjectId
      * @param int $userId
      * @return \App\Db\Placement[]|\Tk\Db\Map\ArrayObject
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public static function findPlacementList($subjectId, $userId)
     {

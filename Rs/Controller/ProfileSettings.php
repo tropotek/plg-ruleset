@@ -31,6 +31,13 @@ class ProfileSettings extends \App\Controller\AdminIface
     private $profile = null;
 
     /**
+     * track the previous active state of the plugin
+     * @var bool
+     */
+    private $prevActive = false;
+
+
+    /**
      * ProfileSettings constructor.
      */
     public function __construct()
@@ -40,12 +47,18 @@ class ProfileSettings extends \App\Controller\AdminIface
     }
 
     /**
+     * @return \App\Db\Profile|null
+     */
+    public function getProfile()
+    {
+        return $this->profile;
+    }
+
+    /**
      * doDefault
      *
      * @param Request $request
-     * @throws Form\Exception
      * @throws \Exception
-     * @throws \Tk\Db\Exception
      */
     public function doDefault(Request $request)
     {
@@ -64,7 +77,7 @@ class ProfileSettings extends \App\Controller\AdminIface
 
         $this->form->addField(new Field\Textarea('plugin.company.get.class'))->setLabel('Company Category Class')->
             setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method')->
-            addCss('tkCode')->setRequired(true);
+            addCss('tkCode')->setRequired(true)->addCss('code')->setAttr('data-mode', 'text/x-php');
 
         $this->form->addField(new Field\Checkbox('plugin.active'))
             ->setCheckboxLabel('Enable/disable the rules and auto approval system for this profile.')
@@ -74,9 +87,11 @@ class ProfileSettings extends \App\Controller\AdminIface
         $this->form->addField(new Event\Submit('save', array($this, 'doSubmit')));
         $this->form->addField(new Event\LinkButton('cancel', $this->getConfig()->getBackUrl()));
 
+
+        $this->prevActive = ($this->data->get('plugin.active') == 'plugin.active');
+
         $this->form->load($this->data->toArray());
         $this->form->execute();
-
     }
 
     /**
@@ -94,12 +109,25 @@ class ProfileSettings extends \App\Controller\AdminIface
         if ($this->form->hasErrors()) {
             return;
         }
-        
-        $this->data->save();
-        
-        \Tk\Alert::addSuccess('Settings saved.');
 
-        //\App\Uri::createHomeUrl('/profileEdit.html')->set('profileId', $this->profile->getId())->redirect();
+        $this->data->save();
+
+        // Set all company.autoApprove data field status to true
+        if (!$this->prevActive && ($this->data->get('plugin.active') == 'plugin.active'))
+        {
+            $sql = <<<SQL
+INSERT INTO company_data (`fid`, `fkey`, `key`, `value`)
+    (
+        SELECT a.id, 'App\\Db\\Company', 'autoApprove', 'autoApprove'
+        FROM plugin_zone b, company a LEFT JOIN company_data c ON (a.id = c.fid AND c.fkey = 'App\\Db\\Company' AND c.`key` = 'autoApprove')
+        WHERE b.zone_Id = ? AND a.profile_id = b.zone_id AND b.plugin_name = 'plg-ruleset' AND b.zone_name = 'profile' AND c.fid IS NULL
+    )
+SQL;
+            $stm = $this->getConfig()->getDb()->prepare($sql);
+            $stm->execute(array($this->profile->getId()));
+        }
+
+        \Tk\Alert::addSuccess('Settings saved.');
         $event->setRedirect($this->getConfig()->getBackUrl());
         if ($form->getTriggeredEvent()->getName() == 'save') {
             $event->setRedirect(\Tk\Uri::create());

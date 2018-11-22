@@ -60,6 +60,11 @@ class PlacementValidateHandler implements Subscriber
             }
         }
 
+        $company = $placement->getCompany();
+        if (!$company->getData()->get('autoApprove')) {
+            $event->addError('Auto Approve', 'All placements with this company have to be manually approved.');
+        }
+
     }
 
     /**
