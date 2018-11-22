@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.0.30 [2018-11-22]:
+-------------------------------
+
+
 Ver 2.0.28 [2018-11-07]:
 -------------------------------
   - Updated user role and institution objects to use the \Uni libs
