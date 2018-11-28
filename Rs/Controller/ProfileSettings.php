@@ -67,17 +67,17 @@ class ProfileSettings extends \App\Controller\AdminIface
         if (!$this->profile)
             $this->profile = \App\Db\ProfileMap::create()->find($request->get('profileId'));
 
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('Rules', \App\Uri::createHomeUrl('/ruleManager.html')->
-            set('profileId', $this->profile->getId()), 'fa fa-check'));
+        $this->getActionPanel()->add(\Tk\Ui\Button::create('Rules', \App\Uri::createHomeUrl('/ruleManager.html')
+            ->set('profileId', $this->profile->getId()), 'fa fa-check'));
 
         $this->data = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $this->profile->getId());
 
         $this->form = \App\Config::getInstance()->createForm('formEdit');
         $this->form->setRenderer(\App\Config::getInstance()->createFormRenderer($this->form));
 
-        $this->form->addField(new Field\Textarea('plugin.company.get.class'))->setLabel('Company Category Class')->
-            setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method')->
-            addCss('tkCode')->setRequired(true)->addCss('code')->setAttr('data-mode', 'text/x-php');
+        $this->form->addField(new Field\Textarea('plugin.company.get.class'))->setLabel('Company Category Class')
+            ->setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method')
+            ->setRequired(true)->addCss('code')->setAttr('data-mode', 'text/x-php');
 
         $this->form->addField(new Field\Checkbox('plugin.active'))
             ->setCheckboxLabel('Enable/disable the rules and auto approval system for this profile.')
