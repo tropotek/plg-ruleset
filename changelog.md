@@ -9,6 +9,13 @@ Ver 2.0.32 [2018-11-28]:
 
 Ver 2.0.32 [2018-11-28]:
 -------------------------------
+  - Tagging branch master for release 2.0.32
+  - Added COA plugin
+  - Fixed table orderby with SQL Functions
+
+
+Ver 2.0.32 [2018-11-28]:
+-------------------------------
   - Added COA plugin
   - Fixed table orderby with SQL Functions
 
