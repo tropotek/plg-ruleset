@@ -23,7 +23,7 @@ class CompanyEditHandler implements Subscriber
      */
     public function onControllerInit(\Tk\Event\ControllerEvent $event)
     {
-        $controller = $event->getController();
+        $controller = $event->getControllerObject();
         if ($controller instanceof \App\Controller\Company\Edit && $controller->getConfig()->getUser()->isStaff()) {
             $plugin  =\Rs\Plugin::getInstance();
             $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $controller->getProfileId());

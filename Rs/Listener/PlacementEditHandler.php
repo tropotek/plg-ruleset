@@ -28,7 +28,7 @@ class PlacementEditHandler implements Subscriber
      */
     public function onControllerInit(\Tk\Event\ControllerEvent $event)
     {
-        $controller = $event->getController();
+        $controller = $event->getControllerObject();
         if ($controller instanceof \App\Controller\Placement\Edit || $controller instanceof \App\Controller\Student\Placement\Create) {
             $this->controller = $controller;
 

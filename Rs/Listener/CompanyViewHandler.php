@@ -23,7 +23,7 @@ class CompanyViewHandler implements Subscriber
      */
     public function onControllerInit(\Tk\Event\ControllerEvent $event)
     {
-        $controller = $event->getController();
+        $controller = $event->getControllerObject();
         if ($controller instanceof \App\Controller\Company\View) {
             $this->controller = $controller;
         }
