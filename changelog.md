@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.0.34 [2018-12-13]:
+-------------------------------
+
+
 Ver 2.0.32 [2018-11-28]:
 -------------------------------
   - Merge branch 'master' of https://github.com/tropotek/plg-ruleset
