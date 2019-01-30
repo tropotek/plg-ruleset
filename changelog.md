@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.36 [2019-01-31]:
+-------------------------------
+  - Added CSV import event so we can add rules to created placments
+
+
 Ver 2.0.34 [2018-12-13]:
 -------------------------------
 
