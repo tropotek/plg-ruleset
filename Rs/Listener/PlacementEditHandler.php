@@ -92,11 +92,11 @@ class PlacementEditHandler implements Subscriber
             if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
                 $field->setReadonly();
                 $field->setDisabled(true);
-                $form->addFieldAfter('units', $field);
+                $form->appendField($field, 'units');
                 $field->setAttr('data-hide-unselected');
             } else {
                 $field->setTabGroup('Details');
-                $form->addField($field);
+                $form->appendField($field);
             }
             $field->setLabel('Assessment Credit');
 

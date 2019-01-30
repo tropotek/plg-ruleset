@@ -51,6 +51,7 @@ class SetupHandler implements Subscriber
             $dispatcher->addSubscriber(new \Rs\Listener\StaffSideMenuHandler());
 
             $dispatcher->addSubscriber(new \Rs\Listener\CompanyEditHandler());
+            $dispatcher->addSubscriber(new \Rs\Listener\PlacementImportHandler());
         }
 
     }
