@@ -9,10 +9,10 @@
         "EMS III"
     ],
     "homepage": "http://www.tropotek.com/",
-    "time": "2019-01-31",
+    "time": "2018-11-28",
     "access": "admin, profile",
     "license": "MIT",
-    "version": "2.0.36",
+    "version": "2.0.32",
     "authors":  [
          {
             "name": "Michael Mifsud",
