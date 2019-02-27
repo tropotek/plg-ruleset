@@ -62,7 +62,7 @@ class Calculator extends \Tk\ObjectUtil
         $this->subject = $subject;
         $this->user = $user;
         $this->placementList = $this->findPlacementList($subject->getId(), $user->getId());
-        $this->ruleList = self::findProfileRuleList($subject->getProfile()->getId());
+        $this->ruleList = self::findSubjectRuleList($subject->getId());
     }
 
     /**
@@ -177,7 +177,6 @@ class Calculator extends \Tk\ObjectUtil
         $this->ruleTotals['total']['validMsg'] = Rule::getValidateMessage($totals['total'], $this->subject->getProfile()->minUnitsTotal, $this->subject->getProfile()->maxUnitsTotal);
         $this->ruleTotals['total']['assessmentRule'] = null;
 
-        //vd($this->ruleInfo);
     }
 
 
@@ -306,7 +305,7 @@ class Calculator extends \Tk\ObjectUtil
     {
         $list = null;
         if ($placement->getId()) {
-            $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getVolatileId()), \Tk\Db\Tool::create('order_by'));
+            $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getVolatileId(), 'active' => true), \Tk\Db\Tool::create('order_by'));
         } else {    // Get default rules based on the company and subject object
             $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
         }
@@ -322,7 +321,7 @@ class Calculator extends \Tk\ObjectUtil
      */
     public static function findCompanyRuleList($company, $subject, $supervisor = null)
     {
-        $list = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $subject->profileId), \Tk\Db\Tool::create('order_by'));
+        $list = \Rs\Db\RuleMap::create()->findFiltered(array('subjectId' => $subject->getId(), 'active' => true), \Tk\Db\Tool::create('order_by'));
         $valid = array();
         /** @var \Rs\Db\Rule $rule */
         foreach ($list as $rule) {
@@ -334,13 +333,13 @@ class Calculator extends \Tk\ObjectUtil
     }
 
     /**
-     * @param $profileId
+     * @param int $subjectId
      * @return Rule[]|\Tk\Db\Map\ArrayObject
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
-    public static function findProfileRuleList($profileId)
+    public static function findSubjectRuleList($subjectId)
     {
-        return \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $profileId), \Tk\Db\Tool::create('order_by'));
+        return \Rs\Db\RuleMap::create()->findFiltered(array('subjectId' => $subjectId, 'active' => true), \Tk\Db\Tool::create('order_by'));
     }
 
     /**

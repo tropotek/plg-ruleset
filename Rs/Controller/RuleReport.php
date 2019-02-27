@@ -18,10 +18,6 @@ class RuleReport extends \App\Controller\AdminManagerIface
      */
     static public $calcCache = array();
 
-    /**
-     * @var \App\Db\Profile
-     */
-    private $profile = null;
 
     /**
      * Manager constructor.
@@ -39,20 +35,19 @@ class RuleReport extends \App\Controller\AdminManagerIface
      */
     public function doDefault(Request $request)
     {
-        $this->profile = $this->getProfile();
 
         $this->table = \App\Config::getInstance()->createTable(\App\Config::getInstance()->getUrlName());
         $this->table->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
 
-        $this->table->addCell(new \Tk\Table\Cell\Text('uid'))->setLabel('Student Number');
-        $this->table->addCell(new \Tk\Table\Cell\Text('name'));
-        $this->table->addCell(new \Tk\Table\Cell\Email('email'))->addCss('key');
+        $this->table->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('Student Number');
+        $this->table->appendCell(new \Tk\Table\Cell\Text('name'));
+        $this->table->appendCell(new \Tk\Table\Cell\Email('email'))->addCss('key');
 
-        $rules = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $this->getProfile()->getId()));
         $subject = $this->getSubject();
+        $rules = \Rs\Db\RuleMap::create()->findFiltered(array('subjectId' => $subject->getId(), 'active' => true));
 
         foreach ($rules as $rule) {
-            $this->table->addCell(new \Tk\Table\Cell\Text($rule->getLabel()))->setOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+            $this->table->appendCell(new \Tk\Table\Cell\Text($rule->getLabel()))->setOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
                 /** @var \Tk\Table\Cell\Text $cell  */
                 /** @var \App\Db\User $obj  */
                 $tblFilter = $cell->getTable()->getFilterValues();
@@ -84,12 +79,12 @@ class RuleReport extends \App\Controller\AdminManagerIface
 
         // Filters
         $list = array('-- Status --' => '', 'Pending' => 'pending', 'Completed' => 'completed');
-        $this->table->addFilter(new Field\Select('results', $list)); //->setLabel('Status');
+        $this->table->appendFilter(new Field\Select('results', $list)); //->setLabel('Status');
 
         // Actions
-        $this->table->addAction(\Tk\Table\Action\ColumnSelect::create()->setDisabled(array('id', 'name'))
+        $this->table->appendAction(\Tk\Table\Action\ColumnSelect::create()->setDisabled(array('id', 'name'))
             ->addUnselected('created')->addUnselected('description'));
-        $this->table->addAction(\Tk\Table\Action\Csv::create());
+        $this->table->appendAction(\Tk\Table\Action\Csv::create());
 
         $this->table->setList($this->getList());
     }

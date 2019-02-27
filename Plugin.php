@@ -33,8 +33,8 @@ class Plugin extends \App\Plugin\Iface
 
         // Register the plugin for the different client areas if they are to be enabled/disabled/configured by those roles.
         //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_INSTITUTION);
-        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT_PROFILE);
-        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT);
+        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT_PROFILE);
+        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT);
 
         /** @var Dispatcher $dispatcher */
         $dispatcher = $this->getConfig()->getEventDispatcher();
@@ -47,7 +47,6 @@ class Plugin extends \App\Plugin\Iface
      * Will only be called when activating the plugin in the
      * plugin control panel
      *
-     * @throws \Tk\Exception
      * @throws \Exception
      */
     function doActivate()
@@ -66,6 +65,35 @@ class Plugin extends \App\Plugin\Iface
 //        $data->set('plugin.title', 'Day One Skills');
 //        $data->set('plugin.email', 'fvas-elearning@unimelb.edu.au');
 //        $data->save();
+    }
+
+    /**
+     * @param string $zoneName
+     * @param string $zoneId
+     * @throws \Exception
+     */
+    public function doZoneEnable($zoneName, $zoneId) {
+
+        if (!$zoneName == self::ZONE_SUBJECT) return;
+
+        /** @var \App\Db\Subject $subject */
+        $subject = $this->getConfig()->getSubjectMapper()->find($zoneId);
+        if ($subject) {
+            $sql = <<<SQL
+INSERT INTO company_data (`fid`, `fkey`, `key`, `value`)
+    (
+        SELECT a.id, 'App\\Db\\Company', 'autoApprove', 'autoApprove'
+        FROM plugin_zone b, subject s, company a LEFT JOIN company_data c ON (a.id = c.fid AND c.fkey = 'App\\Db\\Company' AND c.`key` = 'autoApprove')
+        WHERE b.zone_id = ? AND b.zone_id = s.id AND a.profile_id = s.profile_id AND b.plugin_name = 'plg-ruleset' AND b.zone_name = 'subject' AND c.fid IS NULL
+    )
+ON DUPLICATE KEY UPDATE `key` = 'autoApprove'
+SQL;
+
+            $stm = $this->getConfig()->getDb()->prepare($sql);
+            $stm->execute(array($zoneId));
+
+        }
+
     }
 
     /**
@@ -128,15 +156,16 @@ class Plugin extends \App\Plugin\Iface
     /**
      * Get the subject settings URL, if null then there is none
      *
-     * @param $zoneName
+     * @param string $zoneName
+     * @param string $zoneId
      * @return string|\Tk\Uri|null
      */
-    public function getZoneSettingsUrl($zoneName)
+    public function getZoneSettingsUrl($zoneName, $zoneId)
     {
-//        switch ($zoneName) {
-//            case self::ZONE_SUBJECT_PROFILE:
-//                return \Tk\Uri::create('/ruleset/profileSettings.html');
-//        }
+        switch ($zoneName) {
+            case self::ZONE_SUBJECT:
+                return \App\Uri::createSubjectUrl('/ruleSettings.html');
+        }
         return null;
     }
 

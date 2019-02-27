@@ -2,6 +2,8 @@
 namespace Rs\Db;
 
 
+use Rs\Plugin;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -24,7 +26,17 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     /**
      * @var int
      */
+    public $uid = 0;
+
+    /**
+     * @var int
+     */
     public $profileId = 0;
+
+    /**
+     * @var int
+     */
+    public $subjectId = 0;
 
     /**
      * @var string
@@ -54,7 +66,17 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     /**
      * @var string
      */
+    public $assert = '';
+
+    /**
+     * @var string
+     */
     public $script = '';
+
+    /**
+     * @var bool
+     */
+    public $active = true;
 
     /**
      * @var int
@@ -155,6 +177,28 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     final public function getValidMessage($units)
     {
         return self::getValidateMessage($units, $this->min, $this->max);
+    }
+
+
+    /**
+     * @param null|string $current
+     * @return array
+     */
+    public static function getAssertList($current = null)
+    {
+        $path = \App\Config::getInstance()->getSitePath() . Plugin::getInstance()->getPluginPath().'/Rs/Assert';
+        $list = array();
+        foreach (scandir($path) as $i => $file) {
+            if ($file[0] == '.') continue;
+            if (strpos($file, 'Iface') === 0) continue;
+            $class = str_replace('.php', '', $file);
+            $label = $class;
+            if ($current && $current == '\\Rs\\Assert\\' . $class)
+                $label .= ' (selected)';
+            $list[$label] = '\\Rs\\Assert\\' . $class;
+        }
+        ksort($list);
+        return $list;
     }
 
     /**

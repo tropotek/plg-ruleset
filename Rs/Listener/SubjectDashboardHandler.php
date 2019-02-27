@@ -32,7 +32,7 @@ class SubjectDashboardHandler implements Subscriber
 CSS;
                 $table->getRenderer()->getTemplate()->appendCss($css);
 
-                $table->addCellBefore($table->findCell('actions'), new \Tk\Table\Cell\Text('credit'))->setOnCellHtml(function ($cell, $obj, $html) {
+                $table->prependCell(new \Tk\Table\Cell\Text('credit'), 'actions')->setOnCellHtml(function ($cell, $obj, $html) {
                     /** @var \Tk\Table\Cell\Iface $cell */
                     /** @var \App\Db\Placement $obj */
                     $list = \Rs\Calculator::findPlacementRuleList($obj);

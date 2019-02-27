@@ -8,6 +8,7 @@ use Rs\Plugin;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @deprecated No longer needed as companies should only have one class.
  */
 class CategoryClassHandler implements Subscriber
 {
@@ -18,9 +19,12 @@ class CategoryClassHandler implements Subscriber
      *
      * @param \Tk\Event\Event $event
      * @throws \Exception
+     * @deprecated No longer needed as companies should only have one class.
      */
     public function onGetCompanyCategoryClass(\Tk\Event\Event $event)
     {
+        return;
+
         $plugin = Plugin::getInstance();
         // NOTE: These vars are for the eval() function for finding the class value
         /** @var \App\Db\Company $company */
@@ -33,12 +37,12 @@ class CategoryClassHandler implements Subscriber
 
         $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $company->profileId);
         $script = $profilePluginData->get('plugin.company.get.class');
-        if ($profilePluginData->get('plugin.active') && $script != null) {
+        //if ($profilePluginData->get('plugin.active') && $script != null) {
             $calcClass = eval($script);
             if ($calcClass) {
                 $event->set('class', $calcClass);
             }
-        }
+        //}
     }
 
 

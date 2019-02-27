@@ -7,6 +7,8 @@ use Tk\Event\Subscriber;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ *
+ * @note: The auto approve enable checkbox is linked to the company and not the subject...
  */
 class CompanyEditHandler implements Subscriber
 {
@@ -26,10 +28,10 @@ class CompanyEditHandler implements Subscriber
         $controller = $event->getControllerObject();
         if ($controller instanceof \App\Controller\Company\Edit && $controller->getConfig()->getUser()->isStaff()) {
             $plugin  =\Rs\Plugin::getInstance();
-            $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $controller->getProfileId());
-            if ($profilePluginData->get('plugin.active')) {
+            //$profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $controller->getProfileId());
+            //if ($profilePluginData->get('plugin.active')) {
                 $this->controller = $controller;
-            }
+            //}
         }
     }
 

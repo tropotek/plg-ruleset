@@ -22,7 +22,7 @@ class PlacementValidateHandler implements Subscriber
         $placement = $event->getPlacement();
         if (!$placement) throw new \Tk\Exception('Invalid placement, please contact the site administrator.');
 
-        $profileData = \Tk\Db\Data::create(\Rs\Plugin::getInstance()->getName() . '.subject.profile', $placement->getSubject()->profileId);
+        //$profileData = \Tk\Db\Data::create(\Rs\Plugin::getInstance()->getName() . '.subject.profile', $placement->getSubject()->profileId);
 
         if (!$placement->getPlacementType()->autoApproveHistoric && $placement->historic) {
             return;

@@ -73,7 +73,7 @@ class PlacementEditHandler implements Subscriber
             $this->placement = $this->controller->getPlacement();
 
             $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor());
-            $profileRules = \Rs\Calculator::findProfileRuleList($this->placement->getSubject()->profileId);
+            $profileRules = \Rs\Calculator::findSubjectRuleList($this->placement->subjectId);
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
             //vd($this->placement->getId(), $placementRules, $profileRules->toArray('id'), $companyRules->toArray('id'));

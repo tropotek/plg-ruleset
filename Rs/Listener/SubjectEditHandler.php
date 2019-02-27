@@ -8,9 +8,8 @@ use Tk\Event\Subscriber;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
- * @deprecated
  */
-class ProfileEditHandler implements Subscriber
+class SubjectEditHandler implements Subscriber
 {
 
     /**
@@ -19,16 +18,15 @@ class ProfileEditHandler implements Subscriber
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {
-        /** @var \App\Controller\Profile\Edit $controller */
+        /** @var \App\Controller\Subject\Edit $controller */
         $controller = $event->get('controller');
-        if ($controller instanceof \App\Controller\Profile\Edit) {
+        if ($controller instanceof \App\Controller\Subject\Edit) {
 
             if ($controller->getUser()->isStaff() && $controller->getProfile()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
-                $actionPanel->add(\Tk\Ui\Button::create(\App\Db\Phrase::findValue('placement', $controller->getProfile()->getId()) . ' Rules',
-                    \App\Uri::createHomeUrl('/ruleSettings.html')
-                        ->set('profileId', $controller->getProfile()->getId()), 'fa fa-check'));
+                $actionPanel->append(\Tk\Ui\Link::createBtn(\App\Db\Phrase::findValue('placement', $controller->getProfile()->getId()) . ' Rules',
+                    \App\Uri::createSubjectUrl('/ruleManager.html'), 'fa fa-check'));
             }
 
         }

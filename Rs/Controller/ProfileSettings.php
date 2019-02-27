@@ -11,6 +11,9 @@ use Rs\Plugin;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ *
+ * @deprecated as each company now is only allowed one class type
+ * @todo: Put some data validation into the company edit form to ensure Class types cannot be mixed
  */
 class ProfileSettings extends \App\Controller\AdminIface
 {
@@ -123,8 +126,8 @@ INSERT INTO company_data (`fid`, `fkey`, `key`, `value`)
         WHERE b.zone_Id = ? AND a.profile_id = b.zone_id AND b.plugin_name = 'plg-ruleset' AND b.zone_name = 'profile' AND c.fid IS NULL
     )
 SQL;
-            $stm = $this->getConfig()->getDb()->prepare($sql);
-            $stm->execute(array($this->profile->getId()));
+            //$stm = $this->getConfig()->getDb()->prepare($sql);
+            //$stm->execute(array($this->profile->getId()));
         }
 
         \Tk\Alert::addSuccess('Settings saved.');

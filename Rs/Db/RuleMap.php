@@ -23,13 +23,17 @@ class RuleMap extends \App\Db\Mapper
         if (!$this->dbMap) {
             $this->dbMap = new \Tk\DataMap\DataMap();
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
+            $this->dbMap->addPropertyMap(new Db\Integer('uid'));
             $this->dbMap->addPropertyMap(new Db\Integer('profileId', 'profile_id'));
+            $this->dbMap->addPropertyMap(new Db\Integer('subjectId', 'subject_id'));
             $this->dbMap->addPropertyMap(new Db\Text('name'));
             $this->dbMap->addPropertyMap(new Db\Text('label'));
             $this->dbMap->addPropertyMap(new Db\Text('description'));
             $this->dbMap->addPropertyMap(new Db\Decimal('min'));
             $this->dbMap->addPropertyMap(new Db\Decimal('max'));
+            $this->dbMap->addPropertyMap(new Db\Text('assert'));
             $this->dbMap->addPropertyMap(new Db\Text('script'));
+            $this->dbMap->addPropertyMap(new Db\Boolean('active'));
             $this->dbMap->addPropertyMap(new Db\Integer('orderBy', 'order_by'));
             $this->dbMap->addPropertyMap(new Db\Date('created'));
         }
@@ -44,13 +48,17 @@ class RuleMap extends \App\Db\Mapper
         if (!$this->formMap) {
             $this->formMap = new \Tk\DataMap\DataMap();
             $this->formMap->addPropertyMap(new Form\Integer('id'), 'key');
+            $this->formMap->addPropertyMap(new Form\Integer('uid'));
             $this->formMap->addPropertyMap(new Form\Integer('profileId'));
+            $this->formMap->addPropertyMap(new Form\Integer('subjectId'));
             $this->formMap->addPropertyMap(new Form\Text('name'));
             $this->formMap->addPropertyMap(new Form\Text('label'));
             $this->formMap->addPropertyMap(new Form\Text('description'));
             $this->formMap->addPropertyMap(new Form\Decimal('min'));
             $this->formMap->addPropertyMap(new Form\Decimal('max'));
+            $this->formMap->addPropertyMap(new Form\Text('assert'));
             $this->formMap->addPropertyMap(new Form\Text('script'));
+            $this->formMap->addPropertyMap(new Form\Boolean('active'));
         }
         return $this->formMap;
     }
@@ -62,7 +70,7 @@ class RuleMap extends \App\Db\Mapper
      * @param array $filter
      * @param Tool $tool
      * @return ArrayObject|Rule[]
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function findFiltered($filter = array(), $tool = null)
     {
@@ -87,12 +95,28 @@ class RuleMap extends \App\Db\Mapper
             }
         }
 
-        if (!empty($filter['profileId'])) {
+        if (!empty($filter['profileId'])) { // deprecated use subjectId
             $where .= sprintf('a.profile_id = %s AND ', (int)$filter['profileId']);
+        }
+
+        if (!empty($filter['uid'])) {
+            $where .= sprintf('a.uid = %s AND ', (int)$filter['uid']);
+        }
+
+        if (!empty($filter['subjectId'])) {
+            $where .= sprintf('a.subject_id = %s AND ', (int)$filter['subjectId']);
+        }
+
+        if (!empty($filter['active']) && $filter['active'] !== '' && $filter['active'] !== null) {
+            $where .= sprintf('a.active = %s AND ', (int)$filter['active']);
         }
 
         if (!empty($filter['name'])) {
             $where .= sprintf('a.name = %s AND ', $this->quote($filter['name']));
+        }
+
+        if (!empty($filter['assert'])) {
+            $where .= sprintf('a.assert = %s AND ', $this->quote($filter['assert']));
         }
 
         if (!empty($filter['label'])) {
@@ -120,6 +144,7 @@ class RuleMap extends \App\Db\Mapper
         }
 
         $res = $this->selectFrom($from, $where, $tool);
+        //vd($this->getDb()->getLastQuery());
         return $res;
     }
 
