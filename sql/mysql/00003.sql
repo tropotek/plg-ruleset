@@ -61,7 +61,10 @@ UPDATE rule_has_placement a, placement b, rule c
 
 
 alter table rule add active TINYINT default 1 not null;
-
+UPDATE `rule` t SET t.`active` = 0 WHERE t.`id` = 97;
+UPDATE `rule` t SET t.`active` = 0 WHERE t.`id` = 98;
+UPDATE `rule` t SET t.`active` = 0 WHERE t.`id` = 108;
+UPDATE `rule` t SET t.`active` = 0 WHERE t.`id` = 109;
 --
 
 
