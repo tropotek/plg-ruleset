@@ -69,6 +69,17 @@ UPDATE `rule` t SET t.`active` = 0 WHERE t.`id` = 109;
 
 
 
+-- Fix Cindy Ho rules list
+#UPDATE rule_has_placement a, placement b, rule c, rule d
+#SET a.rule_id = d.id
+#WHERE
+#  a.placement_id = b.id
+#    AND a.rule_id = c.id
+#    AND c.uid = d.uid AND d.subject_id = 58
+#    AND b.subject_id = 58
+#    AND b.user_id = 2156
+#;
+
 
 
 

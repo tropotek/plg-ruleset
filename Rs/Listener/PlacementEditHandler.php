@@ -72,14 +72,13 @@ class PlacementEditHandler implements Subscriber
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
 
-            $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor());
             $profileRules = \Rs\Calculator::findSubjectRuleList($this->placement->subjectId);
+            $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor())->toArray('id');
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
-            //vd($this->placement->getId(), $placementRules, $profileRules->toArray('id'), $companyRules->toArray('id'));
-            $field = new \Tk\Form\Field\CheckboxGroup('rules', \Tk\Form\Field\Option\ArrayObjectIterator::create($profileRules));
+            $field = new \Tk\Form\Field\CheckboxGroup('rules', $profileRules);
             if (!$this->placement->getId()) {
-                $field->setValue($companyRules->toArray('id'));
+                $field->setValue($companyRules);
             } else {
                 $field->setValue($placementRules);
             }
@@ -170,7 +169,6 @@ jQuery(function ($) {
       });
     }
   });
-  
   
 });
 JS;
