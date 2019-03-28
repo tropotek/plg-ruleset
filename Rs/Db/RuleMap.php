@@ -99,16 +99,10 @@ class RuleMap extends \App\Db\Mapper
             $where .= sprintf('a.profile_id = %s AND ', (int)$filter['profileId']);
         }
 
-        if (!empty($filter['uid'])) {
-            $where .= sprintf('a.uid = %s AND ', (int)$filter['uid']);
-        }
-
+        //if (!empty($filter['subjectId']) && !empty($filter['active']) && $filter['active'] !== '' && $filter['active'] !== null) {
         if (!empty($filter['subjectId'])) {
-            $where .= sprintf('a.subject_id = %s AND ', (int)$filter['subjectId']);
-        }
-
-        if (!empty($filter['active']) && $filter['active'] !== '' && $filter['active'] !== null) {
-            $where .= sprintf('a.active = %s AND ', (int)$filter['active']);
+            $from .= sprintf(', (SELECT a.id as \'rule_id\', IFNULL(b.active, 1) as \'active\' FROM rule a LEFT JOIN rule_subject b ON (a.id = b.rule_id AND b.subject_id = %s) ) b', (int)$filter['subjectId']);
+            $where .= sprintf('a.id = b.rule_id AND b.active = 1 AND ');
         }
 
         if (!empty($filter['name'])) {
@@ -193,6 +187,38 @@ class RuleMap extends \App\Db\Mapper
         if ($this->hasPlacement($ruleId, $placementId)) return;
         $stm = $this->getDb()->prepare('INSERT INTO rule_has_placement (rule_id, placement_id) VALUES (?, ?) ');
         $stm->execute($ruleId, $placementId);
+    }
+
+
+
+
+    public function isActive($ruleId, $subjectId)
+    {
+        $stm = $this->getDb()->prepare('SELECT active FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
+        $stm->execute($ruleId, $subjectId);
+        if ($stm->rowCount()) {
+            return (bool)$stm->fetchColumn();
+        }
+        return true;        // All rules are active if no subject record available.
+    }
+
+    public function setActive($ruleId, $subjectId, $active)
+    {
+        $stm = $this->getDb()->prepare('INSERT INTO rule_subject (rule_id, subject_id, active) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE active = ?');
+        $stm->execute((int)$ruleId, (int)$subjectId, (int)$active, (int)$active);
+    }
+
+    public function hasActive($ruleId, $subjectId)
+    {
+        $stm = $this->getDb()->prepare('SELECT * FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
+        $stm->execute($ruleId, $subjectId);
+        return ($stm->rowCount() > 0);
+    }
+
+    public function removeActive($ruleId, $subjectId)
+    {
+        $stm = $this->getDb()->prepare('DELETE FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
+        $stm->execute($ruleId, $subjectId);
     }
 
 }

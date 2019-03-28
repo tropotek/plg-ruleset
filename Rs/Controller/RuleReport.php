@@ -44,7 +44,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
         $this->table->appendCell(new \Tk\Table\Cell\Email('email'))->addCss('key');
 
         $subject = $this->getSubject();
-        $rules = \Rs\Db\RuleMap::create()->findFiltered(array('subjectId' => $subject->getId(), 'active' => true));
+        $rules = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $this->getProfileId(), 'subjectId' => $subject->getId()));
 
         foreach ($rules as $rule) {
             $this->table->appendCell(new \Tk\Table\Cell\Text($rule->getLabel()))->setOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {

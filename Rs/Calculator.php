@@ -61,8 +61,8 @@ class Calculator extends \Tk\ObjectUtil
     {
         $this->subject = $subject;
         $this->user = $user;
-        $this->placementList = $this->findPlacementList($subject->getId(), $user->getId());
-        $this->ruleList = self::findSubjectRuleList($subject->getId());
+        $this->placementList = $this->findPlacementList($subject, $user);
+        $this->ruleList = self::findSubjectRuleList($subject);
     }
 
     /**
@@ -185,7 +185,7 @@ class Calculator extends \Tk\ObjectUtil
      *
      * @param bool $total
      * @return array
-     * @throws \Tk\Db\Exception
+     * @throws \Exception
      */
     public function getMinTargets($total = true)
     {
@@ -305,7 +305,8 @@ class Calculator extends \Tk\ObjectUtil
     {
         $list = null;
         if ($placement->getId()) {
-            $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getVolatileId(), 'active' => true), \Tk\Db\Tool::create('order_by'));
+            $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getVolatileId(), 'subjectId' => $placement->subjectId),
+                \Tk\Db\Tool::create('order_by'));
         } else {    // Get default rules based on the company and subject object
             $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
         }
@@ -321,7 +322,7 @@ class Calculator extends \Tk\ObjectUtil
      */
     public static function findCompanyRuleList($company, $subject, $supervisor = null)
     {
-        $list = \Rs\Db\RuleMap::create()->findFiltered(array('subjectId' => $subject->getId(), 'active' => true), \Tk\Db\Tool::create('order_by'));
+        $list = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $subject->profileId, 'subjectId' => $subject->getId()), \Tk\Db\Tool::create('order_by'));
         $valid = array();
         /** @var \Rs\Db\Rule $rule */
         foreach ($list as $rule) {
@@ -333,26 +334,27 @@ class Calculator extends \Tk\ObjectUtil
     }
 
     /**
-     * @param int $subjectId
+     * @param \App\Db\Subject $subject
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      * @throws \Exception
      */
-    public static function findSubjectRuleList($subjectId)
+    public static function findSubjectRuleList($subject)
     {
-        return \Rs\Db\RuleMap::create()->findFiltered(array('subjectId' => $subjectId, 'active' => true), \Tk\Db\Tool::create('order_by'));
+        return \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $subject->profileId, 'subjectId' => $subject->getId()),
+            \Tk\Db\Tool::create('order_by'));
     }
 
     /**
-     * @param int $subjectId
-     * @param int $userId
+     * @param \App\Db\Subject $subject
+     * @param \App\Db\User $user
      * @return \App\Db\Placement[]|\Tk\Db\Map\ArrayObject
      * @throws \Exception
      */
-    public static function findPlacementList($subjectId, $userId)
+    public static function findPlacementList($subject, $user)
     {
         return \App\Db\PlacementMap::create()->findFiltered(array(
-            'userId' => $userId,
-            'subjectId' => $subjectId,
+            'userId' => $user->getId(),
+            'subjectId' => $subject->getId(),
             'status' => array(\App\Db\Placement::STATUS_APPROVED, \App\Db\Placement::STATUS_ASSESSING,
                 \App\Db\Placement::STATUS_EVALUATING, \App\Db\Placement::STATUS_COMPLETED)
         ));

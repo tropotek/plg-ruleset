@@ -36,7 +36,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     /**
      * @var int
      */
-    public $subjectId = 0;
+    //public $subjectId = 0;
 
     /**
      * @var string
@@ -76,7 +76,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     /**
      * @var bool
      */
-    public $active = true;
+    //public $active = true;
 
     /**
      * @var int
@@ -265,7 +265,15 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         return '';
     }
 
-
+    /**
+     * @param $subjectId
+     * @return bool
+     */
+    public function isActive($subjectId)
+    {
+        if (!$this->getId()) return false;
+        return RuleMap::create()->isActive($this->getId(), $subjectId);
+    }
 
 
     /**

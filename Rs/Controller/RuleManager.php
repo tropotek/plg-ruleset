@@ -29,25 +29,41 @@ class RuleManager extends \App\Controller\AdminManagerIface
      */
     public function doDefault(Request $request)
     {
+        if ($request->get('action') == 'update')
+            return $this->doUpdate($request);
 
-        $editUrl = \App\Uri::createSubjectUrl('/ruleEdit.html');
-
-        $this->getActionPanel()->add(\Tk\Ui\Button::create('New Rule', $editUrl, 'fa fa-check fa-add-action'));
 
         $this->table = \App\Config::getInstance()->createTable(\App\Config::getInstance()->getUrlName());
         $this->table->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
 
+        $editUrl = null;
+        if(!$this->getConfig()->isSubjectUrl()) {
+            $editUrl = \App\Uri::createHomeUrl('/ruleEdit.html');
+        }
+
         $this->table->appendCell(new \Tk\Table\Cell\Checkbox('id'));
-        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl(clone $editUrl);
+        $this->table->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl($editUrl);
         $this->table->appendCell(new \Tk\Table\Cell\Text('description'));
         $this->table->appendCell(new \Tk\Table\Cell\Text('label'));
         $this->table->appendCell(new \Tk\Table\Cell\Text('assert'));
-        $this->table->appendCell(new \Tk\Table\Cell\Boolean('active'));
         $this->table->appendCell(new \Tk\Table\Cell\Text('min'));
         $this->table->appendCell(new \Tk\Table\Cell\Text('max'));
         $this->table->appendCell(new \Tk\Table\Cell\Date('created'));
-        $this->table->appendCell(new \Tk\Table\Cell\OrderBy('orderBy'));
-
+        if (!$this->getConfig()->isSubjectUrl()) {
+            $this->table->appendCell(new \Tk\Table\Cell\OrderBy('orderBy'));
+        } else {
+            $this->table->appendCell(new \Tk\Table\Cell\Checkbox('activeCb'))->setLabel('Active')->setUseValue(true)
+                ->setOnPropertyValue(function ($cell, $obj, $value) {
+                    /** @var $cell \Tk\Table\Cell\Checkbox */
+                    /** @var $obj \Rs\Db\Rule */
+                    $subjectId = \App\Config::getInstance()->getSubjectId();
+                    $cell->setAttr('data-url', \Tk\Uri::create()->set('active'));
+                    $cell->setAttr('data-rule-id', $obj->getId());
+                    $cell->setAttr('data-subject-id', $subjectId);
+                    $cell->addCss('tk-ajax-checkbox');
+                    return $obj->isActive($subjectId);
+                });
+        }
         // Filters
         $this->table->appendFilter(new Field\Input('keywords'))->setAttr('placeholder', 'Keywords');
 
@@ -55,9 +71,22 @@ class RuleManager extends \App\Controller\AdminManagerIface
         $this->table->appendAction(\Tk\Table\Action\ColumnSelect::create()->setDisabled(array('id', 'name'))
             ->addUnselected('created')->addUnselected('description'));
         $this->table->appendAction(\Tk\Table\Action\Csv::create());
-        $this->table->appendAction(\Tk\Table\Action\Delete::create());
+        if(!$this->getConfig()->isSubjectUrl()) {
+            $this->table->appendAction(\Tk\Table\Action\Delete::create());
+        }
 
         $this->table->setList($this->getList());
+    }
+
+    /**
+     * @param Request $request
+     * @return \Tk\Response
+     */
+    public function doUpdate(Request $request)
+    {
+        if ((int)$request->get('ruleId') && (int)$request->get('subjectId') && $request->has('value'))
+            \Rs\Db\RuleMap::create()->setActive((int)$request->get('ruleId'), (int)$request->get('subjectId'), $request->get('value') == 'true');
+        return \Tk\ResponseJson::createJson(array('status' => 'ok'));
     }
 
     /**
@@ -67,7 +96,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
     protected function getList()
     {
         $filter = $this->table->getFilterValues();
-        $filter['subjectId'] = $this->getConfig()->getSubjectId();
+        $filter['profileId'] = $this->getProfileId();
         return \Rs\Db\RuleMap::create()->findFiltered($filter, $this->table->getTool('a.order_by'));
     }
 
@@ -76,9 +105,37 @@ class RuleManager extends \App\Controller\AdminManagerIface
      */
     public function show()
     {
-        $template = parent::show();
+        if (!$this->getConfig()->isSubjectUrl())
+            $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New Rule',
+                \App\Uri::createHomeUrl('/ruleEdit.html')->set('profileId', $this->getProfileId()), 'fa fa-check fa-add-action'));
 
+        $template = parent::show();
         $template->replaceTemplate('table', $this->table->getRenderer()->show());
+        if ($this->getConfig()->isSubjectUrl()) {
+            $template->setChoice('subjectUrl');
+            $template->setAttr('rulesManager', 'href', \App\Uri::createHomeUrl('/profileEdit.html')->set('profileId', $this->getProfileId()));
+            $js = <<<JS
+jQuery(function ($) {
+  
+    // Fire off the href url as an ajax call, handy for updates and deletes
+    $('.tk-ajax-checkbox input[type="checkbox"]').on('change', function (e) {
+      var cb = $(this);
+      var data = $(this).parent().data();
+      var url = data.url;
+      cb.attr('disabled', 'disabled');
+      
+      var params = $.extend({action: 'update', value: cb.prop('checked')}, data);
+      $.post(url, params).done(function (data) {
+        cb.removeAttr('disabled');
+      });
+      
+      return false;
+    });
+    
+});
+JS;
+            $template->appendJs($js);
+        }
 
         return $template;
     }
@@ -98,6 +155,12 @@ class RuleManager extends \App\Controller\AdminManagerIface
       <h4 class="panel-title"><i class="fa fa-check"></i> Rule Manager</h4>
     </div>
     <div class="panel-body">
+      
+      <p choice="subjectUrl">
+        NOTE: You can only activate and deactivate rules from here. 
+        Use the <a herf="#" var="rulesManager">Profile Rules Manager</a> to edit the rule records.
+      </p>
+      
       <div var="table"></div>
     </div>
   </div>

@@ -27,11 +27,11 @@ class CompanyEditHandler implements Subscriber
     {
         $controller = $event->getControllerObject();
         if ($controller instanceof \App\Controller\Company\Edit && $controller->getConfig()->getUser()->isStaff()) {
-            $plugin  =\Rs\Plugin::getInstance();
-            //$profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $controller->getProfileId());
-            //if ($profilePluginData->get('plugin.active')) {
+            $plugin = \Rs\Plugin::getInstance();
+            $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $controller->getProfileId());
+            if ($profilePluginData->get('plugin.active')) {
                 $this->controller = $controller;
-            //}
+            }
         }
     }
 
@@ -80,11 +80,7 @@ class CompanyEditHandler implements Subscriber
     public function doSubmit(\Tk\Form $form, \Tk\Form\Event\Iface $event)
     {
         // Load the object with data from the form using a helper object
-        //\App\Db\CompanyMap::create()->mapForm($form->getValues(), $this->company);
-        //vd($form->getValues());
         $this->controller->getCompany()->getData()->set('autoApprove', $form->getFieldValue('autoApprove'));
-
-        //vd($form->getFieldValue('autoApprove'));
         $this->controller->getCompany()->getData()->save();
     }
 
@@ -95,7 +91,7 @@ class CompanyEditHandler implements Subscriber
     public function onControllerShow(\Tk\Event\Event $event)
     {
         if (!$this->controller) return;
-        $template = $this->controller->getTemplate();
+        //$template = $this->controller->getTemplate();
 
     }
 

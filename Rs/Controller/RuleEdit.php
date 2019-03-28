@@ -20,12 +20,6 @@ class RuleEdit extends \App\Controller\AdminEditIface
      */
     protected $rule = null;
 
-    /**
-     * @var \App\Db\Profile
-     */
-    protected $profile = null;
-
-
 
     /**
      * Iface constructor.
@@ -42,18 +36,18 @@ class RuleEdit extends \App\Controller\AdminEditIface
      */
     public function doDefault(Request $request)
     {
-        $this->profile = \App\Config::getInstance()->getProfile();
-
+        $this->rule = \Rs\Db\RuleMap::create()->find($request->get('ruleId'));
         if (!$this->rule) {
             $this->rule = new \Rs\Db\Rule();
-            $this->rule->profileId = $this->profile->getId();
-            if ($request->get('ruleId')) {
-                $this->rule = \Rs\Db\RuleMap::create()->find($request->get('ruleId'));
-            }
+            $this->rule->profileId = $request->get('profileId');
         }
 
         $this->buildForm();
-
+        if ($this->rule->getId() && $this->getConfig()->isSubjectUrl()) {
+            $this->form->load(array(
+                'active' => $this->rule->isActive($this->getSubjectId())
+            ));
+        }
         $this->form->load(\Rs\Db\RuleMap::create()->unmapForm($this->rule));
         $this->form->execute($request);
 
@@ -72,7 +66,9 @@ class RuleEdit extends \App\Controller\AdminEditIface
         $this->form->appendField(new Field\Input('label'));
         $this->form->appendField(new \App\Form\Field\MinMax('min', 'max'));
         $this->form->appendField(new Field\Input('description'));
-        $this->form->appendField(new Field\Checkbox('active'));
+        if ($this->getConfig()->isSubjectUrl()) {
+            $this->form->appendField(new Field\Checkbox('active'))->setValue(true);
+        }
 
         $list = \Rs\Db\Rule::getAssertList($this->rule->assert);
         $this->form->appendField(new Field\Select('assert', $list))->prependOption('-- None --', '');
@@ -101,6 +97,10 @@ class RuleEdit extends \App\Controller\AdminEditIface
         }
 
         $this->rule->save();
+
+        if ($form->getField('active') && $this->getConfig()->isSubjectUrl()) {
+            \Rs\Db\RuleMap::create()->setActive($this->rule->getId(), $this->getSubjectId(), $form->getFieldValue('active'));
+        }
 
         \Tk\Alert::addSuccess('Record saved!');
         $event->setRedirect($this->getConfig()->getBackUrl());

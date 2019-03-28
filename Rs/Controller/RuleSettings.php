@@ -20,6 +20,11 @@ class RuleSettings extends \App\Controller\AdminEditIface
      */
     protected $data = null;
 
+    /**
+     * @var \App\Db\Profile
+     */
+    private $profile = null;
+
 
     /**
      * ProfileSettings constructor.
@@ -40,7 +45,13 @@ class RuleSettings extends \App\Controller\AdminEditIface
     public function doDefault(Request $request)
     {
         $plugin = Plugin::getInstance();
-        $this->data = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $this->getProfileId());
+        $this->profile = $this->getProfile();
+        if (!$this->profile)
+            $this->profile = \App\Db\ProfileMap::create()->find($request->get('zoneId'));
+        if (!$this->profile)
+            throw new \Tk\Exception('Profile Not Found!');
+
+        $this->data = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $this->profile->getId());
 
         $this->form = \App\Config::getInstance()->createForm('formEdit');
         $this->form->setRenderer(\App\Config::getInstance()->createFormRenderer($this->form));
@@ -48,6 +59,10 @@ class RuleSettings extends \App\Controller\AdminEditIface
         $this->form->appendField(new Field\Textarea('plugin.company.get.class'))->setLabel('Company Category Class')
             ->setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method<br/><em>Warning: This is deprecated as each company should only have one category class.</em>')
             ->setRequired(true)->addCss('code')->setAttr('data-mode', 'text/x-php');
+
+        $this->form->appendField(new Field\Checkbox('plugin.active'))
+            ->setCheckboxLabel('Enable/disable the rules and auto approval system for this profile.')
+            ->setLabel('Active')->setRequired(true);
 
         $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
         $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
@@ -89,6 +104,10 @@ class RuleSettings extends \App\Controller\AdminEditIface
      */
     public function show()
     {
+
+        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Rules', \App\Uri::createHomeUrl('/ruleManager.html')
+            ->set('profileId', $this->profile->getId()), 'fa fa-check'));
+
         $template = parent::show();
         
         // Render the form

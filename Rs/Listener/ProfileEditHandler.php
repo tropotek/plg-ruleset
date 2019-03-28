@@ -8,7 +8,6 @@ use Tk\Event\Subscriber;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
- * @deprecated
  */
 class ProfileEditHandler implements Subscriber
 {
@@ -26,7 +25,7 @@ class ProfileEditHandler implements Subscriber
             if ($controller->getUser()->isStaff() && $controller->getProfile()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
-                $actionPanel->add(\Tk\Ui\Button::create(\App\Db\Phrase::findValue('placement', $controller->getProfile()->getId()) . ' Rules',
+                $actionPanel->append(\Tk\Ui\Link::createBtn(\App\Db\Phrase::findValue('placement', $controller->getProfile()->getId()) . ' Rules',
                     \App\Uri::createHomeUrl('/ruleSettings.html')
                         ->set('profileId', $controller->getProfile()->getId()), 'fa fa-check'));
             }

@@ -25,7 +25,11 @@ class CompanyViewHandler implements Subscriber
     {
         $controller = $event->getControllerObject();
         if ($controller instanceof \App\Controller\Company\View) {
-            $this->controller = $controller;
+            $plugin = \Rs\Plugin::getInstance();
+            $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $controller->getProfileId());
+            if ($profilePluginData->get('plugin.active')) {
+                $this->controller = $controller;
+            }
         }
     }
 

@@ -33,8 +33,8 @@ class Plugin extends \App\Plugin\Iface
 
         // Register the plugin for the different client areas if they are to be enabled/disabled/configured by those roles.
         //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_INSTITUTION);
-        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT_PROFILE);
-        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT);
+        $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT_PROFILE);
+        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT);
 
         /** @var Dispatcher $dispatcher */
         $dispatcher = $this->getConfig()->getEventDispatcher();
@@ -74,7 +74,7 @@ class Plugin extends \App\Plugin\Iface
      */
     public function doZoneEnable($zoneName, $zoneId) {
 
-        if (!$zoneName == self::ZONE_SUBJECT) return;
+        if (!$zoneName == self::ZONE_SUBJECT_PROFILE) return;
 
         /** @var \App\Db\Subject $subject */
         $subject = $this->getConfig()->getSubjectMapper()->find($zoneId);
@@ -84,7 +84,7 @@ INSERT INTO company_data (`fid`, `fkey`, `key`, `value`)
     (
         SELECT a.id, 'App\\Db\\Company', 'autoApprove', 'autoApprove'
         FROM plugin_zone b, subject s, company a LEFT JOIN company_data c ON (a.id = c.fid AND c.fkey = 'App\\Db\\Company' AND c.`key` = 'autoApprove')
-        WHERE b.zone_id = ? AND b.zone_id = s.id AND a.profile_id = s.profile_id AND b.plugin_name = 'plg-ruleset' AND b.zone_name = 'subject' AND c.fid IS NULL
+        WHERE b.zone_id = ? AND b.zone_id = s.id AND a.profile_id = s.profile_id AND b.plugin_name = 'plg-ruleset' AND b.zone_name = 'profile' AND c.fid IS NULL
     )
 ON DUPLICATE KEY UPDATE `key` = 'autoApprove'
 SQL;
@@ -129,6 +129,8 @@ SQL;
     function doDeactivate()
     {
         // TODO: Maybe we do not delete anything to ensure data is not lost??????
+        return;
+
         $db = $this->getConfig()->getDb();
 
         // Clear the data table of all plugin data
@@ -163,7 +165,7 @@ SQL;
     public function getZoneSettingsUrl($zoneName, $zoneId)
     {
         switch ($zoneName) {
-            case self::ZONE_SUBJECT:
+            case self::ZONE_SUBJECT_PROFILE:
                 return \App\Uri::createSubjectUrl('/ruleSettings.html');
         }
         return null;

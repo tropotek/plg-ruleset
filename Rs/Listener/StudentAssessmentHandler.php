@@ -68,22 +68,7 @@ class StudentAssessmentHandler implements Subscriber
         if ($validValue > 0) return 'grater';
         return 'equal';
     }
-    
-    /**
-     * @param \Tk\Event\Event $event
-     */
-    public function onShowRow(\Tk\Event\Event $event)
-    {
-        //vd('onShowRow');
-    }
 
-    /**
-     * @param \Tk\Event\Event $event
-     */
-    public function onShow(\Tk\Event\Event $event)
-    {
-        //vd('onShow');
-    }
 
     /**
      * @return array
@@ -92,9 +77,6 @@ class StudentAssessmentHandler implements Subscriber
     {
         return array(
             \App\UiEvents::STUDENT_ASSESSMENT_INIT      => array('onInit', 0)
-//            ,
-//            \App\UiEvents::STUDENT_ASSESSMENT_SHOW_ROW  => array('onShowRow', 0),
-//            \App\UiEvents::STUDENT_ASSESSMENT_SHOW      => array('onShow', 0)
         );
     }
 

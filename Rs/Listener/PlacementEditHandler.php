@@ -72,7 +72,7 @@ class PlacementEditHandler implements Subscriber
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
 
-            $profileRules = \Rs\Calculator::findSubjectRuleList($this->placement->subjectId);
+            $profileRules = \Rs\Calculator::findSubjectRuleList($this->placement->getSubject());
             $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor())->toArray('id');
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
