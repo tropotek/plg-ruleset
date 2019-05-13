@@ -2,6 +2,7 @@
 namespace Rs\Listener;
 
 use Tk\Event\Subscriber;
+use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -23,12 +24,12 @@ class PlacementEditHandler implements Subscriber
 
 
     /**
-     * @param \Tk\Event\ControllerEvent $event
+     * @param \Symfony\Component\HttpKernel\Event\ControllerEvent $event
      * @throws \Exception
      */
-    public function onControllerInit(\Tk\Event\ControllerEvent $event)
+    public function onControllerInit(\Symfony\Component\HttpKernel\Event\ControllerEvent $event)
     {
-        $controller = $event->getControllerObject();
+        $controller = \Tk\Event\Event::findControllerObject($event);
         if ($controller instanceof \App\Controller\Placement\Edit || $controller instanceof \App\Controller\Student\Placement\Create) {
             $this->controller = $controller;
 
@@ -202,7 +203,7 @@ JS;
     public static function getSubscribedEvents()
     {
         return array(
-            \Tk\Kernel\KernelEvents::CONTROLLER => array('onControllerInit', 0),
+            KernelEvents::CONTROLLER => array('onControllerInit', 0),
             \Tk\Form\FormEvents::FORM_INIT => array('onFormInit', 0)
         );
     }
