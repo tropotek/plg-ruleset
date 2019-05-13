@@ -1,7 +1,6 @@
-# EMS III Placement RuleSet
+# EMS Placement RuleSet Plugin
 
-__Project:__ [ttek-plg/plg-ruleset](http://packagist.org/packages/ttek-plg/plg-ruleset)  
-__Published:__ 01 July 2017
+__Project:__ [ttek-plg/plg-ruleset](http://packagist.org/packages/ttek-plg/plg-ruleset)
 __Web:__ <http://www.tropotek.com/>  
 __Authors:__ Michael Mifsud <http://www.tropotek.com/>  
   
@@ -27,7 +26,7 @@ Or add the following to your composer.json file:
 
 ```json
 {
-  "ttek-plg/plg-ruleset": "~1.0"
+  "ttek-plg/plg-ruleset": "~3.0"
 }
 ```
 

@@ -6,13 +6,12 @@
         "tropotek",
         "plugin",
         "ruleset",
-        "EMS III"
+        "EMS"
     ],
-    "homepage": "http://www.tropotek.com/",
-    "time": "2018-11-28",
-    "access": "admin, profile",
+    "time": "2019-04-09",
     "license": "MIT",
-    "version": "2.0.32",
+    "version": "master",
+    "access": "admin, profile",
     "authors":  [
          {
             "name": "Michael Mifsud",
@@ -26,12 +25,9 @@
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     },
     "require":  {
-        "ttek/tk-framework": "~2.0",
-        "ttek/tk-uni": "~2.0",
-        "ttek/tk-installers": "~2.0"
     }
 }
