@@ -27,7 +27,7 @@ class PlacementEditHandler implements Subscriber
      * @param \Symfony\Component\HttpKernel\Event\ControllerEvent $event
      * @throws \Exception
      */
-    public function onControllerInit(\Symfony\Component\HttpKernel\Event\ControllerEvent $event)
+    public function onControllerInit($event)
     {
         $controller = \Tk\Event\Event::findControllerObject($event);
         if ($controller instanceof \App\Controller\Placement\Edit || $controller instanceof \App\Controller\Student\Placement\Create) {

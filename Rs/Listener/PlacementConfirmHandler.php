@@ -26,7 +26,7 @@ class PlacementConfirmHandler implements Subscriber
     /**
      * @param \Symfony\Component\HttpKernel\Event\ControllerEvent $event
      */
-    public function onControllerInit(\Symfony\Component\HttpKernel\Event\ControllerEvent $event)
+    public function onControllerInit($event)
     {
         $controller = \Tk\Event\Event::findControllerObject($event);
         if ($controller instanceof \App\Controller\Student\Placement\Create || $controller instanceof \App\Controller\Student\Placement\Confirm) {

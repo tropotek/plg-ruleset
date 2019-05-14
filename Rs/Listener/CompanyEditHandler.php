@@ -24,7 +24,7 @@ class CompanyEditHandler implements Subscriber
     /**
      * @param \Symfony\Component\HttpKernel\Event\ControllerEvent $event
      */
-    public function onControllerInit(\Symfony\Component\HttpKernel\Event\ControllerEvent $event)
+    public function onControllerInit($event)
     {
         $controller = \Tk\Event\Event::findControllerObject($event);
         if ($controller instanceof \App\Controller\Company\Edit && $controller->getConfig()->getUser()->isStaff()) {
