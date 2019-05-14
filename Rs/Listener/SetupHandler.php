@@ -18,7 +18,7 @@ class SetupHandler implements Subscriber
      * @throws \Tk\Db\Exception
      * @throws \Tk\Exception
      */
-    public function onRequest(\Symfony\Component\HttpKernel\Event\RequestEvent $event)
+    public function onRequest($event)
     {
         $dispatcher = \App\Config::getInstance()->getEventDispatcher();
         $plugin = Plugin::getInstance();
