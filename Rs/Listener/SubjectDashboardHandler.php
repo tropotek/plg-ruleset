@@ -22,7 +22,7 @@ class SubjectDashboardHandler implements Subscriber
         $controller = $event->get('controller');
         if ($controller instanceof \App\Controller\Student\SubjectDashboard) {
             if ($controller->getSubject()) {
-                $table = $controller->getPlacementList()->getTable();
+                $table = $controller->getPlacementList();
 
                 $css = <<<CSS
 .student-placement-table .mCredit {
