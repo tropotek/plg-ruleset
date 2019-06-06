@@ -112,7 +112,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
         $template = parent::show();
         $template->replaceTemplate('table', $this->table->getRenderer()->show());
         if ($this->getConfig()->isSubjectUrl()) {
-            $template->setChoice('subjectUrl');
+            $template->setVisible('subjectUrl');
             $template->setAttr('rulesManager', 'href', \App\Uri::createHomeUrl('/profileEdit.html')->set('profileId', $this->getProfileId()));
             $js = <<<JS
 jQuery(function ($) {
