@@ -31,7 +31,6 @@ class RuleSettings extends \App\Controller\AdminEditIface
      */
     public function __construct()
     {
-        parent::__construct();
         $this->setPageTitle('Rule Settings');
     }
 
@@ -53,23 +52,25 @@ class RuleSettings extends \App\Controller\AdminEditIface
 
         $this->data = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $this->profile->getId());
 
-        $this->form = \App\Config::getInstance()->createForm('formEdit');
-        $this->form->setRenderer(\App\Config::getInstance()->createFormRenderer($this->form));
 
-        $this->form->appendField(new Field\Textarea('plugin.company.get.class'))->setLabel('Company Category Class')
-            ->setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method<br/><em>Warning: This is deprecated as each company should only have one category class.</em>')
+        $this->setForm(\App\Config::getInstance()->createForm('formEdit'));
+        $this->getForm()->setRenderer(\App\Config::getInstance()->createFormRenderer($this->getForm()));
+
+        $this->getForm()->appendField(new Field\Textarea('plugin.company.get.class'))->setLabel('Company Category Class')
+            ->setNotes('Add custom code to modify the company class calculation of Company::getCategoryClass() method')
+                //. '<br/><em>Warning: This is deprecated as each company should only have one category class.</em>')
             ->setRequired(true)->addCss('code')->setAttr('data-mode', 'text/x-php');
 
-        $this->form->appendField(new Field\Checkbox('plugin.active'))
+        $this->getForm()->appendField(new Field\Checkbox('plugin.active'))
             ->setCheckboxLabel('Enable/disable the rules and auto approval system for this profile.')
             ->setLabel('Active')->setRequired(true);
 
-        $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
-        $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->appendField(new Event\LinkButton('cancel', $this->getConfig()->getBackUrl()));
+        $this->getForm()->appendField(new Event\Submit('update', array($this, 'doSubmit')));
+        $this->getForm()->appendField(new Event\Submit('save', array($this, 'doSubmit')));
+        $this->getForm()->appendField(new Event\LinkButton('cancel', $this->getConfig()->getBackUrl()));
 
-        $this->form->load($this->data->toArray());
-        $this->form->execute();
+        $this->getForm()->load($this->data->toArray());
+        $this->getForm()->execute();
     }
 
     /**
@@ -84,7 +85,7 @@ class RuleSettings extends \App\Controller\AdminEditIface
         $values = $form->getValues();
         $this->data->replace($values);
 
-        if ($this->form->hasErrors()) {
+        if ($form->hasErrors()) {
             return;
         }
 
@@ -97,6 +98,12 @@ class RuleSettings extends \App\Controller\AdminEditIface
         }
     }
 
+    public function initActionPanel()
+    {
+        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Rules', \App\Uri::createHomeUrl('/ruleManager.html')
+            ->set('profileId', $this->profile->getId()), 'fa fa-check'));
+    }
+
     /**
      * show()
      *
@@ -104,15 +111,10 @@ class RuleSettings extends \App\Controller\AdminEditIface
      */
     public function show()
     {
-
-        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Rules', \App\Uri::createHomeUrl('/ruleManager.html')
-            ->set('profileId', $this->profile->getId()), 'fa fa-check'));
-
         $template = parent::show();
         
         // Render the form
-        $template->insertTemplate($this->form->getId(), $this->form->getRenderer()->show());
-
+        $template->insertTemplate('panel', $this->getForm()->getRenderer()->show());
 
         return $template;
     }
@@ -125,18 +127,7 @@ class RuleSettings extends \App\Controller\AdminEditIface
     public function __makeTemplate()
     {
         $xhtml = <<<XHTML
-<div var="content">
-  
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title"><i class="fa fa-cog"></i> <span>Settings</span> </h4>
-    </div>
-    <div class="panel-body">
-      <div var="formEdit"></div>
-    </div>
-  </div>
-  
-</div>
+<div class="tk-panel" data-panel-title="Rule Settings" data-panel-icon="fa fa-cog" var="panel"></div>
 XHTML;
 
         return \Dom\Loader::load($xhtml);

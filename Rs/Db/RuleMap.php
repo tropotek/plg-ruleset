@@ -25,7 +25,7 @@ class RuleMap extends \App\Db\Mapper
             $this->dbMap->addPropertyMap(new Db\Integer('id'), 'key');
             $this->dbMap->addPropertyMap(new Db\Integer('uid'));
             $this->dbMap->addPropertyMap(new Db\Integer('profileId', 'profile_id'));
-            $this->dbMap->addPropertyMap(new Db\Integer('subjectId', 'subject_id'));
+            //$this->dbMap->addPropertyMap(new Db\Integer('subjectId', 'subject_id'));
             $this->dbMap->addPropertyMap(new Db\Text('name'));
             $this->dbMap->addPropertyMap(new Db\Text('label'));
             $this->dbMap->addPropertyMap(new Db\Text('description'));
@@ -33,7 +33,7 @@ class RuleMap extends \App\Db\Mapper
             $this->dbMap->addPropertyMap(new Db\Decimal('max'));
             $this->dbMap->addPropertyMap(new Db\Text('assert'));
             $this->dbMap->addPropertyMap(new Db\Text('script'));
-            $this->dbMap->addPropertyMap(new Db\Boolean('active'));
+            //$this->dbMap->addPropertyMap(new Db\Boolean('active'));
             $this->dbMap->addPropertyMap(new Db\Integer('orderBy', 'order_by'));
             $this->dbMap->addPropertyMap(new Db\Date('created'));
         }
@@ -50,7 +50,7 @@ class RuleMap extends \App\Db\Mapper
             $this->formMap->addPropertyMap(new Form\Integer('id'), 'key');
             $this->formMap->addPropertyMap(new Form\Integer('uid'));
             $this->formMap->addPropertyMap(new Form\Integer('profileId'));
-            $this->formMap->addPropertyMap(new Form\Integer('subjectId'));
+            //$this->formMap->addPropertyMap(new Form\Integer('subjectId'));
             $this->formMap->addPropertyMap(new Form\Text('name'));
             $this->formMap->addPropertyMap(new Form\Text('label'));
             $this->formMap->addPropertyMap(new Form\Text('description'));
@@ -138,7 +138,6 @@ class RuleMap extends \App\Db\Mapper
         }
 
         $res = $this->selectFrom($from, $where, $tool);
-        //vd($this->getDb()->getLastQuery());
         return $res;
     }
 

@@ -152,7 +152,7 @@ jQuery(function ($) {
     var fieldGroup = $(this);
     var checkboxList = fieldGroup.find('input[type=checkbox]');
     
-    if (config.role !== 'student') {
+    if (config.roleType !== 'student') {
         var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the assessment to the company defaults."><i class="fa fa-refresh"></i> Reset</button></p>');
         fieldGroup.find(' > div').append(resetBtn);
         resetBtn.on('click', function () {

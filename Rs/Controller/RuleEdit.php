@@ -26,7 +26,6 @@ class RuleEdit extends \App\Controller\AdminEditIface
      */
     public function __construct()
     {
-        parent::__construct();
         $this->setPageTitle('Rule Edit');
     }
 
@@ -42,14 +41,15 @@ class RuleEdit extends \App\Controller\AdminEditIface
             $this->rule->profileId = $request->get('profileId');
         }
 
+
         $this->buildForm();
         if ($this->rule->getId() && $this->getConfig()->isSubjectUrl()) {
-            $this->form->load(array(
+            $this->getForm()->load(array(
                 'active' => $this->rule->isActive($this->getSubjectId())
             ));
         }
-        $this->form->load(\Rs\Db\RuleMap::create()->unmapForm($this->rule));
-        $this->form->execute($request);
+        $this->getForm()->load(\Rs\Db\RuleMap::create()->unmapForm($this->rule));
+        $this->getForm()->execute($request);
 
     }
 
@@ -59,25 +59,25 @@ class RuleEdit extends \App\Controller\AdminEditIface
      */
     protected function buildForm() 
     {
-        $this->form = \App\Config::getInstance()->createForm('ruleEdit');
-        $this->form->setRenderer(\App\Config::getInstance()->createFormRenderer($this->form));
+        $this->setForm(\App\Config::getInstance()->createForm('ruleEdit'));
+        $this->getForm()->setRenderer(\App\Config::getInstance()->createFormRenderer($this->form));
 
-        $this->form->appendField(new Field\Input('name'));
-        $this->form->appendField(new Field\Input('label'));
-        $this->form->appendField(new \App\Form\Field\MinMax('min', 'max'));
-        $this->form->appendField(new Field\Input('description'));
+        $this->getForm()->appendField(new Field\Input('name'));
+        $this->getForm()->appendField(new Field\Input('label'));
+        $this->getForm()->appendField(new \App\Form\Field\MinMax('min', 'max'));
+        $this->getForm()->appendField(new Field\Input('description'));
         if ($this->getConfig()->isSubjectUrl()) {
-            $this->form->appendField(new Field\Checkbox('active'))->setValue(true);
+            $this->getForm()->appendField(new Field\Checkbox('active'))->setValue(true);
         }
 
         $list = \Rs\Db\Rule::getAssertList($this->rule->assert);
-        $this->form->appendField(new Field\Select('assert', $list))->prependOption('-- None --', '');
-        $this->form->appendField(new Field\Textarea('script'))->addCss('code')->setAttr('data-mode', 'text/x-php')
+        $this->getForm()->appendField(new Field\Select('assert', $list))->prependOption('-- None --', '');
+        $this->getForm()->appendField(new Field\Textarea('script'))->addCss('code')->setAttr('data-mode', 'text/x-php')
         ->setNotes('NOTE: This will be deprecated in the future in favor of the Assert field above.');
 
-        $this->form->appendField(new Event\Submit('update', array($this, 'doSubmit')));
-        $this->form->appendField(new Event\Submit('save', array($this, 'doSubmit')));
-        $this->form->appendField(new Event\Link('cancel', $this->getConfig()->getBackUrl()));
+        $this->getForm()->appendField(new Event\Submit('update', array($this, 'doSubmit')));
+        $this->getForm()->appendField(new Event\Submit('save', array($this, 'doSubmit')));
+        $this->getForm()->appendField(new Event\Link('cancel', $this->getConfig()->getBackUrl()));
     }
 
     /**
@@ -116,8 +116,8 @@ class RuleEdit extends \App\Controller\AdminEditIface
     {
         $template = parent::show();
 
-        // Render the form
-        $template->insertTemplate('form', $this->form->getRenderer()->show());
+        // Render the panel
+        $template->appendTemplate('panel', $this->getForm()->getRenderer()->show());
 
         return $template;
     }
@@ -130,18 +130,7 @@ class RuleEdit extends \App\Controller\AdminEditIface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div>
-    
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title"><i class="fa fa-check"></i> <span var="panel-title">Rule Edit</span></h4>
-    </div>
-    <div class="panel-body">
-      <div var="form"></div>
-    </div>
-  </div>
-    
-</div>
+<div class="tk-panel" data-panel-title="Rule Edit" data-panel-icon="fa fa-check" var="panel"></div>
 HTML;
 
         return \Dom\Loader::load($xhtml);

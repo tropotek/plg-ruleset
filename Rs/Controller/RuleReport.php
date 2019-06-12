@@ -24,30 +24,28 @@ class RuleReport extends \App\Controller\AdminManagerIface
      */
     public function __construct()
     {
-        parent::__construct();
         $this->setPageTitle('Rule Report');
     }
 
     /**
      * @param Request $request
      * @throws \Exception
-     * @throws \Tk\Db\Exception
      */
     public function doDefault(Request $request)
     {
 
-        $this->table = \App\Config::getInstance()->createTable(\App\Config::getInstance()->getUrlName());
-        $this->table->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
+        $this->setTable(\App\Config::getInstance()->createTable(\App\Config::getInstance()->getUrlName()));
+        $this->getTable()->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
 
-        $this->table->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('Student Number');
-        $this->table->appendCell(new \Tk\Table\Cell\Text('name'));
-        $this->table->appendCell(new \Tk\Table\Cell\Email('email'))->addCss('key');
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('Student Number');
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('name'));
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Email('email'))->addCss('key');
 
         $subject = $this->getSubject();
         $rules = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $this->getProfileId(), 'subjectId' => $subject->getId()));
 
         foreach ($rules as $rule) {
-            $this->table->appendCell(new \Tk\Table\Cell\Text($rule->getLabel()))->setOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+            $this->getTable()->appendCell(new \Tk\Table\Cell\Text($rule->getLabel()))->setOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
                 /** @var \Tk\Table\Cell\Text $cell  */
                 /** @var \App\Db\User $obj  */
                 $tblFilter = $cell->getTable()->getFilterValues();
@@ -79,14 +77,14 @@ class RuleReport extends \App\Controller\AdminManagerIface
 
         // Filters
         $list = array('-- Status --' => '', 'Pending' => 'pending', 'Completed' => 'completed');
-        $this->table->appendFilter(new Field\Select('results', $list)); //->setLabel('Status');
+        $this->getTable()->appendFilter(new Field\Select('results', $list)); //->setLabel('Status');
 
         // Actions
-        $this->table->appendAction(\Tk\Table\Action\ColumnSelect::create()->setDisabled(array('id', 'name'))
+        $this->getTable()->appendAction(\Tk\Table\Action\ColumnSelect::create()->setDisabled(array('id', 'name'))
             ->addUnselected('created')->addUnselected('description'));
-        $this->table->appendAction(\Tk\Table\Action\Csv::create());
+        $this->getTable()->appendAction(\Tk\Table\Action\Csv::create());
 
-        $this->table->setList($this->getList());
+        $this->getTable()->setList($this->getList());
     }
 
     /**
@@ -95,7 +93,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
      */
     protected function getList()
     {
-        $filter = $this->table->getFilterValues();
+        $filter = $this->getTable()->getFilterValues();
         $filter['subjectId'] = $this->getSubject()->getId();
         $filter['type'] = \Uni\Db\Role::TYPE_STUDENT;
 
@@ -109,7 +107,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
     {
         $template = parent::show();
 
-        $template->replaceTemplate('table', $this->table->getRenderer()->show());
+        $template->appendTemplate('panel', $this->getTable()->getRenderer()->show());
 
         return $template;
     }
@@ -122,18 +120,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title"><i class="fa fa-check"></i> Rule Report</h4>
-    </div>
-    <div class="panel-body">
-      <div var="table"></div>
-    </div>
-  </div>
-
-</div>
+<div class="tk-panel" data-panel-title="Rule Report" data-panel-icon="fa fa-check" var="panel"></div>
 HTML;
 
         return \Dom\Loader::load($xhtml);
