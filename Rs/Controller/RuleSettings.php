@@ -111,6 +111,7 @@ class RuleSettings extends \App\Controller\AdminEditIface
      */
     public function show()
     {
+        $this->initActionPanel();
         $template = parent::show();
         
         // Render the form
