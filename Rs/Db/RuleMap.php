@@ -1,6 +1,7 @@
 <?php
 namespace Rs\Db;
 
+use Tk\Db\Exception;
 use Tk\Db\Tool;
 use Tk\Db\Map\ArrayObject;
 use Tk\DataMap\Db;
@@ -62,83 +63,70 @@ class RuleMap extends \App\Db\Mapper
         }
         return $this->formMap;
     }
-
-
     /**
-     * Find filtered records
-     *
-     * @param array $filter
+     * @param array|\Tk\Db\Filter $filter
      * @param Tool $tool
-     * @return ArrayObject|Rule[]
+     * @return ArrayObject|Role[]
      * @throws \Exception
      */
-    public function findFiltered($filter = array(), $tool = null)
+    public function findFiltered($filter, $tool = null)
     {
-        if (!$tool)
-            $tool = \Tk\Db\Tool::create('a.order_by');
+        return $this->selectFromFilter($this->makeQuery(\Tk\Db\Filter::create($filter)), $tool);
+    }
 
-        $from = sprintf('%s a ', $this->quoteTable($this->getTable()));
-        $where = '';
+    /**
+     * @param \Tk\Db\Filter $filter
+     * @return \Tk\Db\Filter
+     */
+    public function makeQuery(\Tk\Db\Filter $filter)
+    {
+        $filter->appendFrom('%s a ', $this->quoteParameter($this->getTable()));
 
         if (!empty($filter['keywords'])) {
-            $kw = '%' . $this->escapeString($filter['keywords']) . '%';
+            $kw = '%' . $this->getDb()->escapeString($filter['keywords']) . '%';
             $w = '';
-            $w .= sprintf('a.name LIKE %s OR ', $this->quote($kw));
+            $w .= sprintf('a.name LIKE %s OR ', $this->getDb()->quote($kw));
             $w .= sprintf('a.label LIKE %s OR ', $this->quote($kw));
             $w .= sprintf('a.description LIKE %s OR ', $this->quote($kw));
             if (is_numeric($filter['keywords'])) {
                 $id = (int)$filter['keywords'];
                 $w .= sprintf('a.id = %d OR ', $id);
             }
-            if ($w) {
-                $where .= '(' . substr($w, 0, -3) . ') AND ';
-            }
+            if ($w) $filter->appendWhere('(%s) AND ', substr($w, 0, -3));
         }
-
+        
         if (!empty($filter['profileId'])) { // deprecated use subjectId
-            $where .= sprintf('a.profile_id = %s AND ', (int)$filter['profileId']);
+            $filter->appendWhere('a.profile_id = %s AND ', (int)$filter['profileId']);
         }
 
-        //if (!empty($filter['subjectId']) && !empty($filter['active']) && $filter['active'] !== '' && $filter['active'] !== null) {
         if (!empty($filter['subjectId'])) {
             $from .= sprintf(', (SELECT a.id as \'rule_id\', IFNULL(b.active, 1) as \'active\' FROM rule a LEFT JOIN rule_subject b ON (a.id = b.rule_id AND b.subject_id = %s) ) b', (int)$filter['subjectId']);
-            $where .= sprintf('a.id = b.rule_id AND b.active = 1 AND ');
+            $filter->appendWhere('a.id = b.rule_id AND b.active = 1 AND ');
         }
 
         if (!empty($filter['name'])) {
-            $where .= sprintf('a.name = %s AND ', $this->quote($filter['name']));
+            $filter->appendWhere('a.name = %s AND ', $this->quote($filter['name']));
         }
 
         if (!empty($filter['assert'])) {
-            $where .= sprintf('a.assert = %s AND ', $this->quote($filter['assert']));
+            $filter->appendWhere('a.assert = %s AND ', $this->quote($filter['assert']));
         }
 
         if (!empty($filter['label'])) {
-            $where .= sprintf('a.label = %s AND ', $this->quote($filter['label']));
+            $filter->appendWhere('a.label = %s AND ', $this->quote($filter['label']));
         }
 
         if (!empty($filter['placementId'])) {
-            $from .= sprintf(' ,%s d', $this->quoteTable('rule_has_placement'));
-            $where .= sprintf('a.id = d.rule_id AND d.placement_id = %s AND ', (int)$filter['placementId']);
+            $filter->appendFrom(' ,%s d', $this->quoteTable('rule_has_placement'));
+            $filter->appendWhere('a.id = d.rule_id AND d.placement_id = %s AND ', (int)$filter['placementId']);
         }
-        
+
         if (!empty($filter['exclude'])) {
-            if (!is_array($filter['exclude'])) $filter['exclude'] = array($filter['exclude']);
-            $w = '';
-            foreach ($filter['exclude'] as $v) {
-                $w .= sprintf('a.id != %d AND ', (int)$v);
-            }
-            if ($w) {
-                $where .= ' ('. rtrim($w, ' AND ') . ') AND ';
-            }
+            $w = $this->makeMultiQuery($filter['exclude'], 'a.id', 'AND', '!=');
+            if ($w) $filter->appendWhere('(%s) AND ', $w);
         }
 
-        if ($where) {
-            $where = substr($where, 0, -4);
-        }
-
-        $res = $this->selectFrom($from, $where, $tool);
-        return $res;
+        return $filter;
     }
 
 
@@ -151,9 +139,13 @@ class RuleMap extends \App\Db\Mapper
      */
     public function hasPlacement($ruleId, $placementId)
     {
-        $stm = $this->getDb()->prepare('SELECT * FROM rule_has_placement WHERE rule_id = ? AND placement_id = ?');
-        $stm->execute($ruleId, $placementId);
-        return ($stm->rowCount() > 0);
+        try {
+            $stm = $this->getDb()->prepare('SELECT * FROM rule_has_placement WHERE rule_id = ? AND placement_id = ?');
+            $stm->execute($ruleId, $placementId);
+            return ($stm->rowCount() > 0);
+        } catch (Exception $e) {}
+        return false;
+
     }
 
     /**
@@ -162,19 +154,21 @@ class RuleMap extends \App\Db\Mapper
      */
     public function removePlacement($ruleId = null, $placementId = null)
     {
-        if (!$ruleId && !$placementId) return;
-        $where = '';
-        if ($ruleId) {
-            $where = sprintf('rule_id = %d AND ', (int)$ruleId);
-        }
-        if ($placementId) {
-            $where = sprintf('placement_id = %d AND ', (int)$placementId);
-        }
-        if ($where) {
-            $where = substr($where, 0, -4);
-        }
-        $stm = $this->getDb()->prepare('DELETE FROM rule_has_placement WHERE ' . $where);
-        $stm->execute();
+        try {
+            if (!$ruleId && !$placementId) return;
+            $where = '';
+            if ($ruleId) {
+                $where = sprintf('rule_id = %d AND ', (int)$ruleId);
+            }
+            if ($placementId) {
+                $where = sprintf('placement_id = %d AND ', (int)$placementId);
+            }
+            if ($where) {
+                $where = substr($where, 0, -4);
+            }
+            $stm = $this->getDb()->prepare('DELETE FROM rule_has_placement WHERE ' . $where);
+            $stm->execute();
+        } catch (Exception $e) {}
     }
 
     /**
@@ -183,41 +177,49 @@ class RuleMap extends \App\Db\Mapper
      */
     public function addPlacement($ruleId, $placementId)
     {
-        if ($this->hasPlacement($ruleId, $placementId)) return;
-        $stm = $this->getDb()->prepare('INSERT INTO rule_has_placement (rule_id, placement_id) VALUES (?, ?) ');
-        $stm->execute($ruleId, $placementId);
+        try {
+            if ($this->hasPlacement($ruleId, $placementId)) return;
+            $stm = $this->getDb()->prepare('INSERT INTO rule_has_placement (rule_id, placement_id) VALUES (?, ?) ');
+            $stm->execute($ruleId, $placementId);
+        } catch (Exception $e) {}
     }
-
-
-
 
     public function isActive($ruleId, $subjectId)
     {
-        $stm = $this->getDb()->prepare('SELECT active FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
-        $stm->execute($ruleId, $subjectId);
-        if ($stm->rowCount()) {
-            return (bool)$stm->fetchColumn();
-        }
+        try {
+            $stm = $this->getDb()->prepare('SELECT active FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
+            $stm->execute($ruleId, $subjectId);
+            if ($stm->rowCount()) {
+                return (bool)$stm->fetchColumn();
+            }
+        } catch (Exception $e) {}
         return true;        // All rules are active if no subject record available.
     }
 
     public function setActive($ruleId, $subjectId, $active)
     {
-        $stm = $this->getDb()->prepare('INSERT INTO rule_subject (rule_id, subject_id, active) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE active = ?');
-        $stm->execute((int)$ruleId, (int)$subjectId, (int)$active, (int)$active);
+        try {
+            $stm = $this->getDb()->prepare('INSERT INTO rule_subject (rule_id, subject_id, active) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE active = ?');
+            $stm->execute((int)$ruleId, (int)$subjectId, (int)$active, (int)$active);
+        } catch (Exception $e) {}
     }
 
     public function hasActive($ruleId, $subjectId)
     {
-        $stm = $this->getDb()->prepare('SELECT * FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
-        $stm->execute($ruleId, $subjectId);
-        return ($stm->rowCount() > 0);
+        try {
+            $stm = $this->getDb()->prepare('SELECT * FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
+            $stm->execute($ruleId, $subjectId);
+            return ($stm->rowCount() > 0);
+        } catch (Exception $e) {}
+        return false;
     }
 
     public function removeActive($ruleId, $subjectId)
     {
-        $stm = $this->getDb()->prepare('DELETE FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
-        $stm->execute($ruleId, $subjectId);
+        try {
+            $stm = $this->getDb()->prepare('DELETE FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
+            $stm->execute($ruleId, $subjectId);
+        } catch (Exception $e) {}
     }
 
 }
