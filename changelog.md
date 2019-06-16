@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.0.12 [2019-06-17]:
+-------------------------------
+  - Upgraded all DB model mapper filter queries to use new Filter object
+  - Cleaning up a lot of managers and editors
+
+
 Ver 3.0.10 [2019-05-29]:
 -------------------------------
   - Added new Note system replcing old note system
