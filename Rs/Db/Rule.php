@@ -226,7 +226,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         if (!$min) {
             if ($units < $max) {
                 return self::VALID_BELOW;
-            } else if ($units > $max) {
+            } else if ($units >= $max) {
                 return self::VALID_OUT;
             }
         } else if (!$max) {
@@ -235,9 +235,9 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             } else if ($units >= $min) {
                 return self::VALID_OK;
             }
-        } else if ($units < $min) {
+        } else if ($units < $max && $units >= $min) {
             return self::VALID_BELOW;
-        } else if ($units > $max) {
+        } else if ($units < $min || $units > $max) {
             return self::VALID_OUT;
         }
         return self::VALID_OK;
