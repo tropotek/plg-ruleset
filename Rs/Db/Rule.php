@@ -235,11 +235,16 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             } else if ($units >= $min) {
                 return self::VALID_OK;
             }
-        } else if ($units < $max && $units >= $min) {
+        } else if ($units < $max) {
             return self::VALID_BELOW;
-        } else if ($units < $min || $units > $max) {
-            return self::VALID_OUT;
         }
+//        else if ($units < $max) {
+//            return self::VALID_BELOW;
+//        } else if ($units < $max && $units >= $min) {
+//            return self::VALID_BELOW;
+//        } else if ($units < $min || $units > $max) {
+//            return self::VALID_OUT;
+//        }
         return self::VALID_OK;
     }
 
@@ -254,13 +259,15 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     static function getValidateMessage($units, $min = 0, $max = 0)
     {
         $res = self::validateUnits($units, $min, $max);
+        $m = max(array($min, $max));
         switch ($res) {
             case self::VALID_BELOW:
-                return sprintf('You are below the minimum required units of %d', (($min == 0) ? $max : $min) );
+                return sprintf('You are below the minimum required units of %d', $m );
+                //return sprintf('You are below the minimum required units of %d', (($min == 0) ? $max : $min) );
             case self::VALID_OUT:
-                return sprintf('You have exceeded the maximum required units of %d', (($max == 0) ? $min : $max));
+                return sprintf('You have exceeded the maximum required units of %d', $m);
             case self::VALID_OK:
-                return sprintf('You have reached the required number of units of %d', (($max == 0) ? $min : $max));
+                return sprintf('You have reached the required number of units of %d', $m);
         }
         return '';
     }
