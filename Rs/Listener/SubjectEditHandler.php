@@ -21,7 +21,7 @@ class SubjectEditHandler implements Subscriber
         /** @var \App\Controller\Subject\Edit $controller */
         $controller = $event->get('controller');
         if ($controller instanceof \App\Controller\Subject\Edit) {
-            if ($controller->getUser()->isStaff() && $controller->getSubject()->getProfile()) {
+            if ($controller->getSubject()->getId() && $controller->getUser()->isStaff() && $controller->getSubject()->getProfile()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
                 $actionPanel->append(\Tk\Ui\Link::createBtn(\App\Db\Phrase::findValue('placement', $controller->getSubject()->getProfile()->getId()) . ' Rules',
