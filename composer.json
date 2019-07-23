@@ -8,9 +8,9 @@
         "ruleset",
         "EMS"
     ],
-    "time": "2019-04-09",
+    "time": "2019-07-24",
     "license": "MIT",
-    "version": "master",
+    "version": "3.0.20",
     "access": "admin, profile",
     "authors":  [
          {
