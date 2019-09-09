@@ -46,8 +46,8 @@ class StudentAssessmentHandler implements Subscriber
                     $studentAssessment->addTotal('Pending', $label, $totals['total']['pending']);
                 $studentAssessment->addTotal('Completed', $label, $totals['total']['completed']);
                 if (!$studentAssessment->isMinMode()) {
-                    $studentAssessment->addTotal('Min Targets', $label, $calc->getSubject()->getProfile()->minUnitsTotal);
-                    $studentAssessment->addTotal('Max Targets', $label, $calc->getSubject()->getProfile()->maxUnitsTotal);
+                    $studentAssessment->addTotal('Min Targets', $label, $calc->getSubject()->getMinUnitsTotal());
+                    $studentAssessment->addTotal('Max Targets', $label, $calc->getSubject()->getMaxUnitsTotal());
                 }
             }
             $t = $totals[$rule->getLabel()];

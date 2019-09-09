@@ -167,14 +167,14 @@ class Calculator extends \Tk\ObjectUtil
         }
 
         $this->ruleTotals['total'] = array();
-        $this->ruleTotals['total']['ruleTotal'] = $this->subject->getProfile()->maxUnitsTotal ? $this->subject->getProfile()->maxUnitsTotal : $this->subject->getProfile()->minUnitsTotal;
+        $this->ruleTotals['total']['ruleTotal'] = $this->subject->getMaxUnitsTotal() ? $this->subject->getMaxUnitsTotal() : $this->subject->getMinUnitsTotal();
         $this->ruleTotals['total']['total'] = $totals['total'];
         $this->ruleTotals['total']['pending'] = $totals['pending'];
         $this->ruleTotals['total']['completed'] = $totals['completed'];
-        $this->ruleTotals['total']['validCompleted'] = Rule::validateUnits($totals['completed'], $this->subject->getProfile()->minUnitsTotal, $this->subject->getProfile()->maxUnitsTotal);
-        $this->ruleTotals['total']['validCompletedMsg'] = Rule::getValidateMessage($totals['completed'], $this->subject->getProfile()->minUnitsTotal, $this->subject->getProfile()->maxUnitsTotal);
-        $this->ruleTotals['total']['validTotal'] = Rule::validateUnits($totals['total'], $this->subject->getProfile()->minUnitsTotal, $this->subject->getProfile()->maxUnitsTotal);
-        $this->ruleTotals['total']['validMsg'] = Rule::getValidateMessage($totals['total'], $this->subject->getProfile()->minUnitsTotal, $this->subject->getProfile()->maxUnitsTotal);
+        $this->ruleTotals['total']['validCompleted'] = Rule::validateUnits($totals['completed'], $this->subject->getMinUnitsTotal(), $this->subject->getMaxUnitsTotal());
+        $this->ruleTotals['total']['validCompletedMsg'] = Rule::getValidateMessage($totals['completed'], $this->subject->getMinUnitsTotal(), $this->subject->getMaxUnitsTotal());
+        $this->ruleTotals['total']['validTotal'] = Rule::validateUnits($totals['total'], $this->subject->getMinUnitsTotal(), $this->subject->getMaxUnitsTotal());
+        $this->ruleTotals['total']['validMsg'] = Rule::getValidateMessage($totals['total'], $this->subject->getMinUnitsTotal(), $this->subject->getMaxUnitsTotal());
         $this->ruleTotals['total']['assessmentRule'] = null;
 
     }
@@ -195,7 +195,7 @@ class Calculator extends \Tk\ObjectUtil
                 $this->minTargets[$rule->getLabel()] = $rule->min;
             }
             if ($total)
-                $this->minTargets['total'] = $this->subject->getProfile()->minUnitsTotal;
+                $this->minTargets['total'] = $this->subject->getMinUnitsTotal();
         }
         return $this->minTargets;
     }
@@ -214,7 +214,7 @@ class Calculator extends \Tk\ObjectUtil
                 $this->maxTargets[$rule->getLabel()] = $rule->max;
             }
             if ($total)
-                $this->maxTargets['total'] = $this->subject->getProfile()->minUnitsTotal;
+                $this->maxTargets['total'] = $this->subject->getMinUnitsTotal();
         }
         return $this->maxTargets;
    }
