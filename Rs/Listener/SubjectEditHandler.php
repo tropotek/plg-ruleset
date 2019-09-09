@@ -27,7 +27,6 @@ class SubjectEditHandler implements Subscriber
                 $actionPanel->append(\Tk\Ui\Link::createBtn(\App\Db\Phrase::findValue('placement', $controller->getSubject()->getProfile()->getId()) . ' Rules',
                     \App\Uri::createSubjectUrl('/ruleManager.html'), 'fa fa-check'));
             }
-
         }
     }
 
