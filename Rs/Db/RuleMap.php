@@ -100,7 +100,7 @@ class RuleMap extends \App\Db\Mapper
         }
 
         if (!empty($filter['subjectId'])) {
-            $filter->appendFrom(', (SELECT a.id as \'rule_id\', IFNULL(b.active, 1) as \'active\' FROM rule a LEFT JOIN rule_subject b ON (a.id = b.rule_id AND b.subject_id = %s) ) b', (int)$filter['subjectId']);
+            $filter->appendFrom(', (SELECT a.id as \'rule_id\', IFNULL(b.active, 0) as \'active\' FROM rule a LEFT JOIN rule_subject b ON (a.id = b.rule_id AND b.subject_id = %s) ) b', (int)$filter['subjectId']);
             $filter->appendWhere('a.id = b.rule_id AND b.active = 1 AND ');
         }
 
@@ -193,7 +193,8 @@ class RuleMap extends \App\Db\Mapper
                 return (bool)$stm->fetchColumn();
             }
         } catch (Exception $e) {}
-        return true;        // All rules are active if no subject record available.
+        //return true;        // All rules are active if no subject record available.
+        return false;
     }
 
     public function setActive($ruleId, $subjectId, $active)
