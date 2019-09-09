@@ -95,7 +95,7 @@ class RuleEdit extends \App\Controller\AdminEditIface
         if ($form->hasErrors()) {
             return;
         }
-vd();
+
         $this->rule->save();
 
         if ($form->getField('active') && $this->getConfig()->isSubjectUrl()) {
