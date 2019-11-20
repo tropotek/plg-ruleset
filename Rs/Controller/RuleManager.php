@@ -39,6 +39,9 @@ class RuleManager extends \App\Controller\AdminManagerIface
         if(!$this->getConfig()->isSubjectUrl())
             $editUrl = \App\Uri::createHomeUrl('/ruleEdit.html');
 
+        if (!$this->getConfig()->isSubjectUrl()) {
+            $this->getTable()->appendCell(new \Tk\Table\Cell\OrderBy('orderBy'))->setIconOnly();
+        }
         $this->getTable()->appendCell(new \Tk\Table\Cell\Checkbox('id'));
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl($editUrl);
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('description'));
@@ -47,9 +50,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('min'));
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('max'));
         $this->getTable()->appendCell(new \Tk\Table\Cell\Date('created'));
-        if (!$this->getConfig()->isSubjectUrl()) {
-            $this->getTable()->appendCell(new \Tk\Table\Cell\OrderBy('orderBy'));
-        } else {
+        if ($this->getConfig()->isSubjectUrl()) {
             $this->getTable()->appendCell(new \Tk\Table\Cell\Checkbox('activeCb'))->setLabel('Active')->setUseValue(true)
                 ->setOnPropertyValue(function ($cell, $obj, $value) {
                     /** @var $cell \Tk\Table\Cell\Checkbox */
