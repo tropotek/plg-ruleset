@@ -40,7 +40,7 @@ INSERT INTO rule (uid, profile_id, subject_id, name, label, description, min, ma
   (
     SELECT b.uid, b.profile_id, a.id as 'subject_id', b.name, b.label, b.description, b.min, b.max, b.assert, b.script, b.del, b.order_by, b.modified, b.created
     FROM subject a, rule b
-    WHERE a.profile_id = b.profile_id
+    WHERE a.course_id = b.profile_id
   )
 ;
 
@@ -49,7 +49,7 @@ INSERT INTO plugin_zone (plugin_name, zone_name, zone_id)
   (
     SELECT 'plg-ruleset' as 'plugin_name', 'subject' as 'zone_name', a.id
     FROM subject a, plugin_zone b
-    WHERE b.plugin_name = 'plg-ruleset' AND a.profile_id = b.zone_id
+    WHERE b.plugin_name = 'plg-ruleset' AND a.course_id = b.zone_id
   )
 ;
 

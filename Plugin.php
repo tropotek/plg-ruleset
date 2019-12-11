@@ -84,7 +84,7 @@ INSERT INTO company_data (`fid`, `fkey`, `key`, `value`)
     (
         SELECT a.id, 'App\\Db\\Company', 'autoApprove', 'autoApprove'
         FROM plugin_zone b, subject s, company a LEFT JOIN company_data c ON (a.id = c.fid AND c.fkey = 'App\\Db\\Company' AND c.`key` = 'autoApprove')
-        WHERE b.zone_id = ? AND b.zone_id = s.id AND a.profile_id = s.profile_id AND b.plugin_name = 'plg-ruleset' AND b.zone_name = 'profile' AND c.fid IS NULL
+        WHERE b.zone_id = ? AND b.zone_id = s.id AND a.profile_id = s.course_id AND b.plugin_name = 'plg-ruleset' AND b.zone_name = 'profile' AND c.fid IS NULL
     )
 ON DUPLICATE KEY UPDATE `key` = 'autoApprove'
 SQL;
