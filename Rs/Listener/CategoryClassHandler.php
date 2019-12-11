@@ -31,11 +31,11 @@ class CategoryClassHandler implements Subscriber
         $company = $event->get('company');
         $profile = $company->getProfile();
         $catList = \App\Db\CompanyCategoryMap::create()->findFiltered(array(
-            'profileId' => $company->profileId,
+            'profileId' => $company->courseId,
             'companyId' => $company->getId()
         ));
 
-        $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $company->profileId);
+        $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $company->courseId);
         $script = $profilePluginData->get('plugin.company.get.class');
         if ($profilePluginData->get('plugin.active') && $script != null) {
             $calcClass = eval($script);
