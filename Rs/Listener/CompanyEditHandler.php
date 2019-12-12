@@ -29,7 +29,7 @@ class CompanyEditHandler implements Subscriber
         $controller = \Tk\Event\Event::findControllerObject($event);
         if ($controller instanceof \App\Controller\Company\Edit && $controller->getConfig()->getUser()->isStaff()) {
             $plugin = \Rs\Plugin::getInstance();
-            $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $controller->getProfileId());
+            $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $controller->getCourseId());
             if ($profilePluginData->get('plugin.active')) {
                 $this->controller = $controller;
             }

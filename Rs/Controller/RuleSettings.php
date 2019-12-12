@@ -44,7 +44,7 @@ class RuleSettings extends \App\Controller\AdminEditIface
     public function doDefault(Request $request)
     {
         $plugin = Plugin::getInstance();
-        $this->profile = $this->getProfile();
+        $this->profile = $this->getCourse();
         if (!$this->profile)
             $this->profile = \App\Db\ProfileMap::create()->find($request->get('zoneId'));
         if (!$this->profile)

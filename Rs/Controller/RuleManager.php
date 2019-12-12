@@ -95,7 +95,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
     protected function getList()
     {
         $filter = $this->getTable()->getFilterValues();
-        $filter['profileId'] = $this->getProfileId();
+        $filter['profileId'] = $this->getCourseId();
         return \Rs\Db\RuleMap::create()->findFiltered($filter, $this->getTable()->getTool('a.order_by'));
     }
 
@@ -106,7 +106,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
     {
         if (!$this->getConfig()->isSubjectUrl())
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New Rule',
-                \App\Uri::createHomeUrl('/ruleEdit.html')->set('profileId', $this->getProfileId()), 'fa fa-check fa-add-action'));
+                \App\Uri::createHomeUrl('/ruleEdit.html')->set('profileId', $this->getCourseId()), 'fa fa-check fa-add-action'));
     }
 
     /**
@@ -121,7 +121,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
         if ($this->getConfig()->isSubjectUrl()) {
             $template->setVisible('subjectUrl');
-            $template->setAttr('rulesManager', 'href', \App\Uri::createHomeUrl('/profileEdit.html')->set('profileId', $this->getProfileId()));
+            $template->setAttr('rulesManager', 'href', \App\Uri::createHomeUrl('/profileEdit.html')->set('profileId', $this->getCourseId()));
             $js = <<<JS
 jQuery(function ($) {
   

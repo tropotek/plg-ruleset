@@ -22,12 +22,12 @@ class ProfileEditHandler implements Subscriber
         $controller = $event->get('controller');
         if ($controller instanceof \App\Controller\Profile\Edit) {
 
-            if ($controller->getUser()->isStaff() && $controller->getProfile()) {
+            if ($controller->getUser()->isStaff() && $controller->getCourse()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
-                $actionPanel->append(\Tk\Ui\Link::createBtn(\App\Db\Phrase::findValue('placement', $controller->getProfile()->getId()) . ' Rules',
+                $actionPanel->append(\Tk\Ui\Link::createBtn(\App\Db\Phrase::findValue('placement', $controller->getCourse()->getId()) . ' Rules',
                     \App\Uri::createHomeUrl('/ruleSettings.html')
-                        ->set('profileId', $controller->getProfile()->getId()), 'fa fa-check'));
+                        ->set('profileId', $controller->getCourse()->getId()), 'fa fa-check'));
             }
 
         }
