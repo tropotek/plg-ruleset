@@ -11,7 +11,7 @@
     "time": "2019-04-09",
     "license": "MIT",
     "version": "master",
-    "access": "admin, profile",
+    "access": "admin, course",
     "authors":  [
          {
             "name": "Michael Mifsud",

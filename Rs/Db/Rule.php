@@ -2,7 +2,10 @@
 namespace Rs\Db;
 
 
+use Bs\Db\Traits\CreatedTrait;
+use Bs\Db\Traits\OrderByTrait;
 use Rs\Plugin;
+use Uni\Db\Traits\CourseTrait;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -11,6 +14,10 @@ use Rs\Plugin;
  */
 class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
 {
+    use CourseTrait;
+    use CreatedTrait;
+    use OrderByTrait;
+
     const VALID_NULL = 128;
 
     const VALID_BELOW = -1;
@@ -31,12 +38,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     /**
      * @var int
      */
-    public $profileId = 0;
-
-    /**
-     * @var int
-     */
-    //public $subjectId = 0;
+    public $courseId = 0;
 
     /**
      * @var string
@@ -74,11 +76,6 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     public $script = '';
 
     /**
-     * @var bool
-     */
-    //public $active = true;
-
-    /**
      * @var int
      */
     public $orderBy = 0;
@@ -95,7 +92,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     public function __construct()
     {
-        $this->created = \Tk\Date::create();
+        $this->_CreatedTrait();
     }
 
     /**
@@ -109,8 +106,8 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     public function evaluate($subject, $company, $supervisor = null)
     {
         // TODO: place any global objects required for eval() here.
-        if ($this->script) {
-            return eval($this->script);
+        if ($this->getScript()) {
+            return eval($this->getScript());
         }
         return false;
     }
@@ -125,7 +122,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     public function getLabel()
     {
-        if (!$this->label) return $this->name;
+        if (!$this->label) return $this->getName();
         return $this->label;
     }
 
@@ -136,9 +133,9 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     public function getMinTarget()
     {
-        if (!$this->min && $this->max)
-            return $this->max;
-        return $this->min;
+        if (!$this->getMin() && $this->getMax())
+            return $this->getMax();
+        return $this->getMin();
     }
 
     /**
@@ -148,9 +145,9 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     public function getMaxTarget()
     {
-        if (!$this->max && $this->min)
-            return $this->min;
-        return $this->max;
+        if (!$this->getMax() && $this->getMin())
+            return $this->getMin();
+        return $this->getMax();
     }
 
     /**
@@ -165,7 +162,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     final public function isTotalValid($units)
     {
-        return self::validateUnits($units, $this->min, $this->max);
+        return self::validateUnits($units, $this->getMin(), $this->getMax());
     }
 
     /**
@@ -176,7 +173,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     final public function getValidMessage($units)
     {
-        return self::getValidateMessage($units, $this->min, $this->max);
+        return self::getValidateMessage($units, $this->getMin(), $this->getMax());
     }
 
 
@@ -208,7 +205,6 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      *   o  0 When units are equal to total or there is no problem with units in their current value
      *   o  n When units are over the total or maximum amount
      *
-     *
      * @param int $units
      * @param int $min
      * @param int $max
@@ -238,13 +234,6 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         } else if ($units < $min) {
             return self::VALID_BELOW;
         }
-//        else if ($units < $max) {
-//            return self::VALID_BELOW;
-//        } else if ($units < $max && $units >= $min) {
-//            return self::VALID_BELOW;
-//        } else if ($units < $min || $units > $max) {
-//            return self::VALID_OUT;
-//        }
         return self::VALID_OK;
     }
 
@@ -259,7 +248,6 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     static function getValidateMessage($units, $min = 0, $max = 0)
     {
         $res = self::validateUnits($units, $min, $max);
-        //$m = max(array($min, $max));
         $m = (($min == 0) ? $max : $min);
         switch ($res) {
             case self::VALID_BELOW:
@@ -282,45 +270,162 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         return RuleMap::create()->isActive($this->getId(), $subjectId);
     }
 
+    /**
+     * @return int
+     */
+    public function getUid(): int
+    {
+        return $this->uid;
+    }
 
     /**
-     *
-     * @param null|\App\Db\Profile $profile
+     * @param int $uid
+     * @return Rule
+     */
+    public function setUid(int $uid): Rule
+    {
+        $this->uid = $uid;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return Rule
+     */
+    public function setName(string $name): Rule
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     * @return Rule
+     */
+    public function setDescription(string $description): Rule
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMin(): float
+    {
+        return $this->min;
+    }
+
+    /**
+     * @param float $min
+     * @return Rule
+     */
+    public function setMin(float $min): Rule
+    {
+        $this->min = $min;
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMax(): float
+    {
+        return $this->max;
+    }
+
+    /**
+     * @param float $max
+     * @return Rule
+     */
+    public function setMax(float $max): Rule
+    {
+        $this->max = $max;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAssert(): string
+    {
+        return $this->assert;
+    }
+
+    /**
+     * @param string $assert
+     * @return Rule
+     */
+    public function setAssert(string $assert): Rule
+    {
+        $this->assert = $assert;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScript(): string
+    {
+        return $this->script;
+    }
+
+    /**
+     * @param string $script
+     * @return Rule
+     */
+    public function setScript(string $script): Rule
+    {
+        $this->script = $script;
+        return $this;
+    }
+
+    /**
      * @return array
      */
-    public function validate($profile = null)
+    public function validate()
     {
         $errors = array();
+        $errors = $this->validateCourseId($errors);
 
-        if ((int)$this->profileId <= 0) {
-            $errors['profileId'] = 'Invalid  Profile ID';        }
-
-        if (!$this->name) {
+        if (!$this->getName()) {
             $errors['name'] = 'Please enter a valid value';
         }
-
-        if (!$this->label) {
+        if (!$this->getLabel()) {
             $errors['label'] = 'Please enter a valid value';
         }
-
-        if (!$this->description) {
+        if (!$this->getDescription()) {
             $errors['description'] = 'Please enter a valid value';
         }
-
-        if (!preg_match('/^[0-9]*(.[0-9]*)?$/', $this->min)) {
+        if (!preg_match('/^[0-9]*(.[0-9]*)?$/', $this->getMin())) {
             $errors['min'] = 'Invalid Min. units Value.';
         }
-        if (!preg_match('/^[0-9]*(.[0-9]*)?$/', $this->max)) {
+        if (!preg_match('/^[0-9]*(.[0-9]*)?$/', $this->getMax())) {
             $errors['max'] = 'Invalid Max. units Value.';
         }
-        if (!$this->min && !$this->max) {
+        if (!$this->getMin() && !$this->getMax()) {
             $errors['min'] = 'Min and/or Max Units must have a valid value.';
         }
-        if ($this->min && $this->max && ($this->min > $this->max)) {
+        if ($this->getMin() && $this->getMax() && ($this->getMin() > $this->getMax())) {
             $errors['max'] = 'Max Unit must be greater than Min Units';
         }
-
-        if (!$this->script) {
+        if (!$this->getScript()) {
             $errors['script'] = 'A rule code is required to make the rule active.';
         }
 

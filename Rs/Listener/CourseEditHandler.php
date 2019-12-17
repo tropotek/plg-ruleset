@@ -9,7 +9,7 @@ use Tk\Event\Subscriber;
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class ProfileEditHandler implements Subscriber
+class CourseEditHandler implements Subscriber
 {
 
     /**
@@ -18,16 +18,16 @@ class ProfileEditHandler implements Subscriber
      */
     public function onControllerInit(\Tk\Event\Event $event)
     {
-        /** @var \App\Controller\Profile\Edit $controller */
+        /** @var \App\Controller\Course\Edit $controller */
         $controller = $event->get('controller');
-        if ($controller instanceof \App\Controller\Profile\Edit) {
+        if ($controller instanceof \App\Controller\Course\Edit) {
 
             if ($controller->getUser()->isStaff() && $controller->getCourse()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
                 $actionPanel->append(\Tk\Ui\Link::createBtn(\App\Db\Phrase::findValue('placement', $controller->getCourse()->getId()) . ' Rules',
-                    \App\Uri::createHomeUrl('/ruleSettings.html')
-                        ->set('profileId', $controller->getCourse()->getId()), 'fa fa-check'));
+                    \Uni\Uri::createHomeUrl('/ruleSettings.html')
+                        ->set('courseId', $controller->getCourse()->getId()), 'fa fa-check'));
             }
 
         }

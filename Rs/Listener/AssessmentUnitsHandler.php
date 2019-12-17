@@ -19,17 +19,16 @@ class AssessmentUnitsHandler implements Subscriber
     {
         /** @var \App\Ui\StudentAssessment $studentAssessment */
         $studentAssessment = $event->get('studentAssessment');
-        //$unitCols = $studentAssessment->getUnitCols();
 
         $calc = \Rs\Calculator::createFromPlacementList($studentAssessment->getPlacementList());
         if (!$calc) return;
-        $profileRuleList = $calc->getRuleList();
+        $ruleList = $calc->getRuleList();
 
-        $label = $calc->getSubject()->getProfile()->unitLabel;
+        $label = $calc->getSubject()->getCourse()->getProfile()->getUnitLabel();
         $totals = $calc->getRuleTotals();
 
         /** @var \Rs\Db\Rule $rule */
-        foreach ($profileRuleList as $i => $rule) {
+        foreach ($ruleList as $i => $rule) {
             $t = $totals[$rule->getLabel()];
             $studentAssessment->addTotal('Total', $rule->getLabel(), $t['total'], $this->getValidCss($t['validTotal']), $t['validMsg']);
         }

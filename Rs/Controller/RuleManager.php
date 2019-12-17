@@ -37,7 +37,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
         $editUrl = null;
         if(!$this->getConfig()->isSubjectUrl())
-            $editUrl = \App\Uri::createHomeUrl('/ruleEdit.html');
+            $editUrl = \Uni\Uri::createHomeUrl('/ruleEdit.html');
 
         if (!$this->getConfig()->isSubjectUrl()) {
             $this->getTable()->appendCell(new \Tk\Table\Cell\OrderBy('orderBy'))->setIconOnly();
@@ -95,7 +95,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
     protected function getList()
     {
         $filter = $this->getTable()->getFilterValues();
-        $filter['profileId'] = $this->getCourseId();
+        $filter['courseId'] = $this->getCourseId();
         return \Rs\Db\RuleMap::create()->findFiltered($filter, $this->getTable()->getTool('a.order_by'));
     }
 
@@ -106,7 +106,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
     {
         if (!$this->getConfig()->isSubjectUrl())
             $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('New Rule',
-                \App\Uri::createHomeUrl('/ruleEdit.html')->set('profileId', $this->getCourseId()), 'fa fa-check fa-add-action'));
+                \Uni\Uri::createHomeUrl('/ruleEdit.html')->set('courseId', $this->getCourseId()), 'fa fa-check fa-add-action'));
     }
 
     /**
@@ -121,7 +121,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
         if ($this->getConfig()->isSubjectUrl()) {
             $template->setVisible('subjectUrl');
-            $template->setAttr('rulesManager', 'href', \App\Uri::createHomeUrl('/profileEdit.html')->set('profileId', $this->getCourseId()));
+            $template->setAttr('rulesManager', 'href', \Uni\Uri::createHomeUrl('/courseEdit.html')->set('courseId', $this->getCourseId()));
             $js = <<<JS
 jQuery(function ($) {
   
@@ -159,7 +159,7 @@ JS;
 <div class="tk-panel" data-panel-title="Rule Manager" data-panel-icon="fa fa-check" var="panel">     
   <p choice="subjectUrl">
     NOTE: You can only activate and deactivate rules from here. 
-    Use the <a herf="#" var="rulesManager">Profile Rules Manager</a> to edit the rule records.
+    Use the <a herf="#" var="rulesManager">Rules Manager</a> to edit the rule records.
   </p>
   
 </div>

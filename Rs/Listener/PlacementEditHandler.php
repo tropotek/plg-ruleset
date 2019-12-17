@@ -73,11 +73,11 @@ class PlacementEditHandler implements Subscriber
         if ($this->controller) {
             $this->placement = $this->controller->getPlacement();
 
-            $profileRules = \Rs\Calculator::findSubjectRuleList($this->placement->getSubject());
+            $courseRules = \Rs\Calculator::findSubjectRuleList($this->placement->getSubject());
             $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor())->toArray('id');
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
-            $field = new \Tk\Form\Field\CheckboxGroup('rules', $profileRules);
+            $field = new \Tk\Form\Field\CheckboxGroup('rules', $courseRules);
             if (!$this->placement->getId()) {
                 $field->setValue($companyRules);
             } else {

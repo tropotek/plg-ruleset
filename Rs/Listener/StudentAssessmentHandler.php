@@ -22,12 +22,12 @@ class StudentAssessmentHandler implements Subscriber
         $studentAssessment = $event->get('studentAssessment');
         $calc = \Rs\Calculator::createFromPlacementList($studentAssessment->getPlacementList());
         if (!$calc) return;
-        $profileRuleList = $calc->getRuleList();
+        $ruleList = $calc->getRuleList();
         /** @var \App\Db\Placement $placement */
         foreach ($studentAssessment->getPlacementList() as $placement) {
             $placementRules = \Rs\Calculator::findPlacementRuleList($placement);
             /** @var \Rs\Db\Rule $rule */
-            foreach ($profileRuleList as $rule) {
+            foreach ($ruleList as $rule) {
                 $units = 0;
                 if (\Rs\Calculator::hasRule($rule, $placementRules)) {
                     $units = $placement->units;
@@ -36,11 +36,11 @@ class StudentAssessmentHandler implements Subscriber
             }
         }
         
-        $label = $calc->getSubject()->getProfile()->unitLabel;
+        $label = $calc->getSubject()->getCourse()->getProfile()->getUnitLabel();
         $totals = $calc->getRuleTotals();
 
         /** @var \Rs\Db\Rule $rule */
-        foreach ($profileRuleList as $i => $rule) {
+        foreach ($ruleList as $i => $rule) {
             if ($i == 0) {  // Unit totals
                 if (!$studentAssessment->isMinMode())
                     $studentAssessment->addTotal('Pending', $label, $totals['total']['pending']);

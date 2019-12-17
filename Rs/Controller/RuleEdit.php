@@ -38,7 +38,7 @@ class RuleEdit extends \App\Controller\AdminEditIface
         $this->rule = \Rs\Db\RuleMap::create()->find($request->get('ruleId'));
         if (!$this->rule) {
             $this->rule = new \Rs\Db\Rule();
-            $this->rule->profileId = $request->get('profileId');
+            $this->rule->setCourseId($request->get('courseId'));
         }
 
 

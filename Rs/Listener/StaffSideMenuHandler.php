@@ -28,7 +28,7 @@ class StaffSideMenuHandler implements Subscriber
             /** @var \App\Ui\Sidebar\StaffMenu $sideBar */
             $sideBar = $page->getSidebar();
             if ($sideBar instanceof \App\Ui\Sidebar\StaffMenu) {
-                $sideBar->addReportUrl(\Tk\Ui\Link::create('Rule Report', \App\Uri::createSubjectUrl('/ruleReport.html'), 'fa fa-check'));
+                $sideBar->addReportUrl(\Tk\Ui\Link::create('Rule Report', \Uni\Uri::createSubjectUrl('/ruleReport.html'), 'fa fa-check'));
             }
         }
     }

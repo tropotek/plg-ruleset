@@ -322,7 +322,7 @@ class Calculator extends \Tk\ObjectUtil
      */
     public static function findCompanyRuleList($company, $subject, $supervisor = null)
     {
-        $list = \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $subject->getProfileId(), 'subjectId' => $subject->getId()), \Tk\Db\Tool::create('order_by'));
+        $list = \Rs\Db\RuleMap::create()->findFiltered(array('courseId' => $subject->getCourseId(), 'subjectId' => $subject->getId()), \Tk\Db\Tool::create('order_by'));
         $valid = array();
         /** @var \Rs\Db\Rule $rule */
         foreach ($list as $rule) {
@@ -340,7 +340,7 @@ class Calculator extends \Tk\ObjectUtil
      */
     public static function findSubjectRuleList($subject)
     {
-        return \Rs\Db\RuleMap::create()->findFiltered(array('profileId' => $subject->getProfileId(), 'subjectId' => $subject->getId()),
+        return \Rs\Db\RuleMap::create()->findFiltered(array('courseId' => $subject->getCourseId(), 'subjectId' => $subject->getId()),
             \Tk\Db\Tool::create('order_by'));
     }
 

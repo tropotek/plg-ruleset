@@ -29,15 +29,15 @@ class CategoryClassHandler implements Subscriber
         // NOTE: These vars are for the eval() function for finding the class value
         /** @var \App\Db\Company $company */
         $company = $event->get('company');
-        $profile = $company->getProfile();
+        //$profile = $company->getProfile();
         $catList = \App\Db\CompanyCategoryMap::create()->findFiltered(array(
-            'profileId' => $company->courseId,
+            'courseId' => $company->getCourseId(),
             'companyId' => $company->getId()
         ));
 
-        $profilePluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $company->courseId);
-        $script = $profilePluginData->get('plugin.company.get.class');
-        if ($profilePluginData->get('plugin.active') && $script != null) {
+        $pluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.course', $company->getCourseId());
+        $script = $pluginData->get('plugin.company.get.class');
+        if ($pluginData->get('plugin.active') && $script != null) {
             $calcClass = eval($script);
             if ($calcClass) {
                 $event->set('class', $calcClass);

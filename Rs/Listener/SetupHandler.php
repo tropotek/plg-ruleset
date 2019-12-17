@@ -36,9 +36,9 @@ class SetupHandler implements Subscriber
 //        }
 
 
-        if ($plugin->isZonePluginEnabled(Plugin::ZONE_SUBJECT_PROFILE, \App\Config::getInstance()->getProfileId())) {
+        if ($plugin->isZonePluginEnabled(Plugin::ZONE_COURSE, \App\Config::getInstance()->getCourseId())) {
             //\Tk\Log::debug($plugin->getName() . ': Sample init subject profile plugin stuff: ' . $profile->name);
-            $dispatcher->addSubscriber(new \Rs\Listener\ProfileEditHandler());
+            $dispatcher->addSubscriber(new \Rs\Listener\CourseEditHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\SubjectEditHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\SubjectDashboardHandler());
             // @deprecated No longer needed as companies should only have one class.

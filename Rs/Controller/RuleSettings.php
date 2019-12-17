@@ -21,9 +21,9 @@ class RuleSettings extends \App\Controller\AdminEditIface
     protected $data = null;
 
     /**
-     * @var \App\Db\Profile
+     * @var \App\Db\Course
      */
-    private $profile = null;
+    private $course = null;
 
 
     /**
@@ -34,7 +34,6 @@ class RuleSettings extends \App\Controller\AdminEditIface
         $this->setPageTitle('Rule Settings');
     }
 
-
     /**
      * doDefault
      *
@@ -44,14 +43,13 @@ class RuleSettings extends \App\Controller\AdminEditIface
     public function doDefault(Request $request)
     {
         $plugin = Plugin::getInstance();
-        $this->profile = $this->getCourse();
-        if (!$this->profile)
-            $this->profile = \App\Db\ProfileMap::create()->find($request->get('zoneId'));
-        if (!$this->profile)
-            throw new \Tk\Exception('Profile Not Found!');
+        $this->course = $this->getCourse();
+        if (!$this->course)
+            $this->course = $this->getConfig()->getCourseMapper()->find($request->get('zoneId'));
+        if (!$this->course)
+            throw new \Tk\Exception('Course Not Found!');
 
-        $this->data = \Tk\Db\Data::create($plugin->getName() . '.subject.profile', $this->profile->getId());
-
+        $this->data = \Tk\Db\Data::create($plugin->getName() . '.subject.course', $this->course->getId());
 
         $this->setForm(\App\Config::getInstance()->createForm('formEdit'));
         $this->getForm()->setRenderer(\App\Config::getInstance()->createFormRenderer($this->getForm()));
@@ -62,7 +60,7 @@ class RuleSettings extends \App\Controller\AdminEditIface
             ->setRequired(true)->addCss('code')->setAttr('data-mode', 'text/x-php');
 
         $this->getForm()->appendField(new Field\Checkbox('plugin.active'))
-            ->setCheckboxLabel('Enable/disable the rules and auto approval system for this profile.')
+            ->setCheckboxLabel('Enable/disable the rules and auto approval system for this course.')
             ->setLabel('Active')->setRequired(true);
 
         $this->getForm()->appendField(new Event\Submit('update', array($this, 'doSubmit')));
@@ -100,8 +98,8 @@ class RuleSettings extends \App\Controller\AdminEditIface
 
     public function initActionPanel()
     {
-        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Rules', \App\Uri::createHomeUrl('/ruleManager.html')
-            ->set('profileId', $this->profile->getId()), 'fa fa-check'));
+        $this->getActionPanel()->append(\Tk\Ui\Link::createBtn('Rules', \Uni\Uri::createHomeUrl('/ruleManager.html')
+            ->set('courseId', $this->course->getId()), 'fa fa-check'));
     }
 
     /**
