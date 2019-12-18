@@ -24,7 +24,7 @@ class AssessmentUnitsHandler implements Subscriber
         if (!$calc) return;
         $ruleList = $calc->getRuleList();
 
-        $label = $calc->getSubject()->getCourse()->getProfile()->getUnitLabel();
+        $label = $calc->getSubject()->getCourse()->getCourseProfile()->getUnitLabel();
         $totals = $calc->getRuleTotals();
 
         /** @var \Rs\Db\Rule $rule */

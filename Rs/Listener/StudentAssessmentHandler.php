@@ -36,7 +36,7 @@ class StudentAssessmentHandler implements Subscriber
             }
         }
         
-        $label = $calc->getSubject()->getCourse()->getProfile()->getUnitLabel();
+        $label = $calc->getSubject()->getCourse()->getCourseProfile()->getUnitLabel();
         $totals = $calc->getRuleTotals();
 
         /** @var \Rs\Db\Rule $rule */
