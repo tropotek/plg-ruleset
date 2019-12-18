@@ -2,6 +2,8 @@
 
 namespace Rs\Assert;
 
+use Tk\ConfigTrait;
+
 /**
  * Note objects cannot have a constructor and cannot be passed
  * parameters as the rule will only have the class name
@@ -16,6 +18,7 @@ namespace Rs\Assert;
  */
 abstract class Iface
 {
+    use ConfigTrait;
 
     /**
      * Given the rule and company record return a bool
@@ -27,12 +30,5 @@ abstract class Iface
     abstract public function execute($rule, $company);
 
 
-    /**
-     * @return \App\Config|\Tk\Config
-     */
-    public function getConfig()
-    {
-        return \App\Config::getInstance();
-    }
 
 }

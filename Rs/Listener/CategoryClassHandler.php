@@ -29,7 +29,6 @@ class CategoryClassHandler implements Subscriber
         // NOTE: These vars are for the eval() function for finding the class value
         /** @var \App\Db\Company $company */
         $company = $event->get('company');
-        //$profile = $company->getProfile();
         $catList = \App\Db\CompanyCategoryMap::create()->findFiltered(array(
             'courseId' => $company->getCourseId(),
             'companyId' => $company->getId()
