@@ -1,8 +1,8 @@
 <?php
 namespace Rs\Listener;
 
-use Tk\Event\Subscriber;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Tk\Event\Subscriber;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
