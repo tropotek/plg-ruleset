@@ -47,7 +47,7 @@ class CompanyEditHandler implements Subscriber
         /** @var \Tk\Form $form */
         $form = $event->getForm();
 
-        $form->appendField(new \Tk\Form\Field\Checkbox('autoApprove'), 'web')->setTabGroup('Details')
+        $form->appendField(new \Tk\Form\Field\Checkbox('autoApprove'), 'web')->setValue('autoApprove')->setTabGroup('Details')
             ->setCheckboxLabel('Placements applying with this company can be Auto-Approved.');
 
         if ($form->getField('update'))
@@ -67,8 +67,7 @@ class CompanyEditHandler implements Subscriber
         /** @var \Tk\Form $form */
         $form = $event->getForm();
         $company = $this->controller->getCompany();
-
-        $data = array('autoApprove' => $company->getData()->get('autoApprove'));
+        $data = array('autoApprove' => $company->getData()->get('autoApprove', 'autoApprove'));
         $form->load($data);
 
     }
