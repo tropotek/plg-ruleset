@@ -31,7 +31,6 @@ $params = array();
 //$routes->add('staff-rule-edit', new \Tk\Routing\Route('/staff/{subjectCode}/ruleEdit.html', 'Rs\Controller\RuleEdit::doDefault', $params));
 //$routes->add('staff-assessment-report', new \Tk\Routing\Route('/staff/{subjectCode}/ruleReport.html', 'Rs\Controller\RuleReport::doDefault', $params));
 
-
 $routes->add('Rules Settings', new \Tk\Routing\Route('/staff/ruleSettings.html', 'Rs\Controller\RuleSettings::doDefault', $params));
 
 $routes->add('staff-rule-manager', new \Tk\Routing\Route('/staff/ruleManager.html', 'Rs\Controller\RuleManager::doDefault', $params));
