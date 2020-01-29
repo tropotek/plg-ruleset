@@ -52,12 +52,12 @@ class PlacementValidateHandler implements Subscriber
         foreach ($placeRules as $rule) {
             $rulesIdList[] = $rule->id;
         }
-vd($ruleInfo);
+
         foreach ($ruleInfo as $label => $info) {
             if ($label == 'Total' || empty($info['assessmentRule'])) continue;
             if (!in_array($info['assessmentRule']->id, $rulesIdList)) continue;  // Restrict checking to only the placement rules.
             if ($info['validTotal'] > 0) {
-                $event->addError($label, $info['validMsg']);
+                $event->addError($info['assessmentRule']->getName(), $info['validMsg']);
             }
         }
 
