@@ -231,8 +231,10 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             } else if ($units >= $min) {
                 return self::VALID_OK;
             }
-        } else if ($units < $min) {
+        } else if ($units <= $min) {
             return self::VALID_BELOW;
+        } else if ($units > $max) {
+            return self::VALID_OUT;
         }
         return self::VALID_OK;
     }
@@ -248,14 +250,15 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     static function getValidateMessage($units, $min = 0, $max = 0)
     {
         $res = self::validateUnits($units, $min, $max);
-        $m = (($min == 0) ? $max : $min);
+
         switch ($res) {
             case self::VALID_BELOW:
+                $m = (($min == 0) ? $max : $min);
                 return sprintf('You are below the minimum required units of %d', $m );
             case self::VALID_OUT:
-                return sprintf('You have exceeded the maximum required units of %d', $m);
+                return sprintf('You have exceeded the maximum required units of %d', $max);
             case self::VALID_OK:
-                return sprintf('You have reached the required number of units of %d', $m);
+                return sprintf('You have reached the required number of units of %d', $max);
         }
         return '';
     }

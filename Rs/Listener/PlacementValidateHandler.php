@@ -52,7 +52,7 @@ class PlacementValidateHandler implements Subscriber
         foreach ($placeRules as $rule) {
             $rulesIdList[] = $rule->id;
         }
-
+vd($ruleInfo);
         foreach ($ruleInfo as $label => $info) {
             if ($label == 'Total' || empty($info['assessmentRule'])) continue;
             if (!in_array($info['assessmentRule']->id, $rulesIdList)) continue;  // Restrict checking to only the placement rules.
