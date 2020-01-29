@@ -22,7 +22,7 @@ class CourseEditHandler implements Subscriber
         $controller = $event->get('controller');
         if ($controller instanceof \App\Controller\Course\Edit) {
 
-            if ($controller->getUser()->isStaff() && $controller->getCourse()) {
+            if ($controller->getAuthUser()->isStaff() && $controller->getCourse()) {
                 /** @var \Tk\Ui\Admin\ActionPanel $actionPanel */
                 $actionPanel = $controller->getActionPanel();
                 $actionPanel->append(\Tk\Ui\Link::createBtn(\App\Db\Phrase::findValue('placement', $controller->getCourse()->getId()) . ' Rules',
