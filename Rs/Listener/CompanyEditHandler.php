@@ -27,7 +27,7 @@ class CompanyEditHandler implements Subscriber
     public function onControllerInit($event)
     {
         $controller = \Tk\Event\Event::findControllerObject($event);
-        if ($controller instanceof \App\Controller\Company\Edit && $controller->getConfig()->getUser()->isStaff()) {
+        if ($controller instanceof \App\Controller\Company\Edit && $controller->getConfig()->getAuthUser()->isStaff()) {
             $plugin = \Rs\Plugin::getInstance();
             $pluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.course', $controller->getCourseId());
             if ($pluginData->get('plugin.active')) {
