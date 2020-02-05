@@ -45,7 +45,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
         $rules = \Rs\Db\RuleMap::create()->findFiltered(array('courseId' => $this->getCourseId(), 'subjectId' => $subject->getId()));
 
         foreach ($rules as $rule) {
-            $this->getTable()->appendCell(new \Tk\Table\Cell\Text($rule->getLabel()))->setOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+            $this->getTable()->appendCell(new \Tk\Table\Cell\Text($rule->getLabel()))->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
                 /** @var \Tk\Table\Cell\Text $cell  */
                 /** @var \App\Db\User $obj  */
                 $tblFilter = $cell->getTable()->getFilterValues();

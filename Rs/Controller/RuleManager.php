@@ -52,7 +52,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
         $this->getTable()->appendCell(new \Tk\Table\Cell\Date('created'));
         if ($this->getConfig()->isSubjectUrl()) {
             $this->getTable()->appendCell(new \Tk\Table\Cell\Checkbox('activeCb'))->setLabel('Active')->setUseValue(true)
-                ->setOnPropertyValue(function ($cell, $obj, $value) {
+                ->addOnPropertyValue(function ($cell, $obj, $value) {
                     /** @var $cell \Tk\Table\Cell\Checkbox */
                     /** @var $obj \Rs\Db\Rule */
                     $subjectId = \App\Config::getInstance()->getSubjectId();
