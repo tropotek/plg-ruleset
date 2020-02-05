@@ -14,7 +14,7 @@ class SetupHandler implements Subscriber
 {
 
     /**
-     * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
+     * @param \Symfony\Component\HttpKernel\Event\GetResponseEvent $event
      * @throws \Tk\Db\Exception
      * @throws \Tk\Exception
      */
