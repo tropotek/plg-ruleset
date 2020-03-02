@@ -95,9 +95,9 @@ class RuleReport extends \App\Controller\AdminManagerIface
     {
         $filter = $this->getTable()->getFilterValues();
         $filter['subjectId'] = $this->getSubject()->getId();
-        $filter['type'] = \Uni\Db\Role::TYPE_STUDENT;
+        $filter['type'] = \Uni\Db\User::TYPE_STUDENT;
 
-        return \App\Db\UserMap::create()->findFiltered($filter, $this->table->getTool('a.name'));
+        return \App\Db\UserMap::create()->findFiltered($filter, $this->table->getTool('a.name_first'));
     }
 
     /**
