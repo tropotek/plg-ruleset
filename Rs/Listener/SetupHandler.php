@@ -44,6 +44,7 @@ class SetupHandler implements Subscriber
             // @deprecated No longer needed as companies should only have one class.
             //$dispatcher->addSubscriber(new \Rs\Listener\CategoryClassHandler());
 
+            $dispatcher->addSubscriber(new \Rs\Listener\PlacementViewHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementEditHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementConfirmHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementValidateHandler());
