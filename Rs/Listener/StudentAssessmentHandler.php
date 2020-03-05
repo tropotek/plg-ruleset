@@ -1,6 +1,7 @@
 <?php
 namespace Rs\Listener;
 
+use Rs\Plugin;
 use Tk\Event\Subscriber;
 
 /**
@@ -20,6 +21,10 @@ class StudentAssessmentHandler implements Subscriber
     {
         /** @var \App\Ui\StudentAssessment $studentAssessment */
         $studentAssessment = $event->get('studentAssessment');
+        if (!Plugin::getInstance()->isZonePluginEnabled(Plugin::ZONE_COURSE, $studentAssessment->getSubject()->getCourseId())) {
+            return;
+        }
+
         $calc = \Rs\Calculator::createFromPlacementList($studentAssessment->getPlacementList());
         if (!$calc) return;
         $ruleList = $calc->getRuleList();
@@ -30,12 +35,12 @@ class StudentAssessmentHandler implements Subscriber
             foreach ($ruleList as $rule) {
                 $units = 0;
                 if (\Rs\Calculator::hasRule($rule, $placementRules)) {
-                    $units = $placement->units;
+                    $units = $placement->getUnits();
                 }
                 $studentAssessment->addUnitColumn($rule->getLabel(), $placement->getId(), $units);
             }
         }
-        
+
         $label = $calc->getSubject()->getCourseProfile()->getUnitLabel();
         $totals = $calc->getRuleTotals();
 
@@ -55,8 +60,8 @@ class StudentAssessmentHandler implements Subscriber
                 $studentAssessment->addTotal('Pending', $rule->getLabel(), $t['pending']);
             $studentAssessment->addTotal('Completed', $rule->getLabel(), $t['completed']);
             if (!$studentAssessment->isMinMode()) {
-                $studentAssessment->addTotal('Min Targets', $rule->getLabel(), $rule->min);
-                $studentAssessment->addTotal('Max Targets', $rule->getLabel(), $rule->max);
+                $studentAssessment->addTotal('Min Targets', $rule->getLabel(), $rule->getMin());
+                $studentAssessment->addTotal('Max Targets', $rule->getLabel(), $rule->getMax());
             }
         }
 

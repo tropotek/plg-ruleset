@@ -12,12 +12,12 @@ class Calculator extends \Tk\ObjectUtil
 {
 
     /**
-     * @var \App\Db\User
+     * @var \Uni\Db\UserIface
      */
     protected $user = null;
 
     /**
-     * @var \App\Db\Subject
+     * @var \Uni\Db\SubjectIface
      */
     protected $subject = null;
 
@@ -53,8 +53,8 @@ class Calculator extends \Tk\ObjectUtil
 
 
     /**
-     * @param \App\Db\Subject $subject
-     * @param \App\Db\User $user
+     * @param \Uni\Db\SubjectIface $subject
+     * @param \Uni\Db\UserIface $user
      * @throws \Exception
      */
     protected function __construct($subject, $user)
@@ -68,8 +68,8 @@ class Calculator extends \Tk\ObjectUtil
     /**
      * calculate and return an instance of this object holding the calculated data
      *
-     * @param \App\Db\Subject $subject
-     * @param \App\Db\User $user
+     * @param \Uni\Db\SubjectIface $subject
+     * @param \Uni\Db\UserIface $user
      * @return Calculator
      * @throws \Exception
      */
@@ -251,7 +251,7 @@ class Calculator extends \Tk\ObjectUtil
     }
 
     /**
-     * @return \App\Db\User
+     * @return \Uni\Db\UserIface
      */
     public function getUser()
     {
@@ -259,7 +259,7 @@ class Calculator extends \Tk\ObjectUtil
     }
 
     /**
-     * @return \App\Db\Subject
+     * @return \Uni\Db\SubjectIface
      */
     public function getSubject()
     {
@@ -291,7 +291,7 @@ class Calculator extends \Tk\ObjectUtil
     {
         /** @var Rule $r */
         foreach ($ruleList as $r) {
-            if ($rule->id == $r->id) return true;
+            if ($rule->getId() == $r->getId()) return true;
         }
         return false;
     }
@@ -305,7 +305,7 @@ class Calculator extends \Tk\ObjectUtil
     {
         $list = null;
         if ($placement->getId()) {
-            $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getVolatileId(), 'subjectId' => $placement->subjectId),
+            $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getVolatileId(), 'subjectId' => $placement->getSubjectId()),
                 \Tk\Db\Tool::create('order_by'));
         } else {    // Get default rules based on the company and subject object
             $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
@@ -315,7 +315,7 @@ class Calculator extends \Tk\ObjectUtil
 
     /**
      * @param \App\Db\Company $company
-     * @param \App\Db\Subject $subject
+     * @param \Uni\Db\SubjectIface $subject
      * @param \App\Db\Supervisor|null $supervisor If supplied then the academic flag can be tested on this instead of the company hasAcademic()
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      * @throws \Exception
@@ -334,7 +334,7 @@ class Calculator extends \Tk\ObjectUtil
     }
 
     /**
-     * @param \App\Db\Subject $subject
+     * @param \Uni\Db\SubjectIface $subject
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      * @throws \Exception
      */
@@ -345,8 +345,8 @@ class Calculator extends \Tk\ObjectUtil
     }
 
     /**
-     * @param \App\Db\Subject $subject
-     * @param \App\Db\User $user
+     * @param \Uni\Db\SubjectIface $subject
+     * @param \Uni\Db\UserIface $user
      * @return \App\Db\Placement[]|\Tk\Db\Map\ArrayObject
      * @throws \Exception
      */
