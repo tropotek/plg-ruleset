@@ -1,6 +1,7 @@
 <?php
 namespace Rs\Listener;
 
+use App\Db\Placement;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Tk\Event\Subscriber;
 
@@ -78,7 +79,7 @@ class PlacementEditHandler implements Subscriber
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
             $field = new \Tk\Form\Field\CheckboxGroup('rules', $courseRules);
-            if (!$this->placement->getId()) {
+            if (!$this->placement->getId() || $this->placement->getStatus() == Placement::STATUS_DRAFT) {
                 $field->setValue($companyRules);
             } else {
                 $field->setValue($placementRules);
