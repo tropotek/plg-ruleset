@@ -340,8 +340,10 @@ class Calculator extends \Tk\ObjectUtil
      */
     public static function findSubjectRuleList($subject)
     {
-        return \Rs\Db\RuleMap::create()->findFiltered(array('courseId' => $subject->getCourseId(), 'subjectId' => $subject->getId()),
-            \Tk\Db\Tool::create('order_by'));
+        return \Rs\Db\RuleMap::create()->findFiltered(array(
+            'courseId' => $subject->getCourseId(),
+            'subjectId' => $subject->getId()
+        ), \Tk\Db\Tool::create('order_by'));
     }
 
     /**
