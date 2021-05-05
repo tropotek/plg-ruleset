@@ -79,6 +79,7 @@ class PlacementEditHandler implements Subscriber
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
             $field = new \Tk\Form\Field\CheckboxGroup('rules', $courseRules);
+            $field->setValue($companyRules);
             if (!$this->placement->getId() || $this->placement->getStatus() == Placement::STATUS_DRAFT) {
                 $field->setValue($companyRules);
             } else {
