@@ -61,6 +61,7 @@ class PlacementValidateHandler implements Subscriber
             }
         }
 
+        // TODO: this autoApprove value whould be part of the company object and not in the Rs plugin
         $company = $placement->getCompany();
         if (!$company->getData()->get('autoApprove')) {
             $event->addError('Auto Approve', 'All placements with this company have to be manually approved.');
