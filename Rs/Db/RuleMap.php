@@ -104,7 +104,7 @@ class RuleMap extends \App\Db\Mapper
             $filter->appendWhere('a.course_id = %s AND ', (int)$filter['courseId']);
         }
 
-        if (!empty($filter['subjectId'])) {
+        if (!empty($filter['subjectId'])) {  // Find active ruels for the selected subject
             $filter->appendFrom(', (SELECT a.id as \'rule_id\', IFNULL(b.active, 0) as \'active\' FROM rule a LEFT JOIN rule_subject b ON (a.id = b.rule_id AND b.subject_id = %s) ) b', (int)$filter['subjectId']);
             $filter->appendWhere('a.id = b.rule_id AND b.active = 1 AND ');
         }
