@@ -15,8 +15,14 @@ class RuleReport extends \App\Controller\AdminManagerIface
 
     /**
      * @var array
+     * @deprecated
      */
     static public $calcCache = array();
+
+    /**
+     * @var array
+     */
+    public $cache = array();
 
 
     /**
@@ -49,17 +55,20 @@ class RuleReport extends \App\Controller\AdminManagerIface
                 /** @var \Tk\Table\Cell\Text $cell  */
                 /** @var \App\Db\User $obj  */
                 $tblFilter = $cell->getTable()->getFilterValues();
-                if (empty(self::$calcCache[$obj->getId()])) {
+                //if (empty(self::$calcCache[$obj->getId()])) {
+                if (empty($this->cache[$obj->getId()])) {
                     $filter = array(
                         'userId' => $obj->getId(),
                         'subjectId' => $subject->getId(),
                         'status' => array(\App\Db\Placement::STATUS_APPROVED, \App\Db\Placement::STATUS_ASSESSING, \App\Db\Placement::STATUS_EVALUATING, \App\Db\Placement::STATUS_COMPLETED)
                     );
                     $placementList = \App\Db\PlacementMap::create()->findFiltered($filter);
-                    self::$calcCache[$obj->getId()] = \Rs\Calculator::createFromPlacementList($placementList);
+                    //self::$calcCache[$obj->getId()] = \Rs\Calculator::createFromPlacementList($placementList);
+                    $this->cache[$obj->getId()] = \Rs\Calculator::createFromPlacementList($placementList);
                 }
                 /** @var \Rs\Calculator $calc */
-                $calc = self::$calcCache[$obj->getId()];
+                //$calc = self::$calcCache[$obj->getId()];
+                $calc = $this->cache[$obj->getId()];
 
                 $field = 'total';
                 if (!empty($tblFilter['results']))
@@ -67,6 +76,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
 
                 if ($calc) {
                     $arr = $calc->getTotals();
+                    vd($arr);
                     if (isset($arr[$cell->getProperty()]))
                         return $arr[$cell->getProperty()][$field];
                 }
@@ -74,6 +84,53 @@ class RuleReport extends \App\Controller\AdminManagerIface
             });
 
         }
+
+
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Completed'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+            /** @var \Tk\Table\Cell\Text $cell  */
+            /** @var \App\Db\User $obj  */
+            if (isset($this->cache[$obj->getId()])) {
+                $calc = $this->cache[$obj->getId()];
+                if ($calc) {
+                    $arr = $calc->getTotals();
+                    if (isset($arr['completed'])) {
+                        return $arr['completed'];
+                    }
+                }
+            }
+            return '';
+        });
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Pending'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+            /** @var \Tk\Table\Cell\Text $cell  */
+            /** @var \App\Db\User $obj  */
+            if (isset($this->cache[$obj->getId()])) {
+                $calc = $this->cache[$obj->getId()];
+                if ($calc) {
+                    $arr = $calc->getTotals();
+                    if (isset($arr['pending'])) {
+                        return $arr['pending'];
+                    }
+                }
+            }
+            return '';
+        });
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Total'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+            /** @var \Tk\Table\Cell\Text $cell  */
+            /** @var \App\Db\User $obj  */
+            if (isset($this->cache[$obj->getId()])) {
+                $calc = $this->cache[$obj->getId()];
+                if ($calc) {
+                    $arr = $calc->getTotals();
+                    if (isset($arr['total'])) {
+                        return $arr['total'];
+                    }
+                }
+            }
+            return '';
+        });
+
+
+
 
         // Filters
         $list = array('-- Status --' => '', 'Pending' => 'pending', 'Completed' => 'completed');
@@ -106,6 +163,17 @@ class RuleReport extends \App\Controller\AdminManagerIface
     public function show()
     {
         $template = parent::show();
+        $css = <<<CSS
+/*html body table tr td.mh-totals:first-child {*/
+/*  border-left-style: double;*/
+/*  border-left-color: #0c0c0c;*/
+/*  background-color: #CCC;*/
+/*} */
+html body table tr td.mh-totals {
+  background-color: #EFEFEF;
+} 
+CSS;
+        $template->appendCss($css);
 
         $template->appendTemplate('panel', $this->getTable()->getRenderer()->show());
 
