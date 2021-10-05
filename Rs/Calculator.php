@@ -122,12 +122,15 @@ class Calculator extends \Tk\ObjectUtil
                 if (!isset($totals[$rule->getLabel()])) {
                     $totals[$rule->getLabel()]['total'] = 0;
                     $totals[$rule->getLabel()]['completed'] = 0;
+                    $totals[$rule->getLabel()]['evaluating'] = 0;
                     $totals[$rule->getLabel()]['pending'] = 0;
                 }
                 if (self::hasRule($rule, $placeRules)) {
                     $totals[$rule->getLabel()]['total'] += $units;
                     if ($placement->status == \App\Db\Placement::STATUS_COMPLETED) {
                         $totals[$rule->getLabel()]['completed'] += $units;
+                    } else if ($placement->status == \App\Db\Placement::STATUS_EVALUATING) {
+                        $totals[$rule->getLabel()]['evaluating'] += $units;
                     } else {
                         $totals[$rule->getLabel()]['pending'] += $units;
                     }
@@ -137,11 +140,14 @@ class Calculator extends \Tk\ObjectUtil
             if (!isset($totals['total'])) {
                 $totals['total'] = 0;
                 $totals['completed'] = 0;
+                $totals['evaluating'] = 0;
                 $totals['pending'] = 0;
             }
             $totals['total'] += $units;
             if ($placement->status == \App\Db\Placement::STATUS_COMPLETED) {
                 $totals['completed'] += $units;
+            } else if ($placement->status == \App\Db\Placement::STATUS_EVALUATING) {
+                $totals['evaluating'] += $units;
             } else {
                 $totals['pending'] += $units;
             }
@@ -157,6 +163,7 @@ class Calculator extends \Tk\ObjectUtil
                 $this->ruleTotals[$rule->getLabel()]['ruleTotal'] = $rule->getMaxTarget() ? $rule->getMaxTarget() : $rule->getMinTarget();
                 $this->ruleTotals[$rule->getLabel()]['total'] = $totals[$rule->getLabel()]['total'];
                 $this->ruleTotals[$rule->getLabel()]['pending'] = $totals[$rule->getLabel()]['pending'];
+                $this->ruleTotals[$rule->getLabel()]['evaluating'] = $totals[$rule->getLabel()]['evaluating'];
                 $this->ruleTotals[$rule->getLabel()]['completed'] = $totals[$rule->getLabel()]['completed'];
                 $this->ruleTotals[$rule->getLabel()]['validCompleted'] = $rule->isTotalValid($totals[$rule->getLabel()]['completed']);
                 $this->ruleTotals[$rule->getLabel()]['validCompletedMsg'] = $rule->getValidMessage($totals[$rule->getLabel()]['completed']);
@@ -170,6 +177,7 @@ class Calculator extends \Tk\ObjectUtil
         $this->ruleTotals['total']['ruleTotal'] = $this->subject->getMaxUnitsTotal() ? $this->subject->getMaxUnitsTotal() : $this->subject->getMinUnitsTotal();
         $this->ruleTotals['total']['total'] = $totals['total'];
         $this->ruleTotals['total']['pending'] = $totals['pending'];
+        $this->ruleTotals['total']['evaluating'] = $totals['evaluating'];
         $this->ruleTotals['total']['completed'] = $totals['completed'];
         $this->ruleTotals['total']['validCompleted'] = Rule::validateUnits($totals['completed'], $this->subject->getMinUnitsTotal(), $this->subject->getMaxUnitsTotal());
         $this->ruleTotals['total']['validCompletedMsg'] = Rule::getValidateMessage($totals['completed'], $this->subject->getMinUnitsTotal(), $this->subject->getMaxUnitsTotal());

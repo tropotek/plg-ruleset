@@ -114,6 +114,20 @@ class RuleReport extends \App\Controller\AdminManagerIface
             }
             return '';
         });
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Evaluating'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+            /** @var \Tk\Table\Cell\Text $cell  */
+            /** @var \App\Db\User $obj  */
+            if (isset($this->cache[$obj->getId()])) {
+                $calc = $this->cache[$obj->getId()];
+                if ($calc) {
+                    $arr = $calc->getTotals();
+                    if (isset($arr['evaluating'])) {
+                        return $arr['evaluating'];
+                    }
+                }
+            }
+            return '';
+        });
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Total'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
             /** @var \Tk\Table\Cell\Text $cell  */
             /** @var \App\Db\User $obj  */
