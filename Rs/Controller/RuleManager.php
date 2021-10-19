@@ -121,7 +121,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
 
         if ($this->getConfig()->isSubjectUrl()) {
             $template->setVisible('subjectUrl');
-            $template->setAttr('rulesManager', 'href', \Uni\Uri::createHomeUrl('/courseEdit.html')->set('courseId', $this->getCourseId()));
+            $template->setAttr('courseEdit', 'href', \Uni\Uri::createHomeUrl('/courseEdit.html')->set('courseId', $this->getCourseId()));
             $js = <<<JS
 jQuery(function ($) {
   
@@ -159,9 +159,8 @@ JS;
 <div class="tk-panel" data-panel-title="Rule Manager" data-panel-icon="fa fa-check" var="panel">     
   <p choice="subjectUrl">
     NOTE: You can only activate and deactivate rules from here. 
-    Use the <a herf="#" var="rulesManager">Rules Manager</a> to edit the rule records.
+    Use the <a herf="#" var="courseEdit">Course Edit page</a> to edit the rule records.
   </p>
-  
 </div>
 HTML;
 
