@@ -129,10 +129,10 @@ class Calculator extends \Tk\ObjectUtil
                     $totals[$rule->getLabel()]['total'] += $units;
                     if ($placement->status == \App\Db\Placement::STATUS_COMPLETED) {
                         $totals[$rule->getLabel()]['completed'] += $units;
-                    } else if ($placement->status == \App\Db\Placement::STATUS_EVALUATING) {
-                        $totals[$rule->getLabel()]['evaluating'] += $units;
-                    } else {
+                    } else if ($placement->status == \App\Db\Placement::STATUS_PENDING) {
                         $totals[$rule->getLabel()]['pending'] += $units;
+                    } else if ($placement->status != \App\Db\Placement::STATUS_CANCELLED) {
+                        $totals[$rule->getLabel()]['evaluating'] += $units;
                     }
                 }
             }
@@ -146,10 +146,10 @@ class Calculator extends \Tk\ObjectUtil
             $totals['total'] += $units;
             if ($placement->status == \App\Db\Placement::STATUS_COMPLETED) {
                 $totals['completed'] += $units;
-            } else if ($placement->status == \App\Db\Placement::STATUS_EVALUATING) {
-                $totals['evaluating'] += $units;
-            } else {
+            } else if ($placement->status == \App\Db\Placement::STATUS_PENDING) {
                 $totals['pending'] += $units;
+            } else if ($placement->status != \App\Db\Placement::STATUS_CANCELLED) {
+                $totals['evaluating'] += $units;
             }
             $termTot += $units;
         }
@@ -365,7 +365,7 @@ class Calculator extends \Tk\ObjectUtil
         return \App\Db\PlacementMap::create()->findFiltered(array(
             'userId' => $user->getId(),
             'subjectId' => $subject->getId(),
-            'status' => array(\App\Db\Placement::STATUS_APPROVED, \App\Db\Placement::STATUS_ASSESSING,
+            'status' => array(\App\Db\Placement::STATUS_APPROVED, \App\Db\Placement::STATUS_ASSESSING, \App\Db\Placement::STATUS_PENDING,
                 \App\Db\Placement::STATUS_EVALUATING, \App\Db\Placement::STATUS_COMPLETED)
         ));
     }

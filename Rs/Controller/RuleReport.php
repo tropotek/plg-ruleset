@@ -76,7 +76,6 @@ class RuleReport extends \App\Controller\AdminManagerIface
 
                 if ($calc) {
                     $arr = $calc->getTotals();
-                    vd($arr);
                     if (isset($arr[$cell->getProperty()]))
                         return $arr[$cell->getProperty()][$field];
                 }
