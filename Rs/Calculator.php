@@ -122,6 +122,7 @@ class Calculator extends \Tk\ObjectUtil
                 if (!isset($totals[$rule->getLabel()])) {
                     $totals[$rule->getLabel()]['total'] = 0;
                     $totals[$rule->getLabel()]['completed'] = 0;
+                    $totals[$rule->getLabel()]['approved'] = 0;
                     $totals[$rule->getLabel()]['evaluating'] = 0;
                     $totals[$rule->getLabel()]['pending'] = 0;
                 }
@@ -131,6 +132,8 @@ class Calculator extends \Tk\ObjectUtil
                         $totals[$rule->getLabel()]['completed'] += $units;
                     } else if ($placement->status == \App\Db\Placement::STATUS_PENDING) {
                         $totals[$rule->getLabel()]['pending'] += $units;
+                    } else if ($placement->status == \App\Db\Placement::STATUS_APPROVED) {
+                        $totals[$rule->getLabel()]['approved'] += $units;
                     } else if ($placement->status != \App\Db\Placement::STATUS_CANCELLED) {
                         $totals[$rule->getLabel()]['evaluating'] += $units;
                     }
@@ -140,14 +143,17 @@ class Calculator extends \Tk\ObjectUtil
             if (!isset($totals['total'])) {
                 $totals['total'] = 0;
                 $totals['completed'] = 0;
-                $totals['evaluating'] = 0;
                 $totals['pending'] = 0;
+                $totals['approved'] = 0;
+                $totals['evaluating'] = 0;
             }
             $totals['total'] += $units;
             if ($placement->status == \App\Db\Placement::STATUS_COMPLETED) {
                 $totals['completed'] += $units;
             } else if ($placement->status == \App\Db\Placement::STATUS_PENDING) {
                 $totals['pending'] += $units;
+            } else if ($placement->status == \App\Db\Placement::STATUS_APPROVED) {
+                $totals['approved'] += $units;
             } else if ($placement->status != \App\Db\Placement::STATUS_CANCELLED) {
                 $totals['evaluating'] += $units;
             }
