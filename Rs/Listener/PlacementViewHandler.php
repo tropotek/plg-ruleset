@@ -58,9 +58,6 @@ class PlacementViewHandler implements Subscriber
 
     }
 
-
-
-
     /**
      * @param \Tk\Event\FormEvent $event
      * @throws \Exception
