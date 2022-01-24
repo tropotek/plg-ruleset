@@ -36,6 +36,7 @@ class RuleMap extends \App\Db\Mapper
             $this->dbMap->addPropertyMap(new Db\Text('script'));
             //$this->dbMap->addPropertyMap(new Db\Boolean('active'));
             $this->dbMap->addPropertyMap(new Db\Integer('orderBy', 'order_by'));
+            $this->dbMap->addPropertyMap(new Db\Date('modified'));
             $this->dbMap->addPropertyMap(new Db\Date('created'));
         }
         return $this->dbMap;

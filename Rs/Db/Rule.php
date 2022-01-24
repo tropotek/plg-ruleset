@@ -4,6 +4,7 @@ namespace Rs\Db;
 
 use Bs\Db\Traits\CreatedTrait;
 use Bs\Db\Traits\OrderByTrait;
+use Bs\Db\Traits\TimestampTrait;
 use Rs\Plugin;
 use Uni\Db\Traits\CourseTrait;
 
@@ -15,7 +16,7 @@ use Uni\Db\Traits\CourseTrait;
 class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
 {
     use CourseTrait;
-    use CreatedTrait;
+    use TimestampTrait;
     use OrderByTrait;
 
     const VALID_NULL = 128;
@@ -83,6 +84,11 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     /**
      * @var \DateTime
      */
+    public $modified = null;
+
+    /**
+     * @var \DateTime
+     */
     public $created = null;
 
 
@@ -92,7 +98,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      */
     public function __construct()
     {
-        $this->_CreatedTrait();
+        $this->_TimestampTrait();
     }
 
     /**

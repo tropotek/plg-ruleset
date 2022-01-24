@@ -77,7 +77,7 @@ class CompanyEditHandler implements Subscriber
     }
 
     /**
-     * TODO: this autoApprove value whould be part of the company object and not in the Rs plugin
+     * TODO: this autoApprove value would be part of the company object and not in the Rs plugin
      *
      * @param \Tk\Form $form
      * @param \Tk\Form\Event\Iface $event
