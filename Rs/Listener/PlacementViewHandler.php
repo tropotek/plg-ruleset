@@ -51,7 +51,7 @@ class PlacementViewHandler implements Subscriber
         }
         $html = rtrim($html , "\n");
         if ($html) {
-            $html = sprintf('<ul style="padding: 0 0 0 0px; list-style: none;">%s</ul>', $html);
+            //$html = sprintf('<ul style="padding: 0 0 0 0px; list-style: none;">%s</ul>', $html);
             $html = sprintf('<ul style="padding: 0 0 0 5px; list-style: none;">%s</ul>', $html);
             $this->controller->getTemplate()->appendHtml('dl-list', sprintf('<dt>Assessment Credit:</dt> <dd>%s</dd>', $html));
         }
