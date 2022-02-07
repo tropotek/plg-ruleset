@@ -319,7 +319,11 @@ class Calculator extends \Tk\ObjectUtil
     {
         $list = null;
         if ($placement->getId()) {
-            $list = \Rs\Db\RuleMap::create()->findFiltered(array('placementId' => $placement->getVolatileId(), 'subjectId' => $placement->getSubjectId()),
+            $list = \Rs\Db\RuleMap::create()->findFiltered(
+                [
+                    'placementId' => $placement->getVolatileId(),
+                    'subjectId' => $placement->getSubjectId()
+                ],
                 \Tk\Db\Tool::create('order_by'));
         } else {    // Get default rules based on the company and subject object
             $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
@@ -344,7 +348,8 @@ class Calculator extends \Tk\ObjectUtil
                 $valid[] = $rule;
             }
         }
-        return new \Tk\Db\Map\ArrayObject($valid);
+        $a = new \Tk\Db\Map\ArrayObject($valid);
+        return $a;
     }
 
     /**

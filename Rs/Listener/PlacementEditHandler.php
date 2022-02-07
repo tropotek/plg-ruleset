@@ -1,8 +1,10 @@
 <?php
 namespace Rs\Listener;
 
+use App\Controller\Student\Placement\Create;
 use App\Db\Placement;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Tk\ConfigTrait;
 use Tk\Event\Subscriber;
 
 /**
@@ -12,6 +14,7 @@ use Tk\Event\Subscriber;
  */
 class PlacementEditHandler implements Subscriber
 {
+    use ConfigTrait;
 
     /**
      * @var null|\App\Controller\Placement\Edit
@@ -75,16 +78,37 @@ class PlacementEditHandler implements Subscriber
             $this->placement = $this->controller->getPlacement();
 
             $courseRules = \Rs\Calculator::findSubjectRuleList($this->placement->getSubject());
-            $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor())->toArray('id');
+            $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor()); //->toArray('id');
             $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
 
-            $field = new \Tk\Form\Field\CheckboxGroup('rules', $courseRules);
+            //$field = new \Tk\Form\Field\CheckboxGroup('rules', $courseRules);
+            $field = new \Tk\Form\Field\Radio('rules', $courseRules);
+            if (!$this->placement->getId() && $this->controller instanceof \App\Controller\Student\Placement\Create) {
+                $field = new \Tk\Form\Field\Radio('rules', $companyRules);
+            }
+
+            $field->setArrayField(true);
             $field->setValue($companyRules);
             if (!$this->placement->getId() || $this->placement->getStatus() == Placement::STATUS_DRAFT) {
-                $field->setValue($companyRules);
+                $field->setValue($companyRules->toArray('id'));
             } else {
-                $field->setValue($placementRules);
+                $field->setValue($placementRules->toArray('id'));
             }
+
+            $field->addOnShowOption(function (\Dom\Template $template, \Tk\Form\Field\Option $option, $var) {
+                $catList = $this->placement->getCompany()->getCategoryList();
+                // Highlight the categories the are in the company list where possible
+                foreach ($catList as $cat) {
+                    if ($option->getName() == $cat->getName()) {
+                        if (!$this->placement->getId() && $this->controller instanceof \App\Controller\Student\Placement\Create) {
+                            $option->setName('[' . $cat->getClass() . '] ' . $option->getName());
+                        } else {
+                            $option->setName('* ' . $option->getName());
+                        }
+                        break;
+                    }
+                }
+            });
 
             $field->setAttr('data-placement-id', $this->placement->getId());
             $field->setAttr('data-company-id', $this->placement->companyId);
@@ -92,10 +116,13 @@ class PlacementEditHandler implements Subscriber
             $field->setAttr('data-supervisor-id', $this->placement->supervisorId.'');
 
             if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
-                $field->setReadonly();
-                $field->setDisabled(true);
+                if ($this->placement->getId()) {
+                    $field->setReadonly();
+                    $field->setDisabled(true);
+                    $field->setAttr('data-hide-unselected');
+                }
                 $form->appendField($field, 'units');
-                $field->setAttr('data-hide-unselected');
+                $field->setNotes('If this company has multiple categories, please select your preferred placement experience');
             } else {
                 $field->setTabGroup('Details');
                 $form->appendField($field);
@@ -109,7 +136,7 @@ class PlacementEditHandler implements Subscriber
             if ($form->getField('submitForApproval'))
                 $form->addEventCallback('submitForApproval', array($this, 'doSubmit'));
 
-            // TODO: style the list to look nice....?
+            // style the list to look nice.
             $css = <<<CSS
 ul.assessment-credit {
   padding-left: 15px;
@@ -134,7 +161,11 @@ jQuery(function ($) {
       subjectId: params.subjectId, 
       supervisorId: params.supervisorId
     });
-    $(this).parent().find('input[type=checkbox]').prop('checked', false);
+    $(this).parent().find('input[type=checkbox],input[type=radio]').prop('checked', false);
+    
+    console.log(params);
+    console.log($(this).parent().find('input[type=checkbox],input[type=radio]'));
+    
     $.post(document.location, params, function (data) {
       checkboxList.each(function () {
         if(jQuery.inArray(parseInt($(this).val()), data) !== -1) {
@@ -152,10 +183,10 @@ jQuery(function ($) {
   
   $('.tk-rules').each(function () {
     var fieldGroup = $(this);
-    var checkboxList = fieldGroup.find('input[type=checkbox]');
-    
+    var checkboxList = fieldGroup.find('input[type=checkbox],input[type=radio]');
+    //console.log(checkboxList);
     if (config.roleType !== 'student') {
-        var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the assessment to the company defaults."><i class="fa fa-refresh"></i> Reset</button></p>');
+        var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the placement to the company default assessment credit."><i class="fa fa-refresh"></i> Reset</button></p>');
         fieldGroup.find(' > div').append(resetBtn);
         resetBtn.on('click', function () {
           //var checkboxList = $(this).parent().find('input[type=checkbox]');
@@ -163,11 +194,12 @@ jQuery(function ($) {
           return false;
         });
     }
-
-    if (fieldGroup.find('.checkbox-group').data('placementId') === '0') {
+    console.log(checkboxList.first().data('placementId'));
+    if (checkboxList.first().data('placementId') === '0') {
+    //if (fieldGroup.find('.checkbox-group').data('placementId') === '0') {
       setCheckboxes(checkboxList);
       fieldGroup.closest('form').find('.tk-supervisorid select').on('change', function () {
-        checkboxList.first().data('supervisor-id', $(this).val());
+        checkboxList.first().data('supervisorId', $(this).val());
         setCheckboxes(checkboxList);
       });
     }
@@ -190,6 +222,8 @@ JS;
     {
         $selectedRules = $form->getFieldValue('rules');
         if (!is_array($selectedRules)) $selectedRules = array();
+
+        \App\Config::getInstance()->getSession()->set(Create::SID.'_rules', $selectedRules);
 
         if(!$form->hasErrors()) {
             \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());

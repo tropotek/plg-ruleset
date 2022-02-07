@@ -113,6 +113,9 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     {
         // TODO: place any global objects required for eval() here.
         if ($this->getScript()) {
+
+
+
             return eval($this->getScript());
         }
         return false;

@@ -2,7 +2,9 @@
 namespace Rs\Listener;
 
 use Rs\Plugin;
+use Tk\ConfigTrait;
 use Tk\Event\Subscriber;
+use Tk\Log;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -11,6 +13,7 @@ use Tk\Event\Subscriber;
  */
 class StudentAssessmentHandler implements Subscriber
 {
+    use ConfigTrait;
 
 
     /**
@@ -37,7 +40,16 @@ class StudentAssessmentHandler implements Subscriber
                 if (\Rs\Calculator::hasRule($rule, $placementRules)) {
                     $units = $placement->getUnits();
                 }
-                $studentAssessment->addUnitColumn($rule->getLabel(), $placement->getId(), $units);
+                $css = '';
+                $companyRulesLabel =$placement->getCompany()->getCategoryList()->toArray('name');
+
+                // Highlight companies that have multiple categories using this css class
+                if ($this->getConfig()->getAuthUser() && !$this->getConfig()->getAuthUser()->isStudent()) {
+                    if (in_array($rule->getName(), $companyRulesLabel)) {
+                        $css = 'inCompany';
+                    }
+                }
+                $studentAssessment->addUnitColumn($rule->getLabel(), $placement->getId(), $units, $css);
             }
         }
 

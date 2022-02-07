@@ -1,6 +1,7 @@
 <?php
 namespace Rs\Listener;
 
+use App\Controller\Student\Placement\Create;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Tk\Event\Subscriber;
 
@@ -29,7 +30,10 @@ class PlacementConfirmHandler implements Subscriber
     public function onControllerInit($event)
     {
         $controller = \Tk\Event\Event::findControllerObject($event);
-        if ($controller instanceof \App\Controller\Student\Placement\Create || $controller instanceof \App\Controller\Student\Placement\Confirm) {
+        if ($controller instanceof \App\Controller\Student\Placement\Confirm) {
+            // TODO: Why did I repeat this fpor both, it is in the create handler
+            //       Make sure there are no weird bugs caused by changing this
+        //if ($controller instanceof \App\Controller\Student\Placement\Create || $controller instanceof \App\Controller\Student\Placement\Confirm) {
             $this->controller = $controller;
         }
     }
@@ -57,12 +61,25 @@ class PlacementConfirmHandler implements Subscriber
      */
     public function doSubmit($form, $event)
     {
-        $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject())->toArray('id');
-        if($this->placement->getId() && !$form->hasErrors()) {
+        $selectedRules = \App\Config::getInstance()->getSession()->get(Create::SID.'_rules', []);
+
+        $values = $form->getValues('/rules/');
+        if (!count($selectedRules) && !empty($values['rules']))
+            $selectedRules = $values['rules'];
+        if (!count($selectedRules) && $form->getFieldValue('rules'))
+            $selectedRules = $form->getFieldValue('rules');
+        if (!count($selectedRules))
+            $selectedRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
+        if (!count($selectedRules))
+            $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject())->toArray('id');
+
+
+        if($this->placement->getId() && count($selectedRules) && !$form->hasErrors()) {
             \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());
             foreach ($selectedRules as $ruleId) {
                 \Rs\Db\RuleMap::create()->addPlacement($ruleId, $this->placement->getVolatileId());
             }
+            \App\Config::getInstance()->getSession()->remove(Create::SID.'_rules');
         }
     }
 
