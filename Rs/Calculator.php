@@ -332,6 +332,24 @@ class Calculator extends \Tk\ObjectUtil
     }
 
     /**
+     * @param \App\Db\Placement $placement
+     * @return Rule
+     * @throws \Exception
+     */
+    public static function findDefaultPlacementRule($placement)
+    {
+        $default = null;
+        $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
+        foreach ($list as $rule) {
+            if (strtolower($rule->getLabel()) == strtolower($placement->getCompany()->getCategoryClass())) {
+                $default = $rule;
+                break;
+            }
+        }
+        return $default;
+    }
+
+    /**
      * @param \App\Db\Company $company
      * @param \Uni\Db\SubjectIface $subject
      * @param \App\Db\Supervisor|null $supervisor If supplied then the academic flag can be tested on this instead of the company hasAcademic()
