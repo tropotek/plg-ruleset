@@ -49,7 +49,7 @@ class StudentAssessmentHandler implements Subscriber
                         $css = 'inCompany';
                     }
                 }
-                $studentAssessment->addUnitColumn($rule->getLabel(), $placement->getId(), $units, $css);
+                $studentAssessment->addUnitColumn(ucFirst($rule->getLabel()), $placement->getId(), $units, $css);
             }
         }
 
