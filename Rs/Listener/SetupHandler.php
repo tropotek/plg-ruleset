@@ -36,6 +36,7 @@ class SetupHandler implements Subscriber
 //        }
 
         $dispatcher->addSubscriber(new \Rs\Listener\StudentAssessmentHandler());
+        $dispatcher->addSubscriber(new \Rs\Listener\StatusMailHandler());
 
         if ($plugin->isZonePluginEnabled(Plugin::ZONE_COURSE, \App\Config::getInstance()->getCourseId())) {
             //\Tk\Log::debug($plugin->getName() . ': Sample init subject profile plugin stuff: ' . $profile->name);
