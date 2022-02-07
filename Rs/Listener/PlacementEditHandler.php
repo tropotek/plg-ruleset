@@ -79,7 +79,7 @@ class PlacementEditHandler implements Subscriber
 
             $courseRules = \Rs\Calculator::findSubjectRuleList($this->placement->getSubject());
             $companyRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), $this->placement->getSupervisor()); //->toArray('id');
-            $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
+            $placementRules = \Rs\Calculator::findPlacementRuleList($this->placement);
 
             //$field = new \Tk\Form\Field\CheckboxGroup('rules', $courseRules);
             $field = new \Tk\Form\Field\Radio('rules', $courseRules);

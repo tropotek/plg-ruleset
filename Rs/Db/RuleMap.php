@@ -185,7 +185,6 @@ class RuleMap extends \App\Db\Mapper
      */
     public function addPlacement($ruleId, $placementId)
     {
-        vdd($ruleId, $placementId);
         try {
             if ($this->hasPlacement($ruleId, $placementId)) return;
             $stm = $this->getDb()->prepare('INSERT INTO rule_has_placement (rule_id, placement_id) VALUES (?, ?) ');
