@@ -27,11 +27,6 @@ class CategoryClassHandler implements Subscriber
         /** @var \App\Db\Company $company */
         $company = $event->get('company');
         $class = trim($event->get('class'));
-        //$classType = $event->get('classType');
-        $categoryList = \App\Db\CompanyCategoryMap::create()->findFiltered(array(
-            'courseId' => $company->getCourseId(),
-            'companyId' => $company->getId()
-        ));
 
         $pluginData = \Tk\Db\Data::create($plugin->getName() . '.subject.course', $company->getCourseId());
         $script = $pluginData->get('plugin.company.get.class');
