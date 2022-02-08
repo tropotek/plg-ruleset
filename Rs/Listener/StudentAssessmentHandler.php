@@ -34,6 +34,7 @@ class StudentAssessmentHandler implements Subscriber
         /** @var \App\Db\Placement $placement */
         foreach ($studentAssessment->getPlacementList() as $placement) {
             $placementRules = \Rs\Calculator::findPlacementRuleList($placement);
+            vd($placementRules->toArray('name'));
             /** @var \Rs\Db\Rule $rule */
             foreach ($ruleList as $rule) {
                 $units = 0;
