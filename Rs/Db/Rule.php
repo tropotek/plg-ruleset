@@ -222,7 +222,7 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
      * @param int $max
      * @return int
      */
-    static function validateUnits($units, $min = 0, $max = 0)
+    public static function validateUnits($units, $min = 0, $max = 0)
     {
         $units = (float)$units;
         $min = (float)$min;

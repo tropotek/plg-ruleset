@@ -42,12 +42,12 @@ class StudentAssessmentHandler implements Subscriber
                     $units = $placement->getUnits();
                 }
                 $css = '';
-                $companyRulesLabel =$placement->getCompany()->getCategoryList()->toArray('name');
 
+                $companyRulesLabel = $placement->getCompany()->getCategoryList()->toArray('name');
                 // Highlight companies that have multiple categories using this css class
                 if ($this->getConfig()->getAuthUser() && !$this->getConfig()->getAuthUser()->isStudent()) {
                     if (in_array($rule->getName(), $companyRulesLabel)) {
-                        $css = 'inCompany';
+                        $css = 'in-company';
                     }
                 }
                 $studentAssessment->addUnitColumn($rule->getLabel(), $placement->getId(), $units, $css);
