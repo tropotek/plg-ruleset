@@ -43,9 +43,9 @@ class PlacementValidateHandler implements Subscriber
         $ruleInfo = $calc->getRuleTotals();
 
         // Check rules for the placement
-        $placeRules = \Rs\Calculator::findPlacementRuleList($placement);
+        $placeRules = \Rs\Calculator::findPlacementRuleList($placement, false);
         if (!$placement->getId()) {
-            $placeRules = \Rs\Calculator::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
+            $placeRules = \Rs\Calculator::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), false);
         }
 
         $rulesIdList= array();

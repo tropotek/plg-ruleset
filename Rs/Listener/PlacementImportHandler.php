@@ -30,7 +30,8 @@ class PlacementImportHandler implements Subscriber
 //        }
         $rule = \Rs\Calculator::findDefaultPlacementRule($placement);
         if ($rule) {
-            \Rs\Db\RuleMap::create()->removePlacement(0, $placement->getVolatileId());
+            //\Rs\Db\RuleMap::create()->removePlacement(0, $placement->getVolatileId());
+            \Rs\Db\RuleMap::create()->removeFromPlacement($placement);
             \Rs\Db\RuleMap::create()->addPlacement($rule->getId(), $placement->getVolatileId());
         }
     }

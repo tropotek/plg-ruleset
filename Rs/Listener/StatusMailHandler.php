@@ -36,7 +36,7 @@ class StatusMailHandler implements Subscriber
             if ($placement) {
                 /** @var MailTemplate $mailTemplate */
                 $mailTemplate = $message->get('_mailTemplate');
-                $companyRules = \Rs\Calculator::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor())->toArray('name');
+                $companyRules = \Rs\Calculator::findCompanyRuleList($placement->getCompany(), $placement->getSubject())->toArray('name');
                 $message->set('rules::companyRules', implode(',', $companyRules));
 
                 $placementRules = \Rs\Calculator::findPlacementRuleList($placement)->toArray('name');

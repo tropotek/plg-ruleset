@@ -67,6 +67,13 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     public $max = 0.0;
 
     /**
+     * if false then this rule can be selectable in the placement edit pages
+     *
+     * @var boolean
+     */
+    public $static = true;
+
+    /**
      * @var string
      */
     public $assert = '';
@@ -104,18 +111,14 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     /**
      * eval() and return the result of the script
      *
-     * @param \App\Db\Subject $subject
+     * NOTE: I have removed subject and supervisor, this should still work as expected
+     *
      * @param \App\Db\Company $company
-     * @param \App\Db\Supervisor|null $supervisor
      * @return boolean
      */
-    public function evaluate($subject, $company, $supervisor = null)
+    public function evaluate($company)
     {
-        // TODO: place any global objects required for eval() here.
         if ($this->getScript()) {
-
-
-
             return eval($this->getScript());
         }
         return false;
@@ -369,6 +372,24 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
     public function setMax(float $max): Rule
     {
         $this->max = $max;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStatic(): bool
+    {
+        return $this->static;
+    }
+
+    /**
+     * @param bool $static
+     * @return Rule
+     */
+    public function setStatic(bool $static): Rule
+    {
+        $this->static = $static;
         return $this;
     }
 

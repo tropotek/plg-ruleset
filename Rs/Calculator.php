@@ -314,21 +314,24 @@ class Calculator extends \Tk\ObjectUtil
 
     /**
      * @param \App\Db\Placement $placement
+     * @param bool|null $static
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      * @throws \Exception
      */
-    public static function findPlacementRuleList($placement)
+    public static function findPlacementRuleList($placement, $static = null)
     {
         $list = null;
         if ($placement->getId()) {
-            $list = \Rs\Db\RuleMap::create()->findFiltered(
-                [
-                    'placementId' => $placement->getVolatileId(),
-                    'subjectId' => $placement->getSubjectId()
-                ],
-                \Tk\Db\Tool::create('order_by'));
+            $filter = [
+                'placementId' => $placement->getVolatileId(),
+                'subjectId' => $placement->getSubjectId()
+            ];
+            if (is_bool($static)) {
+                $filter['static'] = $static;
+            }
+            $list = \Rs\Db\RuleMap::create()->findFiltered($filter, \Tk\Db\Tool::create('order_by'));
         } else {    // Get default rules based on the company and subject object
-            $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
+            $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $static);
         }
         return $list;
     }
@@ -341,7 +344,7 @@ class Calculator extends \Tk\ObjectUtil
     public static function findDefaultPlacementRule($placement)
     {
         $default = null;
-        $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $placement->getSupervisor());
+        $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), false);
         foreach ($list as $rule) {
             if (strtolower($rule->getLabel()) == strtolower($placement->getCompany()->getCategoryClass())) {
                 $default = $rule;
@@ -352,37 +355,64 @@ class Calculator extends \Tk\ObjectUtil
     }
 
     /**
+     * Buffer to store company rule list
+     * @var array
+     */
+    public static $CO_RULE_BUFF = [];
+
+    /**
      * @param \App\Db\Company $company
-     * @param \Uni\Db\SubjectIface $subject
-     * @param \App\Db\Supervisor|null $supervisor If supplied then the academic flag can be tested on this instead of the company hasAcademic()
+     * @param \Uni\Db\Subject|\Uni\Db\SubjectIface $subject
+     * @param bool|null $static
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      * @throws \Exception
      */
-    public static function findCompanyRuleList($company, $subject, $supervisor = null)
+    public static function findCompanyRuleList($company, $subject, $static = null)
     {
-        $list = \Rs\Db\RuleMap::create()->findFiltered(array('courseId' => $subject->getCourseId(), 'subjectId' => $subject->getId()), \Tk\Db\Tool::create('order_by'));
+        // TODO: keep an eye on this and check it does not consume more mem than its worth
+        $key = md5($company->getId().$subject->getId().$static);
+        if (!empty(self::$CO_RULE_BUFF[$key])) {
+            return self::$CO_RULE_BUFF[$key];
+        }
+
+        $filter = [
+            'courseId' => $subject->getCourseId(),
+            'subjectId' => $subject->getId()
+        ];
+        if (is_bool($static)) {
+            $filter['static'] = $static;
+        }
+
+        $list = \Rs\Db\RuleMap::create()->findFiltered($filter, \Tk\Db\Tool::create('order_by'));
         $valid = array();
         /** @var \Rs\Db\Rule $rule */
         foreach ($list as $rule) {
-            if ($rule->evaluate($subject, $company, $supervisor)) {
+            if ($rule->evaluate($company)) {
                 $valid[] = $rule;
             }
         }
         $a = new \Tk\Db\Map\ArrayObject($valid);
+        if (count(self::$CO_RULE_BUFF) > 100) $CO_RULE_BUFF = [];     // just to keep mem usage down
+        self::$CO_RULE_BUFF[$key] = $a;
         return $a;
     }
 
     /**
      * @param \Uni\Db\SubjectIface $subject
+     * @param bool|null $static
      * @return Rule[]|\Tk\Db\Map\ArrayObject
      * @throws \Exception
      */
-    public static function findSubjectRuleList($subject)
+    public static function findSubjectRuleList($subject, $static = null)
     {
-        return \Rs\Db\RuleMap::create()->findFiltered(array(
+        $filter = [
             'courseId' => $subject->getCourseId(),
             'subjectId' => $subject->getId()
-        ), \Tk\Db\Tool::create('order_by'));
+        ];
+        if (is_bool($static)) {
+            $filter['static'] = $static;
+        }
+        return \Rs\Db\RuleMap::create()->findFiltered($filter, \Tk\Db\Tool::create('order_by'));
     }
 
     /**

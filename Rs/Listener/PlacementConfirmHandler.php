@@ -62,18 +62,13 @@ class PlacementConfirmHandler implements Subscriber
     public function doSubmit($form, $event)
     {
         $selectedRules = \App\Config::getInstance()->getSession()->get(Create::SID.'_rules', []);
-//        $values = $form->getValues('/rules/');
-//        if (!count($selectedRules) && !empty($values['rules']))
-//            $selectedRules = $values['rules'];
-//        if (!count($selectedRules) && $form->getFieldValue('rules'))
-//            $selectedRules = $form->getFieldValue('rules');
         if (!count($selectedRules))
-            $selectedRules = \Rs\Calculator::findPlacementRuleList($this->placement)->toArray('id');
+            $selectedRules = \Rs\Calculator::findPlacementRuleList($this->placement, false)->toArray('id');
         if (!count($selectedRules))
-            $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject())->toArray('id');
+            $selectedRules = \Rs\Calculator::findCompanyRuleList($this->placement->getCompany(), $this->placement->getSubject(), false)->toArray('id');
 
         if($this->placement->getId() && count($selectedRules) && !$form->hasErrors()) {
-            \Rs\Db\RuleMap::create()->removePlacement(0, $this->placement->getVolatileId());
+            \Rs\Db\RuleMap::create()->removeFromPlacement($this->placement);
             foreach ($selectedRules as $ruleId) {
                 \Rs\Db\RuleMap::create()->addPlacement($ruleId, $this->placement->getVolatileId());
             }

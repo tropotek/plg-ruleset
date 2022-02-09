@@ -45,6 +45,7 @@ class RuleManager extends \App\Controller\AdminManagerIface
         $this->getTable()->appendCell(new \Tk\Table\Cell\Checkbox('id'));
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('name'))->addCss('key')->setUrl($editUrl);
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('description'));
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Boolean('static'));
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('label'));
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('assert'));
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('min'));
