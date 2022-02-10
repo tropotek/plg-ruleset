@@ -46,6 +46,7 @@ class SetupHandler implements Subscriber
 
             $dispatcher->addSubscriber(new \Rs\Listener\CategoryClassHandler());
 
+            $dispatcher->addSubscriber(new \Rs\Listener\PlacementManagerHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementViewHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementEditHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementConfirmHandler());
