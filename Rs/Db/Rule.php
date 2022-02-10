@@ -243,7 +243,8 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
             } else if ($units >= $min) {
                 return self::VALID_OK;
             }
-        } else if ($units <= $min) {
+        //} else if ($units <= $min) {
+        } else if ($units < $min) {
             return self::VALID_BELOW;
         } else if ($units > $max) {
             return self::VALID_OUT;
