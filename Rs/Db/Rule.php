@@ -453,9 +453,9 @@ class Rule extends \Tk\Db\Map\Model implements \Tk\ValidInterface
         if (!preg_match('/^[0-9]*(.[0-9]*)?$/', $this->getMax())) {
             $errors['max'] = 'Invalid Max. units Value.';
         }
-        if (!$this->getMin() && !$this->getMax()) {
-            $errors['min'] = 'Min and/or Max Units must have a valid value.';
-        }
+//        if (!$this->getMin() && !$this->getMax()) {
+//            $errors['min'] = 'Min and/or Max Units must have a valid value.';
+//        }
         if ($this->getMin() && $this->getMax() && ($this->getMin() > $this->getMax())) {
             $errors['max'] = 'Max Unit must be greater than Min Units';
         }
