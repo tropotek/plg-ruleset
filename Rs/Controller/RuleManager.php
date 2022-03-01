@@ -50,7 +50,9 @@ class RuleManager extends \App\Controller\AdminManagerIface
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('assert'));
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('min'));
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('max'));
+
         $this->getTable()->appendCell(new \Tk\Table\Cell\Date('created'));
+
         if ($this->getConfig()->isSubjectUrl()) {
             $this->getTable()->appendCell(new \Tk\Table\Cell\Checkbox('activeCb'))->setLabel('Active')->setUseValue(true)
                 ->addOnPropertyValue(function ($cell, $obj, $value) {
