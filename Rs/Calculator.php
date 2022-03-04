@@ -329,6 +329,7 @@ class Calculator extends \Tk\ObjectUtil
             if (is_bool($static)) {
                 $filter['static'] = $static;
             }
+            vd($filter);
             $list = \Rs\Db\RuleMap::create()->findFiltered($filter, \Tk\Db\Tool::create('order_by'));
         } else {    // Get default rules based on the company and subject object
             $list = self::findCompanyRuleList($placement->getCompany(), $placement->getSubject(), $static);
