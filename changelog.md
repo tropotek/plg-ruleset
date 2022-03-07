@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.2.18 [2022-03-07]:
+-------------------------------
+  - Merge branch '3.2' of ssh://github.com/tropotek/plg-ruleset into 3.2
+  - Added assessment alert icons to placement manager
+
+
 Ver 3.2.16 [2021-11-19]:
 -------------------------------
 
