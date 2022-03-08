@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.2.20 [2022-03-09]:
+-------------------------------
+
+
 Ver 3.2.18 [2022-03-03]:
 -------------------------------
   - Merge branch '3.2' of ssh://github.com/tropotek/plg-ruleset into 3.2
