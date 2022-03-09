@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.2 [2022-03-09]:
+-------------------------------
+  - Added aBILITY TO REMOVE ACCADEMIC ASSOCIATED FROM COMPANY SEARCH
+
+
 Ver 3.4.0 [2022-03-09]:
 -------------------------------
 
