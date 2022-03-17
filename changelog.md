@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.4 [2022-03-17]:
+-------------------------------
+  - Fixed placement export list for terraDotta
+
+
 Ver 3.4.2 [2022-03-09]:
 -------------------------------
   - Added aBILITY TO REMOVE ACCADEMIC ASSOCIATED FROM COMPANY SEARCH
