@@ -22,7 +22,7 @@ class StaffSideMenuHandler implements Subscriber
     {
         /** @var \App\Controller\Iface $controller */
         $controller = $event->get('controller');
-        if ($controller->getConfig()->getSubject() && $controller->getAuthUser()->isStaff()) {
+        if ($controller->getConfig()->getSubject() && $controller->getAuthUser() && $controller->getAuthUser()->isStaff()) {
             /** @var \App\Page $page */
             $page = $controller->getPage();
             /** @var \App\Ui\Sidebar\StaffMenu $sideBar */
