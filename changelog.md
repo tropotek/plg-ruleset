@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.8 [2022-05-22]:
+-------------------------------
+  - Added international agree checkbox and fixed sending of supervisor emails
+
+
 Ver 3.4.6 [2022-03-28]:
 -------------------------------
 
