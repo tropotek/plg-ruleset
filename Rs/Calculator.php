@@ -113,7 +113,7 @@ class Calculator extends \Tk\ObjectUtil
         foreach ($this->placementList as $placement) {
             $placeRules = self::findPlacementRuleList($placement);
             $units = $placement->units;
-            if (!$placement->getPlacementType() || !$placement->getPlacementType()->gradable) {
+            if (!$placement->getPlacementType() || !$placement->getPlacementType()->isGradable()) {
                 $units = 0;
             }
 
