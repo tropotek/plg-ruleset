@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.12 [2022-05-26]:
+-------------------------------
+  - Updated units field for non gradable on create placement
+
+
 Ver 3.4.10 [2022-05-25]:
 -------------------------------
 
