@@ -57,6 +57,8 @@ class PlacementValidateHandler implements Subscriber
             if ($label == 'Total' || empty($info['assessmentRule'])) continue;
             if (!in_array($info['assessmentRule']->id, $rulesIdList)) continue;  // Restrict checking to only the placement rules.
             if ($info['validTotal'] > 0) {
+                // TODO: Currently there are blank messages and we cannot see the unmet requirements, hiding blank ones for now
+                //       We need to look into this if it becomes an issue
                 $event->addError($info['assessmentRule']->getName(), $info['validMsg']);
             }
         }
