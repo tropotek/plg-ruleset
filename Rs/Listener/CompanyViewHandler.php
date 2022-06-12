@@ -8,6 +8,7 @@ use Tk\Event\Subscriber;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @deprecated
  */
 class CompanyViewHandler implements Subscriber
 {

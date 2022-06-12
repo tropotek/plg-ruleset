@@ -1,6 +1,7 @@
 <?php
 namespace Rs\Listener;
 
+use Rs\Db\Rule;
 use Tk\Event\Subscriber;
 
 
@@ -13,7 +14,6 @@ class PlacementValidateHandler implements Subscriber
 {
 
     /**
-     *
      * @param \App\Event\PlacementValidEvent $event
      * @throws \Exception
      */
@@ -33,8 +33,7 @@ class PlacementValidateHandler implements Subscriber
         $list = \App\Db\PlacementMap::create()->findFiltered(array(
             'subjectId' => $placement->subjectId,
             'userId'  => $placement->userId,
-            'status'     => self::getStatusFilter(),
-
+            'status'     => self::getStatusFilter()
         ));
 
         //   The calculator may need to be refactored also
@@ -50,25 +49,16 @@ class PlacementValidateHandler implements Subscriber
 
         $rulesIdList= array();
         foreach ($placeRules as $rule) {
-            $rulesIdList[] = $rule->id;
+            $rulesIdList[] = $rule->getId();
         }
 
         foreach ($ruleInfo as $label => $info) {
             if ($label == 'Total' || empty($info['assessmentRule'])) continue;
-            if (!in_array($info['assessmentRule']->id, $rulesIdList)) continue;  // Restrict checking to only the placement rules.
-            if ($info['validTotal'] > 0) {
-                // TODO: Currently there are blank messages and we cannot see the unmet requirements, hiding blank ones for now
-                //       We need to look into this if it becomes an issue
+            if (!in_array($info['assessmentRule']->getId(), $rulesIdList)) continue;  // Restrict checking to only the placement rules.
+            if ($info['validTotal'] > 0 && $info['validTotal'] != Rule::VALID_NULL) {
                 $event->addError($info['assessmentRule']->getName(), $info['validMsg']);
             }
         }
-
-        // TODO: this autoApprove value whould be part of the company object and not in the Rs plugin
-        $company = $placement->getCompany();
-        if (!$company->getData()->get('autoApprove')) {
-            $event->addError('Auto Approve', 'All placements with this company have to be manually approved.');
-        }
-
     }
 
     /**
