@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.14 [2022-06-13]:
+-------------------------------
+  - Fixed rule issue not allowing auto approve functionality
+
+
 Ver 3.4.12 [2022-05-26]:
 -------------------------------
   - Updated units field for non gradable on create placement
