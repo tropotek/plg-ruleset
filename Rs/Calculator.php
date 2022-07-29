@@ -191,8 +191,6 @@ class Calculator extends \Tk\ObjectUtil
         $this->ruleTotals['total']['validMsg'] = Rule::getValidateMessage($totals['total'], $this->subject->getMinUnitsTotal(), $this->subject->getMaxUnitsTotal());
         $this->ruleTotals['total']['assessmentRule'] = null;
 
-        //vd($this->ruleTotals);
-
     }
 
 

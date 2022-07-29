@@ -74,7 +74,6 @@ class RuleMap extends \App\Db\Mapper
     public function findFiltered($filter, $tool = null)
     {
         $r = $this->selectFromFilter($this->makeQuery(\Tk\Db\Filter::create($filter)), $tool);
-        //vd($this->getDb()->getLastQuery());
         return $r;
     }
 
@@ -156,7 +155,7 @@ class RuleMap extends \App\Db\Mapper
             $stm = $this->getDb()->prepare('SELECT * FROM rule_has_placement WHERE rule_id = ? AND placement_id = ?');
             $stm->execute($ruleId, $placementId);
             return ($stm->rowCount() > 0);
-        } catch (Exception $e) {vd($e->getMessage());}
+        } catch (Exception $e) {\Tk\Log::debug($e->getMessage());}
         return false;
 
     }
@@ -185,7 +184,7 @@ class RuleMap extends \App\Db\Mapper
 //            }
 //            $stm = $this->getDb()->prepare('DELETE FROM rule_has_placement WHERE ' . $where);
 //            $stm->execute();
-//        } catch (Exception $e) {vd($e->getMessage());}
+//        } catch (Exception $e) {\Tk\Log::debug($e->getMessage());}
     }
 
 
@@ -207,7 +206,7 @@ WHERE a.rule_id = c.id AND a.rule_id = c.id AND a.rule_id = b.rule_id AND c.stat
             }
             $stm->execute();
         } catch (Exception $e) {
-            vd($e->getMessage());
+            \Tk\Log::debug($e->getMessage());
         }
     }
 
@@ -221,7 +220,7 @@ WHERE a.rule_id = c.id AND a.rule_id = c.id AND a.rule_id = b.rule_id AND c.stat
             if ($this->hasPlacement($ruleId, $placementId)) return;
             $stm = $this->getDb()->prepare('INSERT INTO rule_has_placement (rule_id, placement_id) VALUES (?, ?) ');
             $stm->execute($ruleId, $placementId);
-        } catch (Exception $e) {vd($e->getMessage());}
+        } catch (Exception $e) {\Tk\Log::debug($e->getMessage());}
     }
 
 
@@ -235,7 +234,7 @@ WHERE a.rule_id = c.id AND a.rule_id = c.id AND a.rule_id = b.rule_id AND c.stat
             if ($stm->rowCount()) {
                 return (bool)$stm->fetchColumn();
             }
-        } catch (Exception $e) {vd($e->getMessage());}
+        } catch (Exception $e) {\Tk\Log::debug($e->getMessage());}
         //return true;        // All rules are active if no subject record available.
         return false;
     }
@@ -245,7 +244,7 @@ WHERE a.rule_id = c.id AND a.rule_id = c.id AND a.rule_id = b.rule_id AND c.stat
         try {
             $stm = $this->getDb()->prepare('INSERT INTO rule_subject (rule_id, subject_id, active) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE active = ?');
             $stm->execute((int)$ruleId, (int)$subjectId, (int)$active, (int)$active);
-        } catch (Exception $e) {vd($e->getMessage());}
+        } catch (Exception $e) {\Tk\Log::debug($e->getMessage());}
     }
 
     public function hasActive($ruleId, $subjectId)
@@ -254,7 +253,7 @@ WHERE a.rule_id = c.id AND a.rule_id = c.id AND a.rule_id = b.rule_id AND c.stat
             $stm = $this->getDb()->prepare('SELECT * FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
             $stm->execute($ruleId, $subjectId);
             return ($stm->rowCount() > 0);
-        } catch (Exception $e) {vd($e->getMessage());}
+        } catch (Exception $e) {\Tk\Log::debug($e->getMessage());}
         return false;
     }
 
@@ -263,7 +262,7 @@ WHERE a.rule_id = c.id AND a.rule_id = c.id AND a.rule_id = b.rule_id AND c.stat
         try {
             $stm = $this->getDb()->prepare('DELETE FROM rule_subject WHERE rule_id = ? AND subject_id = ?');
             $stm->execute($ruleId, $subjectId);
-        } catch (Exception $e) {vd($e->getMessage());}
+        } catch (Exception $e) {\Tk\Log::debug($e->getMessage());}
     }
 
 }

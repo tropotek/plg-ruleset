@@ -185,7 +185,7 @@ jQuery(function ($) {
   $('.tk-rules').each(function () {
     var fieldGroup = $(this);
     var checkboxList = fieldGroup.find('input[type=checkbox],input[type=radio]');
-    //console.log(checkboxList);
+    
     if (config.roleType !== 'student') {
         var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the placement to the company default assessment credit."><i class="fa fa-refresh"></i> Reset</button></p>');
         fieldGroup.find(' > div').append(resetBtn);
