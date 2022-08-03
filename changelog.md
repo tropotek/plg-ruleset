@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.16 [2022-08-04]:
+-------------------------------
+  - removed comments
+
+
 Ver 3.4.14 [2022-06-13]:
 -------------------------------
   - Fixed rule issue not allowing auto approve functionality
