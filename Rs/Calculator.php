@@ -113,7 +113,7 @@ class Calculator extends \Tk\ObjectUtil
         foreach ($this->placementList as $placement) {
             $placeRules = self::findPlacementRuleList($placement);
             $units = $placement->units;
-            if (!$placement->getPlacementType() || !$placement->getPlacementType()->gradable) {
+            if (!$placement->getPlacementType() || !$placement->getPlacementType()->isGradable()) {
                 $units = 0;
             }
 
@@ -190,8 +190,6 @@ class Calculator extends \Tk\ObjectUtil
         $this->ruleTotals['total']['validTotal'] = Rule::validateUnits($totals['total'], $this->subject->getMinUnitsTotal(), $this->subject->getMaxUnitsTotal());
         $this->ruleTotals['total']['validMsg'] = Rule::getValidateMessage($totals['total'], $this->subject->getMinUnitsTotal(), $this->subject->getMaxUnitsTotal());
         $this->ruleTotals['total']['assessmentRule'] = null;
-
-        //vd($this->ruleTotals);
 
     }
 

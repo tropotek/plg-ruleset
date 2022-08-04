@@ -23,27 +23,13 @@ class SetupHandler implements Subscriber
         $dispatcher = \App\Config::getInstance()->getEventDispatcher();
         $plugin = Plugin::getInstance();
 
-//        $institution = \Uni\Config::getInstance()->getInstitution();
-//        if($institution && $plugin->isZonePluginEnabled(Plugin::ZONE_INSTITUTION, $institution->getId())) {
-//            \Tk\Log::debug($plugin->getName() . ': Sample init client plugin stuff: ' . $institution->name);
-//            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(Plugin::ZONE_INSTITUTION, $institution->getId()));
-//        }
-
-//        $subject = \Uni\Config::getInstance()->getSubject();
-//        if ($subject && $plugin->isZonePluginEnabled(Plugin::ZONE_SUBJECT, $subject->getId())) {
-//            \Tk\Log::debug($plugin->getName() . ': Sample init subject plugin stuff: ' . $subject->name);
-//            $dispatcher->addSubscriber(new \Rs\Listener\ExampleHandler(Plugin::ZONE_SUBJECT, $subject->getId()));
-//        }
-
         $dispatcher->addSubscriber(new \Rs\Listener\StudentAssessmentHandler());
         $dispatcher->addSubscriber(new \Rs\Listener\StatusMailHandler());
 
         if ($plugin->isZonePluginEnabled(Plugin::ZONE_COURSE, \App\Config::getInstance()->getCourseId())) {
-            //\Tk\Log::debug($plugin->getName() . ': Sample init subject profile plugin stuff: ' . $profile->name);
             $dispatcher->addSubscriber(new \Rs\Listener\CourseEditHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\SubjectEditHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\SubjectDashboardHandler());
-
             $dispatcher->addSubscriber(new \Rs\Listener\CategoryClassHandler());
 
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementManagerHandler());
@@ -53,10 +39,9 @@ class SetupHandler implements Subscriber
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementValidateHandler());
 
             $dispatcher->addSubscriber(new \Rs\Listener\AssessmentUnitsHandler());
-            $dispatcher->addSubscriber(new \Rs\Listener\CompanyViewHandler());
+            //$dispatcher->addSubscriber(new \Rs\Listener\CompanyViewHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\StaffSideMenuHandler());
 
-            $dispatcher->addSubscriber(new \Rs\Listener\CompanyEditHandler());
             $dispatcher->addSubscriber(new \Rs\Listener\PlacementImportHandler());
         }
 

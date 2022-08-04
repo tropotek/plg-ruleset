@@ -34,7 +34,6 @@ class StudentAssessmentHandler implements Subscriber
         /** @var \App\Db\Placement $placement */
         foreach ($studentAssessment->getPlacementList() as $placement) {
             $placementRules = \Rs\Calculator::findPlacementRuleList($placement);
-            //vd($placementRules->toArray('name'));
             /** @var \Rs\Db\Rule $rule */
             foreach ($ruleList as $rule) {
                 $units = 0;
@@ -73,7 +72,6 @@ class StudentAssessmentHandler implements Subscriber
                 $studentAssessment->addTotal('Pending', $rule->getLabel(), $t['pending']);
             $studentAssessment->addTotal('Completed', $rule->getLabel(), $t['completed']);
             if (!$studentAssessment->isMinMode()) {
-                //vd( $rule->getLabel(), $rule->getMin(),$rule->getMax() );
                 $studentAssessment->addTotal('Min Targets', $rule->getLabel(), $rule->getMin().'');
                 $studentAssessment->addTotal('Max Targets', $rule->getLabel(), $rule->getMax().'');
             }

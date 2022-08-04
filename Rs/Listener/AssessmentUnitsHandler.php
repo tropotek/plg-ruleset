@@ -27,8 +27,6 @@ class AssessmentUnitsHandler implements Subscriber
         $label = $calc->getSubject()->getCourseProfile()->getUnitLabel();
         $totals = $calc->getRuleTotals();
 
-        //vd($ruleList->toArray('name'));
-
         /** @var \Rs\Db\Rule $rule */
         foreach ($ruleList as $i => $rule) {
             $t = $totals[$rule->getLabel()];
@@ -36,8 +34,6 @@ class AssessmentUnitsHandler implements Subscriber
         }
         $studentAssessment->addTotal('Total', $label, $totals['total']['total'],
             $this->getValidCss($totals['total']['validTotal']), $totals['total']['validMsg']);
-
-        //vd($totals);
 
         $event->stopPropagation();
     }

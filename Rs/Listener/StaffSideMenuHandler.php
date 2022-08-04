@@ -1,6 +1,7 @@
 <?php
 namespace Rs\Listener;
 
+use Tk\ConfigTrait;
 use Tk\Event\Subscriber;
 
 /**
@@ -10,6 +11,7 @@ use Tk\Event\Subscriber;
  */
 class StaffSideMenuHandler implements Subscriber
 {
+    use ConfigTrait;
 
     /**
      * Check the user has access to this controller
@@ -22,7 +24,7 @@ class StaffSideMenuHandler implements Subscriber
     {
         /** @var \App\Controller\Iface $controller */
         $controller = $event->get('controller');
-        if ($controller->getConfig()->getSubject() && $controller->getAuthUser() && $controller->getAuthUser()->isStaff()) {
+        if ($controller->getConfig()->getSubject() && $this->getAuthUser() && $controller->getAuthUser()->isStaff()) {
             /** @var \App\Page $page */
             $page = $controller->getPage();
             /** @var \App\Ui\Sidebar\StaffMenu $sideBar */

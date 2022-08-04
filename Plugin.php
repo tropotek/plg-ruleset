@@ -1,7 +1,7 @@
 <?php
 namespace Rs;
 
-use Tk\Event\Dispatcher;
+use Tk\EventDispatcher\EventDispatcher;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -12,8 +12,6 @@ class Plugin extends \App\Plugin\Iface
 {
 
     /**
-     * A helper method to get the Plugin instance globally
-     *
      * @return static
      */
     static function getInstance()
@@ -22,8 +20,6 @@ class Plugin extends \App\Plugin\Iface
     }
 
     /**
-     * Init the plugin
-     *
      * This is called when the session first registers the plugin to the queue
      * So it is the first called method after the constructor...
      */
@@ -32,11 +28,9 @@ class Plugin extends \App\Plugin\Iface
         include dirname(__FILE__) . '/config.php';
 
         // Register the plugin for the different client areas if they are to be enabled/disabled/configured by those roles.
-        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_INSTITUTION);
         $this->getPluginFactory()->registerZonePlugin($this, self::ZONE_COURSE);
-        //$this->getPluginFactory()->registerZonePlugin($this, self::ZONE_SUBJECT);
 
-        /** @var Dispatcher $dispatcher */
+        /** @var EventDispatcher $dispatcher */
         $dispatcher = $this->getConfig()->getEventDispatcher();
         $dispatcher->addSubscriber(new \Rs\Listener\SetupHandler());
     }
@@ -60,11 +54,6 @@ class Plugin extends \App\Plugin\Iface
         $migrate->setTempPath($config->getTempPath());
         $migrate->migrate(dirname(__FILE__) . '/sql');
 
-        // Init Settings
-//        $data = \Tk\Db\Data::create($this->getName());
-//        $data->set('plugin.title', 'Day One Skills');
-//        $data->set('plugin.email', 'fvas-elearning@unimelb.edu.au');
-//        $data->save();
     }
 
     /**
@@ -72,28 +61,9 @@ class Plugin extends \App\Plugin\Iface
      * @param string $zoneId
      * @throws \Exception
      */
-    public function doZoneEnable($zoneName, $zoneId) {
-
+    public function doZoneEnable($zoneName, $zoneId)
+    {
         if (!$zoneName == self::ZONE_COURSE) return;
-
-        /** @var \App\Db\Subject $subject */
-        $subject = $this->getConfig()->getSubjectMapper()->find($zoneId);
-        if ($subject) {
-            $sql = <<<SQL
-INSERT INTO company_data (`fid`, `fkey`, `key`, `value`)
-    (
-        SELECT a.id, 'App\\Db\\Company', 'autoApprove', 'autoApprove'
-        FROM plugin_zone b, subject s, company a LEFT JOIN company_data c ON (a.id = c.fid AND c.fkey = 'App\\Db\\Company' AND c.`key` = 'autoApprove')
-        WHERE b.zone_id = ? AND b.zone_id = s.id AND a.course_id = s.course_id AND b.plugin_name = 'plg-ruleset' AND b.zone_name = 'course' AND c.fid IS NULL
-    )
-ON DUPLICATE KEY UPDATE `key` = 'autoApprove'
-SQL;
-
-            $stm = $this->getConfig()->getDb()->prepare($sql);
-            $stm->execute(array($zoneId));
-
-        }
-
     }
 
     /**
@@ -128,15 +98,10 @@ SQL;
      */
     function doDeactivate()
     {
-        // TODO: Maybe we do not delete anything to ensure data is not lost??????
+        // TODO: do not delete anything at this stage
         return;
 
         $db = $this->getConfig()->getDb();
-
-        // Clear the data table of all plugin data
-        $sql = sprintf('DELETE FROM %s WHERE %s LIKE %s', $db->quoteParameter(\Tk\Db\Data::$DB_TABLE), $db->quoteParameter('fkey'),
-            $db->quote($this->getName().'%'));
-        $db->query($sql);
 
         // Delete all tables.
         $tables = array('rules');

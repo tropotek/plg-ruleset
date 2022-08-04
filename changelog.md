@@ -1,6 +1,60 @@
 #CHANGELOG#
 
-Ver 3.2.18 [2022-03-07]:
+Ver 3.4.16 [2022-08-04]:
+-------------------------------
+  - removed comments
+
+
+Ver 3.4.14 [2022-06-13]:
+-------------------------------
+  - Fixed rule issue not allowing auto approve functionality
+
+
+Ver 3.4.12 [2022-05-26]:
+-------------------------------
+  - Updated units field for non gradable on create placement
+
+
+Ver 3.4.10 [2022-05-25]:
+-------------------------------
+
+
+Ver 3.4.8 [2022-05-22]:
+-------------------------------
+  - Added international agree checkbox and fixed sending of supervisor emails
+
+
+Ver 3.4.6 [2022-03-28]:
+-------------------------------
+
+
+Ver 3.4.4 [2022-03-17]:
+-------------------------------
+  - Fixed placement export list for terraDotta
+
+
+Ver 3.4.2 [2022-03-09]:
+-------------------------------
+  - Added aBILITY TO REMOVE ACCADEMIC ASSOCIATED FROM COMPANY SEARCH
+
+
+Ver 3.4.0 [2022-03-09]:
+-------------------------------
+
+
+Ver 3.2.24 [2022-03-09]:
+-------------------------------
+
+
+Ver 3.2.22 [2022-03-09]:
+-------------------------------
+
+
+Ver 3.2.20 [2022-03-09]:
+-------------------------------
+
+
+Ver 3.2.18 [2022-03-03]:
 -------------------------------
   - Merge branch '3.2' of ssh://github.com/tropotek/plg-ruleset into 3.2
   - Added assessment alert icons to placement manager

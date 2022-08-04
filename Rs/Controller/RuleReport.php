@@ -44,14 +44,14 @@ class RuleReport extends \App\Controller\AdminManagerIface
         $this->getTable()->setRenderer(\App\Config::getInstance()->createTableRenderer($this->table));
 
         $this->getTable()->appendCell(new \Tk\Table\Cell\Text('uid'))->setLabel('Student Number');
-        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('name'));
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('name'))->setOrderProperty('');
         $this->getTable()->appendCell(new \Tk\Table\Cell\Email('email'))->addCss('key');
 
         $subject = $this->getSubject();
         $rules = \Rs\Db\RuleMap::create()->findFiltered(array('courseId' => $this->getCourseId(), 'subjectId' => $subject->getId()));
 
         foreach ($rules as $rule) {
-            $this->getTable()->appendCell(new \Tk\Table\Cell\Text($rule->getLabel()))->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+            $this->getTable()->appendCell(new \Tk\Table\Cell\Text($rule->getLabel()))->setOrderProperty('')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
                 /** @var \Tk\Table\Cell\Text $cell  */
                 /** @var \App\Db\User $obj  */
                 $tblFilter = $cell->getTable()->getFilterValues();
@@ -84,7 +84,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
 
         }
 
-        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Pending'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Pending'))->setOrderProperty('')->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
             /** @var \Tk\Table\Cell\Text $cell  */
             /** @var \App\Db\User $obj  */
             if (isset($this->cache[$obj->getId()])) {
@@ -99,7 +99,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
             return '';
         });
 
-        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Approved'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Approved'))->setOrderProperty('')->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
             /** @var \Tk\Table\Cell\Text $cell  */
             /** @var \App\Db\User $obj  */
             if (isset($this->cache[$obj->getId()])) {
@@ -114,7 +114,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
             return '';
         });
 
-        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Evaluating'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Evaluating'))->setOrderProperty('')->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
             /** @var \Tk\Table\Cell\Text $cell  */
             /** @var \App\Db\User $obj  */
             if (isset($this->cache[$obj->getId()])) {
@@ -128,7 +128,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
             }
             return '';
         });
-        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Completed'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Completed'))->setOrderProperty('')->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
             /** @var \Tk\Table\Cell\Text $cell  */
             /** @var \App\Db\User $obj  */
             if (isset($this->cache[$obj->getId()])) {
@@ -142,7 +142,7 @@ class RuleReport extends \App\Controller\AdminManagerIface
             }
             return '';
         });
-        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Total'))->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
+        $this->getTable()->appendCell(new \Tk\Table\Cell\Text('Total'))->setOrderProperty('')->addCss('mh-totals')->addOnPropertyValue(function ($cell, $obj, $value) use ($rule, $subject) {
             /** @var \Tk\Table\Cell\Text $cell  */
             /** @var \App\Db\User $obj  */
             if (isset($this->cache[$obj->getId()])) {

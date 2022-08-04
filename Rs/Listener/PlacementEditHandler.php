@@ -118,10 +118,9 @@ class PlacementEditHandler implements Subscriber
             $field->setAttr('data-placement-id', $this->placement->getId());
             $field->setAttr('data-company-id', $this->placement->companyId);
             $field->setAttr('data-subject-id', $this->placement->subjectId);
-            //$field->setAttr('data-supervisor-id', $this->placement->supervisorId.'');
 
             if ($this->controller instanceof \App\Controller\Student\Placement\Create) {
-                if ($this->placement->getId()) {
+                if ($this->placement->getId() && $this->placement->getStatus() != Placement::STATUS_DRAFT) {
                     $field->setReadonly();
                     $field->setDisabled(true);
                     $field->setAttr('data-hide-unselected');
@@ -168,9 +167,6 @@ jQuery(function ($) {
     });
     $(this).parent().find('input[type=checkbox],input[type=radio]').prop('checked', false);
     
-    console.log(params);
-    console.log($(this).parent().find('input[type=checkbox],input[type=radio]'));
-    
     $.post(document.location, params, function (data) {
       checkboxList.each(function () {
         if(jQuery.inArray(parseInt($(this).val()), data) !== -1) {
@@ -189,7 +185,7 @@ jQuery(function ($) {
   $('.tk-rules').each(function () {
     var fieldGroup = $(this);
     var checkboxList = fieldGroup.find('input[type=checkbox],input[type=radio]');
-    //console.log(checkboxList);
+    
     if (config.roleType !== 'student') {
         var resetBtn = $('<p><button type="button" class="btn btn-default btn-xs" title="Reset the placement to the company default assessment credit."><i class="fa fa-refresh"></i> Reset</button></p>');
         fieldGroup.find(' > div').append(resetBtn);
@@ -199,7 +195,6 @@ jQuery(function ($) {
           return false;
         });
     }
-    console.log(checkboxList.first().data('placementId'));
     if (checkboxList.first().data('placementId') === '0') {
     //if (fieldGroup.find('.checkbox-group').data('placementId') === '0') {
       setCheckboxes(checkboxList);

@@ -8,6 +8,7 @@ use Tk\Event\Subscriber;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @deprecated
  */
 class CompanyViewHandler implements Subscriber
 {
@@ -41,6 +42,8 @@ class CompanyViewHandler implements Subscriber
      */
     public function onControllerShow(\Tk\Event\Event $event)
     {
+        return;
+        // Do not think this is needed anymore
         if (!$this->controller) return;
 
         $companyRules = \Rs\Calculator::findCompanyRuleList($this->controller->getCompany(), $this->controller->getSubject());
@@ -58,6 +61,7 @@ class CompanyViewHandler implements Subscriber
         $repeat->addCss('data', 'force-block');
         $repeat->appendRepeat();
 
+        $template->setVisible('accademicCredit');
     }
 
     /**
