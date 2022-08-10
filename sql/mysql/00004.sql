@@ -2,7 +2,7 @@
 -- ----------------------------------------------------
 -- SQL
 -- 
--- Author: Michael Mifsud <info@tropotek.com>
+-- Author: Michael Mifsud <http://www.tropotek.com/>
 --
 -- Here we will be reverting the major ruleset upgrade
 --  that made all rules subject associated, we will be

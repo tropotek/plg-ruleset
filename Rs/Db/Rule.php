@@ -9,7 +9,7 @@ use Rs\Plugin;
 use Uni\Db\Traits\CourseTrait;
 
 /**
- * @author Michael Mifsud <info@tropotek.com>
+ * @author Michael Mifsud <http://www.tropotek.com/>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */

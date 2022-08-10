@@ -2,7 +2,7 @@
 -- ----------------------------------------------------
 -- SQL
 -- 
--- Author: Michael Mifsud <info@tropotek.com>
+-- Author: Michael Mifsud <http://www.tropotek.com/>
 --
 -- This is a major update to make all rulesets
 --  associated to the subject rather than the profile
