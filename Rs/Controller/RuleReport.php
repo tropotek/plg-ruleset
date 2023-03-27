@@ -216,7 +216,9 @@ CSS;
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="tk-panel" data-panel-title="Rule Report" data-panel-icon="fa fa-check" var="panel"></div>
+<div class="tk-panel" data-panel-title="Rule Report" data-panel-icon="fa fa-check" var="panel">
+    <p>View the wiki for more information about EMS Data Export: <a target="_blank" href="https://devwiki.vet.unimelb.edu.au/Ems_Data_Export_Instructions">EMS Export Instructions</a></p>
+</div>
 HTML;
 
         return \Dom\Loader::load($xhtml);
