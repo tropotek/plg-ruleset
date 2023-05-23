@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.4.22 [2023-05-23]:
+-------------------------------
+  - Tagging and releasing branch `3.4` with version `3.4.22`.
+
+
 Ver 3.4.22 [2023-03-28]:
 -------------------------------
   - Tagging and releasing branch `3.4` with version `3.4.22`.
